@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://u3npfir7fp2b"]
+
+[ext_resource type="Script" uid="uid://ghldwb707s4w" path="res://Scripts/Planet/PlanetManager.gd" id="1_42bfo"]
+[ext_resource type="Resource" uid="uid://wgkg5ej8c575" path="res://Resources/Icosphere.tres" id="2_3dwjt"]
+
+[node name="Manager" type="Node3D"]
+script = ExtResource("1_42bfo")
+TechnicalAspects = ExtResource("2_3dwjt")
+
+[node name="Display" type="MeshInstance3D" parent="."]

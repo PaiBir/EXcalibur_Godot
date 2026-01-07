@@ -1,0 +1,14 @@
+[gd_scene load_steps=6 format=3 uid="uid://534qeddptrqk"]
+
+[ext_resource type="Script" uid="uid://bd0cxxx5c47ai" path="res://Scripts/worldbase.gd" id="1_x8dr5"]
+[ext_resource type="Script" uid="uid://dafnytq8plwlv" path="res://Scripts/Technical/bezier.gd" id="2_uiqvb"]
+[ext_resource type="Resource" uid="uid://8c71fl3ciqeo" path="res://Resources/Beziers/Bolometric/Bolometric_1.tres" id="3_4tq1k"]
+[ext_resource type="Resource" uid="uid://dw6bkfgnirlg4" path="res://Resources/Beziers/Bolometric/Bolometric_2.tres" id="4_x83sf"]
+[ext_resource type="PackedScene" uid="uid://u3npfir7fp2b" path="res://Nodes/Pmanager.tscn" id="5_x83sf"]
+
+[node name="Worldbase" type="Node3D"]
+script = ExtResource("1_x8dr5")
+BolometricCorrectionBezier = Array[ExtResource("2_uiqvb")]([ExtResource("3_4tq1k"), ExtResource("4_x83sf")])
+
+[node name="Manager" parent="." node_paths=PackedStringArray("Boss") instance=ExtResource("5_x83sf")]
+Boss = NodePath("..")

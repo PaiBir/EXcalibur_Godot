@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PlanetTechnical" load_steps=9 format=3 uid="uid://wgkg5ej8c575"]
+
+[ext_resource type="ArrayMesh" uid="uid://2214rf3thuqp" path="res://Models/Meshes/S_1.res" id="1_iel2m"]
+[ext_resource type="ArrayMesh" uid="uid://cuodcvvlwy0fs" path="res://Models/Meshes/S_2.res" id="2_3370u"]
+[ext_resource type="ArrayMesh" uid="uid://3nnq801pulye" path="res://Models/Meshes/S_3.res" id="3_mtmkd"]
+[ext_resource type="ArrayMesh" uid="uid://c5fj11830qgai" path="res://Models/Meshes/S_4.res" id="4_yirs4"]
+[ext_resource type="ArrayMesh" uid="uid://bhsvafhkwicd" path="res://Models/Meshes/S_5.res" id="5_g6gp0"]
+[ext_resource type="ArrayMesh" uid="uid://cy71oix0lwe0n" path="res://Models/Meshes/S_6.res" id="6_5n0be"]
+[ext_resource type="ArrayMesh" uid="uid://bfbh6cpwosote" path="res://Models/Meshes/S_7.res" id="7_02p3u"]
+[ext_resource type="Script" uid="uid://usvx1mvcpetj" path="res://Scripts/PlanetTechnical.gd" id="8_p7fjm"]
+
+[resource]
+script = ExtResource("8_p7fjm")
+Subdivisions = Array[Mesh]([ExtResource("1_iel2m"), ExtResource("2_3370u"), ExtResource("3_mtmkd"), ExtResource("4_yirs4"), ExtResource("5_g6gp0"), ExtResource("6_5n0be"), ExtResource("7_02p3u")])
+metadata/_custom_type_script = "uid://usvx1mvcpetj"

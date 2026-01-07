@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Bezier" load_steps=2 format=3 uid="uid://8c71fl3ciqeo"]
+
+[ext_resource type="Script" uid="uid://dafnytq8plwlv" path="res://Scripts/Technical/bezier.gd" id="1_fkch4"]
+
+[resource]
+script = ExtResource("1_fkch4")
+pointA = Vector2(0.18, -4.2)
+pointB = Vector2(0.18, -2.916)
+pointC = Vector2(0.385, 0)
+pointD = Vector2(1.27, 0)
+metadata/_custom_type_script = "uid://dafnytq8plwlv"
