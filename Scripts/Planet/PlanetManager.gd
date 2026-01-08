@@ -19,6 +19,8 @@ var prevSubdivLevel: int = -1
 @export_category("Root")
 @export var Boss: Worldbase
 
+var MeshManipulator = MeshDataTool.new()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	planetMesh.material_override = PlanetMat
@@ -32,7 +34,13 @@ func _process(delta: float) -> void:
 			subdivLevel = TechnicalAspects.Subdivisions.size()-1
 		elif(subdivLevel < 0):
 			subdivLevel = 0
-		planetMesh.mesh = TechnicalAspects.Subdivisions[subdivLevel]
+		MeshManipulator.create_from_surface(TechnicalAspects.Subdivisions[subdivLevel], 0)
+		for index in range(0,MeshManipulator.get_vertex_count()):
+			MeshManipulator.set_vertex_color(index,Color(randf(), randf(), randf(), 1))
+			points.append(PlanetDataPoint.new(index))
+		var commitmesh = ArrayMesh.new()
+		MeshManipulator.commit_to_surface(commitmesh)
+		planetMesh.mesh = commitmesh
 		prevSubdivLevel = subdivLevel
 
 func EnergyBalance():

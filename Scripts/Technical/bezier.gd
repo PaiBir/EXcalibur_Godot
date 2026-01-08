@@ -10,7 +10,7 @@ extends Resource
 var xBound1: float
 var xBound2: float
 
-func _init(a: Vector2, b: Vector2, c: Vector2, d: Vector2) -> void:
+func _init(a: Vector2 = Vector2.ZERO, b: Vector2 = Vector2.ZERO, c: Vector2 = Vector2.ZERO, d: Vector2 = Vector2.ZERO) -> void:
 	pointA = a
 	pointB = b
 	pointC = c

@@ -26,7 +26,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	RealLight.light_intensity_lux = (starLuminosity/pow(World.distance,2)) * 100000
+	RealLight.light_intensity_lux = (starLuminosity/pow(World.distance,2)) * 10000
 	RealLight.light_color = TemperatureToColor(starTemp)
 	var Bolometrics : float = 0
 	for segment in BolometricCorrectionBezier:
