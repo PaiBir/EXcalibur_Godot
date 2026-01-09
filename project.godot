@@ -18,7 +18,3 @@ config/icon="res://icon.svg"
 [autoload]
 
 Constants="*res://Scripts/Constants.gd"
-
-[rendering]
-
-lights_and_shadows/use_physical_light_units=true

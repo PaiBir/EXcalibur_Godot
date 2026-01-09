@@ -9,7 +9,7 @@ extends Node3D
 @export_subgroup("Physical Characteristics")
 @export_range(0.01,20,0.01,"suffix:M☉") var starMass : float = 1.0
 @export_range(0.01,100000,0.01,"suffix:L☉") var starLuminosity : float = 1.0
-@export_range(1000,150000,100,"suffix:K") var starTemp : float = 5776
+@export_range(1000,150000,1,"suffix:K") var starTemp : float = 5776
 var starDiameter : float;
 var starAbsMagnitude : float;
 
@@ -26,7 +26,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	RealLight.light_intensity_lux = (starLuminosity/pow(World.distance,2)) * 10000
+	RealLight.light_energy = (starLuminosity/pow(World.distance,2))
 	RealLight.light_color = TemperatureToColor(starTemp)
 	var Bolometrics : float = 0
 	for segment in BolometricCorrectionBezier:

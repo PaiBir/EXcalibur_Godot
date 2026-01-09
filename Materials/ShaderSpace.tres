@@ -1,0 +1,24 @@
+[gd_resource type="ShaderMaterial" load_steps=14 format=3 uid="uid://bh28llgrk3r6x"]
+
+[ext_resource type="Shader" uid="uid://bjn6gsxn652qi" path="res://Shaders/Space.gdshader" id="1_oe6sg"]
+[ext_resource type="Texture2D" uid="uid://ufugce51blg2" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_D.png" id="2_pacos"]
+[ext_resource type="Texture2D" uid="uid://b57q0xx5kc0kb" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_F.png" id="3_v27vw"]
+[ext_resource type="Texture2D" uid="uid://chlpwgy4oi0v2" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_R.png" id="4_hwxt0"]
+[ext_resource type="Texture2D" uid="uid://cnq8sns5y0mat" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_B.png" id="5_ddpv1"]
+[ext_resource type="Texture2D" uid="uid://lk06nwaott7t" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_L.png" id="6_34en4"]
+[ext_resource type="Texture2D" uid="uid://6e3gr2abjlvs" path="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_U.png" id="7_hn3h0"]
+[ext_resource type="Texture2D" uid="uid://cl18vy01mipxf" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_D.png" id="8_axmmh"]
+[ext_resource type="Texture2D" uid="uid://c3ba1rk5v7c50" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_F.png" id="9_41six"]
+[ext_resource type="Texture2D" uid="uid://bcdg2xfjt1hrd" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_R.png" id="10_b2m20"]
+[ext_resource type="Texture2D" uid="uid://3kij0rm6yyax" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_B.png" id="11_er5g2"]
+[ext_resource type="Texture2D" uid="uid://drt3wbpur16vm" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_L.png" id="12_y4d3c"]
+[ext_resource type="Texture2D" uid="uid://b2oj5m3yfxhsi" path="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_U.png" id="13_qu255"]
+
+[resource]
+shader = ExtResource("1_oe6sg")
+shader_parameter/star_angular_size = 0.5
+shader_parameter/starEdge1 = 125.0
+shader_parameter/starEdge2 = 360.0
+shader_parameter/colors = PackedColorArray(1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1)
+shader_parameter/Cubemap_Stars = Array[Texture2D]([ExtResource("8_axmmh"), ExtResource("9_41six"), ExtResource("10_b2m20"), ExtResource("11_er5g2"), ExtResource("12_y4d3c"), ExtResource("13_qu255")])
+shader_parameter/Cubemap_Nebula = Array[Texture2D]([ExtResource("2_pacos"), ExtResource("3_v27vw"), ExtResource("4_hwxt0"), ExtResource("5_ddpv1"), ExtResource("6_34en4"), ExtResource("7_hn3h0")])
