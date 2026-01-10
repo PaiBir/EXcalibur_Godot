@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CubemapHolder" load_steps=8 format=3 uid="uid://c3n5jq38baqj8"]
+
+[ext_resource type="Texture2D" uid="uid://d1ijcx0qmwg5c" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_B.png" id="1_76msi"]
+[ext_resource type="Texture2D" uid="uid://brv34wui687gk" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_D.png" id="2_jvgm0"]
+[ext_resource type="Texture2D" uid="uid://dpowxkast1b5g" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_F.png" id="3_uxvog"]
+[ext_resource type="Texture2D" uid="uid://cajmqting2vgl" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_L.png" id="4_rdmmw"]
+[ext_resource type="Texture2D" uid="uid://cometql2hmnnq" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_R.png" id="5_xy15c"]
+[ext_resource type="Texture2D" uid="uid://xr60vi6kxk84" path="res://Textures/Cubemaps/Stars/1/Stars_Cmap_1_U.png" id="6_pp6dg"]
+[ext_resource type="Script" uid="uid://d22lawvtrvkev" path="res://Scripts/Technical/CubemapHolder.gd" id="7_i3a10"]
+
+[resource]
+script = ExtResource("7_i3a10")
+DOWN = ExtResource("2_jvgm0")
+FORWARDS = ExtResource("3_uxvog")
+RIGHT = ExtResource("5_xy15c")
+BACKWARDS = ExtResource("1_76msi")
+LEFT = ExtResource("4_rdmmw")
+UP = ExtResource("6_pp6dg")
+metadata/_custom_type_script = "uid://d22lawvtrvkev"

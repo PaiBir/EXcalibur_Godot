@@ -13,6 +13,8 @@ sky = SubResource("Sky_sx6hp")
 [node name="Testing" type="Node3D"]
 
 [node name="Worldbase" parent="." node_paths=PackedStringArray("cam", "RealLight") instance=ExtResource("1_lq4et")]
+starLuminosity = 61364.630000000005
+starTemp = 2390.0
 cam = NodePath("Camera3D")
 RealLight = NodePath("../DirectionalLight3D")
 

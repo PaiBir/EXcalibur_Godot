@@ -14,14 +14,22 @@ var starDiameter : float;
 var starAbsMagnitude : float;
 
 @export_category("Technical")
-@export var Skybox : Material;
+@export var MSkybox : Material;
 @export var UI_Base : Control;
 @export var cam : Camera3D;
 @onready var World : PlanetManager = $Manager
 @export var RealLight : DirectionalLight3D
+@export var color_temprange : float = 10.0;
+@export var starMaps : Array[CubemapHolder];
+@export var NebulaMaps : Array[CubemapHolder];
+var sM : int;
+var nM : int;
+var psM : int = -1;
+var pnM : int = -1;
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	sM = randi_range(0,starMaps.size()-1)
+	nM = randi_range(0,NebulaMaps.size()-1)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,7 +44,17 @@ func _process(_delta: float) -> void:
 	var bolometricLuminocity = starLuminosity / pow(2.52,Bolometrics*BolometricCorrectionStrength)
 	starDiameter = 5776.0 / starTemp * sqrt(bolometricLuminocity)
 	starAbsMagnitude = (log(bolometricLuminocity)/log(2.52)) + 4.85
-	var starAngularDiameter = 2 * acos(sqrt(pow(World.distance * Constants.AUdefiniton, 2) - pow(starDiameter * Constants.SunDiameter, 2)) / (World.distance * Constants.AUdefiniton))
+	var starAngularDiameter = 2 * acos(sqrt(pow(World.distance * Constants.AUdefiniton, 2) - pow(starDiameter * Constants.SunDiameter, 2)) / (World.distance * Constants.AUdefiniton)) / (( PI) / 180.0)
+	if is_nan(starAngularDiameter):
+		starAngularDiameter = 180.0;
+	MSkybox.set_shader_parameter("star_angular_size", starAngularDiameter);
+	MSkybox.set_shader_parameter("colors", [TemperatureToColor(starTemp + color_temprange), TemperatureToColor(starTemp), TemperatureToColor(starTemp - color_temprange)])
+	if(psM != sM):
+		MSkybox.set_shader_parameter("Cubemap_Stars", [starMaps[sM].DOWN,starMaps[sM].FORWARDS,starMaps[sM].RIGHT,starMaps[sM].BACKWARDS,starMaps[sM].LEFT,starMaps[sM].UP])
+		psM = sM
+	if(pnM != nM):
+		MSkybox.set_shader_parameter("Cubemap_Nebula", [NebulaMaps[nM].DOWN,NebulaMaps[nM].FORWARDS,NebulaMaps[nM].RIGHT,NebulaMaps[nM].BACKWARDS,NebulaMaps[nM].LEFT,NebulaMaps[nM].UP])
+		pnM = nM
 
 #Based on Mitchell Charity's function as reported by Dan Bruton (https://web.archive.org/web/20241106151814/https://www.physics.sfasu.edu/astro/color/blackbody.html)
 func TemperatureToColor(temp : float) -> Color:

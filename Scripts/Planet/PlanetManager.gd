@@ -8,6 +8,7 @@ var currentMesh : Mesh
 @export_group("Scientific")
 @export_range(0.0,10.0,0.1,"suffix:days") var orbitSpeed: float = 1
 @export_range(0.1,100,0.1,"suffix:AU") var distance: float = 1
+@export_range(-90.0,90.0,0.05,"suffix:°") var tilt: float = 22.5
 
 @export_category("Sphere Source") #Planet visualization and generation
 @export var TechnicalAspects : PlanetTechnical

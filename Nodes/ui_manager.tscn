@@ -1,0 +1,324 @@
+[gd_scene load_steps=3 format=3 uid="uid://g1tq5klptbr0"]
+
+[ext_resource type="Theme" uid="uid://byptwu7allkj4" path="res://Resources/UI_Theme.tres" id="1_c1ydq"]
+[ext_resource type="Script" uid="uid://dbnb23enw7hpx" path="res://Scripts/UI/UI_control.gd" id="1_val2c"]
+
+[node name="UIManager" type="Control" node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_val2c")
+Menu = NodePath("Control Bar/Menu_Location")
+Tabs = NodePath("Control Bar/TabBar")
+TechMenu = NodePath("Control Bar/Menu_Location/Technical")
+LayersMenu = NodePath("Control Bar/Menu_Location/Layers")
+StarMenu = NodePath("Control Bar/Menu_Location/Star")
+PlanetMenu = NodePath("Control Bar/Menu_Location/Planet")
+
+[node name="Control Bar" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="TabBar" type="TabBar" parent="Control Bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.05
+theme = ExtResource("1_c1ydq")
+current_tab = 0
+tab_count = 4
+tab_0/title = "Technical"
+tab_1/title = "Layers"
+tab_2/title = "Star"
+tab_3/title = "Planet"
+
+[node name="Menu_Location" type="Control" parent="Control Bar"]
+layout_mode = 1
+anchor_left = 0.05
+anchor_top = 0.05
+anchor_right = 0.95
+anchor_bottom = 0.988
+theme = ExtResource("1_c1ydq")
+
+[node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="T_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Technical"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.05
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+max_value = 1.0
+
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Technical"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.01
+anchor_right = 0.99
+anchor_bottom = 0.99
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="Subdivisions" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.005
+anchor_right = 0.98
+anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Detail"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DetailBar" type="HScrollBar" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+rounded = true
+
+[node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="L_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Layers"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.05
+anchor_bottom = 1.0
+offset_left = 6.1035156e-05
+offset_right = 6.1035156e-05
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+max_value = 1.0
+
+[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Layers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.05
+grow_horizontal = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "LAYERS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Star" type="Control" parent="Control Bar/Menu_Location"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="S_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Star"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.05
+anchor_bottom = 1.0
+offset_left = 6.1035156e-05
+offset_right = 6.1035156e-05
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+max_value = 1.0
+
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Star"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.01
+anchor_right = 0.99
+anchor_bottom = 0.99
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="StarMass" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.005
+anchor_right = 0.98
+anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarMass"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Mass (M☉)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SMass" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarMass"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="StarLuminosity" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.185
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Luminosity (L☉)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SLuminosity" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="StarTemperature" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.205
+anchor_right = 0.98
+anchor_bottom = 0.285
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarTemperature"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Temperature (K)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="STemperature" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarTemperature"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Planet" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="P_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Planet"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.05
+anchor_bottom = 1.0
+offset_left = 6.1035156e-05
+offset_right = 6.1035156e-05
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+max_value = 1.0
+
+[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Planet"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.05
+grow_horizontal = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "PLANET"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CubemapHolder" load_steps=8 format=3 uid="uid://c1foydgl0hmuw"]
+
+[ext_resource type="Texture2D" uid="uid://drn2fxvovufef" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_D.png" id="1_wom4d"]
+[ext_resource type="Texture2D" uid="uid://c5txx7ie7ioeg" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_B.png" id="2_3o4w3"]
+[ext_resource type="Texture2D" uid="uid://cwna68wrg2uo3" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_F.png" id="3_sxt56"]
+[ext_resource type="Texture2D" uid="uid://bl7u2dl6ovw2" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_L.png" id="4_gv4aq"]
+[ext_resource type="Texture2D" uid="uid://c82mq1jqsrlk5" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_R.png" id="5_vgu84"]
+[ext_resource type="Texture2D" uid="uid://bu52bpngb5isd" path="res://Textures/Cubemaps/Nebula/3/Nebula_Cmap_3_U.png" id="6_faljh"]
+[ext_resource type="Script" uid="uid://d22lawvtrvkev" path="res://Scripts/Technical/CubemapHolder.gd" id="7_aafgg"]
+
+[resource]
+script = ExtResource("7_aafgg")
+DOWN = ExtResource("2_3o4w3")
+FORWARDS = ExtResource("3_sxt56")
+RIGHT = ExtResource("5_vgu84")
+BACKWARDS = ExtResource("1_wom4d")
+LEFT = ExtResource("4_gv4aq")
+UP = ExtResource("6_faljh")
+metadata/_custom_type_script = "uid://d22lawvtrvkev"

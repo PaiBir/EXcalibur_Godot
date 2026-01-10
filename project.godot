@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="EXcalibur"
-run/main_scene="uid://dgmyh68dtll4x"
+run/main_scene="uid://c54jqmhto323t"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 

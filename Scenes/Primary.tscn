@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://c54jqmhto323t"]
+
+[ext_resource type="PackedScene" uid="uid://534qeddptrqk" path="res://Nodes/worldbase.tscn" id="1_420fw"]
+[ext_resource type="Material" uid="uid://bh28llgrk3r6x" path="res://Materials/ShaderSpace.tres" id="2_l6upv"]
+[ext_resource type="PackedScene" uid="uid://g1tq5klptbr0" path="res://Nodes/ui_manager.tscn" id="3_qbknk"]
+
+[sub_resource type="Sky" id="Sky_08qcc"]
+sky_material = ExtResource("2_l6upv")
+
+[sub_resource type="Environment" id="Environment_iuxb0"]
+background_mode = 2
+sky = SubResource("Sky_08qcc")
+
+[node name="Scene_Root" type="Node"]
+
+[node name="Worldbase" parent="." node_paths=PackedStringArray("UI_Base", "cam", "RealLight") instance=ExtResource("1_420fw")]
+UI_Base = NodePath("../UIManager")
+cam = NodePath("Camera3D")
+RealLight = NodePath("DirectionalLight3D")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Worldbase"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Worldbase"]
+environment = SubResource("Environment_iuxb0")
+
+[node name="Camera3D" type="Camera3D" parent="Worldbase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="UIManager" parent="." node_paths=PackedStringArray("boss") instance=ExtResource("3_qbknk")]
+boss = NodePath("../Worldbase")

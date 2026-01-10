@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://534qeddptrqk"]
+[gd_scene load_steps=16 format=3 uid="uid://534qeddptrqk"]
 
 [ext_resource type="Script" uid="uid://bd0cxxx5c47ai" path="res://Scripts/worldbase.gd" id="1_x8dr5"]
 [ext_resource type="Script" uid="uid://dafnytq8plwlv" path="res://Scripts/Technical/bezier.gd" id="2_uiqvb"]
@@ -6,11 +6,22 @@
 [ext_resource type="Resource" uid="uid://dw6bkfgnirlg4" path="res://Resources/Beziers/Bolometric/Bolometric_2.tres" id="4_x83sf"]
 [ext_resource type="Material" uid="uid://bh28llgrk3r6x" path="res://Materials/ShaderSpace.tres" id="5_sdw06"]
 [ext_resource type="PackedScene" uid="uid://u3npfir7fp2b" path="res://Nodes/Pmanager.tscn" id="5_x83sf"]
+[ext_resource type="Script" uid="uid://d22lawvtrvkev" path="res://Scripts/Technical/CubemapHolder.gd" id="6_lubc8"]
+[ext_resource type="Resource" uid="uid://fyrfhw7p5ocg" path="res://Resources/Cubemaps/Stars/S0.tres" id="7_ueyr4"]
+[ext_resource type="Resource" uid="uid://c3n5jq38baqj8" path="res://Resources/Cubemaps/Stars/S1.tres" id="8_061my"]
+[ext_resource type="Resource" uid="uid://dotqs2lxf5gmg" path="res://Resources/Cubemaps/Stars/S2.tres" id="9_gu6gs"]
+[ext_resource type="Resource" uid="uid://b48lquyx2g4ny" path="res://Resources/Cubemaps/Stars/S3.tres" id="10_7yo2g"]
+[ext_resource type="Resource" uid="uid://b7v0ugxs78m63" path="res://Resources/Cubemaps/Nebulae/N0.tres" id="11_qpgfp"]
+[ext_resource type="Resource" uid="uid://blt3erv77x461" path="res://Resources/Cubemaps/Nebulae/N1.tres" id="12_6h0j0"]
+[ext_resource type="Resource" uid="uid://b2bdlb6wlbbww" path="res://Resources/Cubemaps/Nebulae/N2.tres" id="13_okb80"]
+[ext_resource type="Resource" uid="uid://c1foydgl0hmuw" path="res://Resources/Cubemaps/Nebulae/N3.tres" id="14_viuvy"]
 
 [node name="Worldbase" type="Node3D"]
 script = ExtResource("1_x8dr5")
 BolometricCorrectionBezier = Array[ExtResource("2_uiqvb")]([ExtResource("3_4tq1k"), ExtResource("4_x83sf")])
-Skybox = ExtResource("5_sdw06")
+MSkybox = ExtResource("5_sdw06")
+starMaps = Array[ExtResource("6_lubc8")]([ExtResource("7_ueyr4"), ExtResource("8_061my"), ExtResource("9_gu6gs"), ExtResource("10_7yo2g")])
+NebulaMaps = Array[ExtResource("6_lubc8")]([ExtResource("11_qpgfp"), ExtResource("12_6h0j0"), ExtResource("13_okb80"), ExtResource("14_viuvy")])
 
 [node name="Manager" parent="." node_paths=PackedStringArray("Boss") instance=ExtResource("5_x83sf")]
 Boss = NodePath("..")
