@@ -5,10 +5,12 @@ extends Node
 @export_group("Technical")
 @export var points : Array[PlanetDataPoint]; 
 var currentMesh : Mesh
+@export var rotMod : float = 0.01;
 @export_group("Scientific")
-@export_range(0.0,10.0,0.1,"suffix:days") var orbitSpeed: float = 1
-@export_range(0.1,100,0.1,"suffix:AU") var distance: float = 1
-@export_range(-90.0,90.0,0.05,"suffix:°") var tilt: float = 22.5
+@export var DaysSpeed: float = 1 #Earth days
+@export var distance: float = 1 #AU
+@export var tilt: float = 22.5 #degrees
+@export var YearLength: float = 365 #Planet days
 
 @export_category("Sphere Source") #Planet visualization and generation
 @export var TechnicalAspects : PlanetTechnical
@@ -25,11 +27,12 @@ var MeshManipulator = MeshDataTool.new()
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	planetMesh.material_override = PlanetMat
+	planetMesh.rotation_order = EULER_ORDER_XZY
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	planetMesh.rotate(Vector3.UP,delta*orbitSpeed)
+func _process(_delta: float) -> void:
+	planetMesh.rotation = Vector3(tilt*((2.0*PI)/360.0),(0.5/DaysSpeed) * (Time.get_ticks_msec() * rotMod),0.0)
 	if(prevSubdivLevel != subdivLevel):
 		if(subdivLevel > TechnicalAspects.Subdivisions.size()-1):
 			subdivLevel = TechnicalAspects.Subdivisions.size()-1

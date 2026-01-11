@@ -1,3 +1,4 @@
+class_name UI_control
 extends Node
 
 @export_category("Assignment")
@@ -18,6 +19,12 @@ func _ready() -> void:
 	$"Control Bar/Menu_Location/Star/Body/StarMass/SMass".text = str(boss.starMass)
 	$"Control Bar/Menu_Location/Star/Body/StarLuminosity/SLuminosity".text = str(boss.starLuminosity)
 	$"Control Bar/Menu_Location/Star/Body/StarTemperature/STemperature".text = str(boss.starTemp)
+	$"Control Bar/Menu_Location/Planet/Body/RotationSpeed/PDayLength".text = str(boss.World.DaysSpeed*24)
+	$"Control Bar/Menu_Location/Planet/Body/Distance/PDistance".text = str(boss.World.distance)
+	$"Control Bar/Menu_Location/Planet/Body/YearLength/PYearLength".text = str(boss.World.YearLength)
+	$"Control Bar/Menu_Location/Planet/Body/Tilt/PTilt".text = str(boss.World.tilt)
+	$"Control Bar/Menu_Location/Technical/Body/X_Sensitivity/XSens".text = str(boss.Sensitivity.x * 100)
+	$"Control Bar/Menu_Location/Technical/Body/Y_Sensitivity/YSens".text = str(boss.Sensitivity.y * 100)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -49,4 +56,17 @@ func _process(_delta: float) -> void:
 	boss.starMass = $"Control Bar/Menu_Location/Star/Body/StarMass/SMass".text
 	boss.starLuminosity = $"Control Bar/Menu_Location/Star/Body/StarLuminosity/SLuminosity".text
 	boss.starTemp = $"Control Bar/Menu_Location/Star/Body/StarTemperature/STemperature".text
+	boss.World.DaysSpeed = float($"Control Bar/Menu_Location/Planet/Body/RotationSpeed/PDayLength".text) / 24
+	boss.World.distance = $"Control Bar/Menu_Location/Planet/Body/Distance/PDistance".text
+	boss.World.YearLength = $"Control Bar/Menu_Location/Planet/Body/YearLength/PYearLength".text
+	boss.World.tilt = $"Control Bar/Menu_Location/Planet/Body/Tilt/PTilt".text
+	boss.Sensitivity = Vector2(float($"Control Bar/Menu_Location/Technical/Body/X_Sensitivity/XSens".text),float($"Control Bar/Menu_Location/Technical/Body/Y_Sensitivity/YSens".text)) / 100.0
 	
+func mCameraL():
+	boss.MoveCamera(true)
+
+func mCameraR():
+	boss.MoveCamera(false)
+
+func sCamera():
+	boss.StopCamera()

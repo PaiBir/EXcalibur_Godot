@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://534qeddptrqk"]
+[gd_scene load_steps=25 format=3 uid="uid://534qeddptrqk"]
 
 [ext_resource type="Script" uid="uid://bd0cxxx5c47ai" path="res://Scripts/worldbase.gd" id="1_x8dr5"]
 [ext_resource type="Script" uid="uid://dafnytq8plwlv" path="res://Scripts/Technical/bezier.gd" id="2_uiqvb"]
@@ -15,6 +15,19 @@
 [ext_resource type="Resource" uid="uid://blt3erv77x461" path="res://Resources/Cubemaps/Nebulae/N1.tres" id="12_6h0j0"]
 [ext_resource type="Resource" uid="uid://b2bdlb6wlbbww" path="res://Resources/Cubemaps/Nebulae/N2.tres" id="13_okb80"]
 [ext_resource type="Resource" uid="uid://c1foydgl0hmuw" path="res://Resources/Cubemaps/Nebulae/N3.tres" id="14_viuvy"]
+[ext_resource type="ArrayMesh" uid="uid://0iplxiatc3wo" path="res://Models/Meshes/S_0_Baked.obj" id="16_lubc8"]
+[ext_resource type="ArrayMesh" uid="uid://cwgve2twud3j8" path="res://Models/Meshes/S_1_Baked.obj" id="17_ueyr4"]
+[ext_resource type="ArrayMesh" uid="uid://20owv0kke1s6" path="res://Models/Meshes/S_2_Baked.obj" id="18_061my"]
+[ext_resource type="ArrayMesh" uid="uid://b3l8xyoqd2wrt" path="res://Models/Meshes/S_3_Baked.obj" id="19_gu6gs"]
+[ext_resource type="ArrayMesh" uid="uid://5jlmvd1g6vui" path="res://Models/Meshes/S_4_Baked.obj" id="20_7yo2g"]
+[ext_resource type="ArrayMesh" uid="uid://ds4lcaray25va" path="res://Models/Meshes/S_5_Baked.obj" id="21_e5cij"]
+[ext_resource type="ArrayMesh" uid="uid://b413m1nu1pl2f" path="res://Models/Meshes/S_6_Baked.obj" id="22_k5b3b"]
+[ext_resource type="Script" uid="uid://usvx1mvcpetj" path="res://Scripts/PlanetTechnical.gd" id="23_jpugc"]
+
+[sub_resource type="Resource" id="Resource_nnucj"]
+script = ExtResource("23_jpugc")
+Subdivisions = Array[Mesh]([ExtResource("16_lubc8"), ExtResource("17_ueyr4"), ExtResource("18_061my"), ExtResource("19_gu6gs"), ExtResource("20_7yo2g"), ExtResource("21_e5cij"), ExtResource("22_k5b3b")])
+metadata/_custom_type_script = "uid://usvx1mvcpetj"
 
 [node name="Worldbase" type="Node3D"]
 script = ExtResource("1_x8dr5")
@@ -24,4 +37,6 @@ starMaps = Array[ExtResource("6_lubc8")]([ExtResource("7_ueyr4"), ExtResource("8
 NebulaMaps = Array[ExtResource("6_lubc8")]([ExtResource("11_qpgfp"), ExtResource("12_6h0j0"), ExtResource("13_okb80"), ExtResource("14_viuvy")])
 
 [node name="Manager" parent="." node_paths=PackedStringArray("Boss") instance=ExtResource("5_x83sf")]
+rotMod = 0.001
+TechnicalAspects = SubResource("Resource_nnucj")
 Boss = NodePath("..")

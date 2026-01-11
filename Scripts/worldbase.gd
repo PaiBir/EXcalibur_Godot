@@ -7,15 +7,15 @@ extends Node3D
 @export var BolometricCorrectionStrength : float
 
 @export_subgroup("Physical Characteristics")
-@export_range(0.01,20,0.01,"suffix:M☉") var starMass : float = 1.0
-@export_range(0.01,100000,0.01,"suffix:L☉") var starLuminosity : float = 1.0
-@export_range(1000,150000,1,"suffix:K") var starTemp : float = 5776
+@export var starMass : float = 1.0 #Msol
+@export var starLuminosity : float = 1.0 #Lsol
+@export var starTemp : float = 5776 #K
 var starDiameter : float;
 var starAbsMagnitude : float;
 
 @export_category("Technical")
 @export var MSkybox : Material;
-@export var UI_Base : Control;
+@export var UI_Base : UI_control;
 @export var cam : Camera3D;
 @onready var World : PlanetManager = $Manager
 @export var RealLight : DirectionalLight3D
@@ -26,14 +26,35 @@ var sM : int;
 var nM : int;
 var psM : int = -1;
 var pnM : int = -1;
+
+#CAMERA
+var CamDistance : float = 2 #Units
+var CamRot_X : float = 0 #Rad
+var CamRot_Y : float = 0 #Rad
+var CamTurn_X : float = 0 #Rad
+var CamTurn_Y : float = 0 #Rad
+var RotCam : bool = false
+var MoveCam : bool = false
+var MouseStartPos : Vector2 = Vector2(0,0)
+var CameraPosition : Vector4 = Vector4(0,0,0,0)
+var Sensitivity : Vector2 = Vector2(1,1)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	sM = randi_range(0,starMaps.size()-1)
 	nM = randi_range(0,NebulaMaps.size()-1)
+	CamTurn_Y = 0
+	CamTurn_X = cam.rotation.y
+	CamTurn_Y = cam.rotation.x
+	CameraPosition = Vector4(CamRot_X,CamRot_Y,CamTurn_X,CamTurn_Y)
+	cam.position = (Vector3(0,0,CamDistance).rotated(Vector3.RIGHT,CamRot_Y)).rotated(Vector3.UP,CamRot_X)
+	cam.rotation = Vector3(CamTurn_Y,CamTurn_X,0)
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	#Star
 	RealLight.light_energy = (starLuminosity/pow(World.distance,2))
 	RealLight.light_color = TemperatureToColor(starTemp)
 	var Bolometrics : float = 0
@@ -47,6 +68,7 @@ func _process(_delta: float) -> void:
 	var starAngularDiameter = 2 * acos(sqrt(pow(World.distance * Constants.AUdefiniton, 2) - pow(starDiameter * Constants.SunDiameter, 2)) / (World.distance * Constants.AUdefiniton)) / (( PI) / 180.0)
 	if is_nan(starAngularDiameter):
 		starAngularDiameter = 180.0;
+	#Shader
 	MSkybox.set_shader_parameter("star_angular_size", starAngularDiameter);
 	MSkybox.set_shader_parameter("colors", [TemperatureToColor(starTemp + color_temprange), TemperatureToColor(starTemp), TemperatureToColor(starTemp - color_temprange)])
 	if(psM != sM):
@@ -55,6 +77,20 @@ func _process(_delta: float) -> void:
 	if(pnM != nM):
 		MSkybox.set_shader_parameter("Cubemap_Nebula", [NebulaMaps[nM].DOWN,NebulaMaps[nM].FORWARDS,NebulaMaps[nM].RIGHT,NebulaMaps[nM].BACKWARDS,NebulaMaps[nM].LEFT,NebulaMaps[nM].UP])
 		pnM = nM
+	
+	#Camera
+	if(MoveCam):
+		var diffInPositon = ((get_viewport().get_mouse_position() - MouseStartPos) / 100.0) * Sensitivity
+		if(RotCam):
+			CamRot_X = CameraPosition.x - diffInPositon.x
+			CamRot_Y = CameraPosition.y + diffInPositon.y
+			CamTurn_X = CameraPosition.z - diffInPositon.x
+			CamTurn_Y = CameraPosition.w + diffInPositon.y
+		else:
+			CamTurn_X = CameraPosition.z + diffInPositon.x
+			CamTurn_Y = CameraPosition.w - diffInPositon.y
+		cam.position = (Vector3(0,0,CamDistance).rotated(Vector3.RIGHT,CamRot_Y)).rotated(Vector3.UP,CamRot_X)
+		cam.rotation = Vector3(CamTurn_Y,CamTurn_X,0)
 
 #Based on Mitchell Charity's function as reported by Dan Bruton (https://web.archive.org/web/20241106151814/https://www.physics.sfasu.edu/astro/color/blackbody.html)
 func TemperatureToColor(temp : float) -> Color:
@@ -68,3 +104,15 @@ func TemperatureToColor(temp : float) -> Color:
 		reColor.g = max(min((35200000.0 * pow(temp,-3.0/2.0) + 148.0) / 255.0, 1), 0)
 	
 	return(reColor)
+
+func MoveCamera(isLeft : bool):
+	print(isLeft)
+	if isLeft:
+		RotCam = true
+	MoveCam = true
+	CameraPosition = Vector4(CamRot_X,CamRot_Y,CamTurn_X,CamTurn_Y)
+	MouseStartPos = get_viewport().get_mouse_position()
+
+func StopCamera():
+	RotCam = false
+	MoveCam = false

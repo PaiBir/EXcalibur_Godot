@@ -1,7 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://g1tq5klptbr0"]
+[gd_scene load_steps=9 format=3 uid="uid://g1tq5klptbr0"]
 
 [ext_resource type="Theme" uid="uid://byptwu7allkj4" path="res://Resources/UI_Theme.tres" id="1_c1ydq"]
 [ext_resource type="Script" uid="uid://dbnb23enw7hpx" path="res://Scripts/UI/UI_control.gd" id="1_val2c"]
+[ext_resource type="Script" uid="uid://mlhtg2877dfu" path="res://Nodes/Use_Files.gd" id="3_1xkbj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c1ydq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xkbj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gfw42"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kc8w3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ul1d"]
 
 [node name="UIManager" type="Control" node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu")]
 layout_mode = 3
@@ -50,7 +61,6 @@ anchor_bottom = 0.988
 theme = ExtResource("1_c1ydq")
 
 [node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,6 +121,169 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 rounded = true
 
+[node name="Filepath" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.285
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Filepath"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Open_FileDialog" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+theme = ExtResource("1_c1ydq")
+text = "Browse"
+
+[node name="LineEdit" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Filepath" node_paths=PackedStringArray("Files")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.5258789e-05
+offset_right = 1.5258789e-05
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+placeholder_text = "Directory..."
+script = ExtResource("3_1xkbj")
+Files = NodePath("FileDialog")
+
+[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit"]
+oversampling_override = 1.0
+title = "Set Directory"
+theme = ExtResource("1_c1ydq")
+file_mode = 2
+access = 2
+use_native_dialog = true
+
+[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.505
+anchor_right = 1.0
+anchor_bottom = 0.585
+grow_horizontal = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "CAMERA CONTROLS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="X_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.605
+anchor_right = 0.98
+anchor_bottom = 0.685
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "X Sensitivity"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="XSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Y_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.705
+anchor_right = 0.98
+anchor_bottom = 0.785
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Y Sensitivity"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="YSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="CameraDistance" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.805
+anchor_right = 0.98
+anchor_bottom = 0.885
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Camera Distance"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CamDist" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
 [node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
 layout_mode = 1
@@ -156,6 +329,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Star" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -204,6 +378,8 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
+tooltip_text = "The mass of the star, in Solar Masses. 1 Solar Mass is equivalent to the mass of the Sun"
+mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Mass (M☉)"
 horizontal_alignment = 1
@@ -234,6 +410,8 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
+tooltip_text = "The brightness of the star in Solar Luminosities. Our sun's luminosity is equal to 1"
+mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Luminosity (L☉)"
 horizontal_alignment = 1
@@ -264,6 +442,8 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
+tooltip_text = "The temperature of the sun in Kelvin. Our sun is around 5770 to 5776 K, depending on what source you use."
+mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Temperature (K)"
 horizontal_alignment = 1
@@ -303,22 +483,176 @@ grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 max_value = 1.0
 
-[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Planet"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Planet"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 0.05
-grow_horizontal = 2
-theme = ExtResource("1_c1ydq")
-
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Title"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_left = 0.01
+anchor_top = 0.01
+anchor_right = 0.99
+anchor_bottom = 0.99
+offset_left = -2.002716e-05
+offset_right = -3.0517578e-05
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
-text = "PLANET"
+
+[node name="RotationSpeed" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.005
+anchor_right = 0.98
+anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Day Length (hrs)"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Distance" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.185
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Distance"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "An Astronomical Unit (AU) is a unit of measurement equivalent to the average distance between  the Earth and Sun"
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Distance (AU)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PDistance" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Distance"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="YearLength" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.205
+anchor_right = 0.98
+anchor_bottom = 0.285
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/YearLength"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Orbit Period (days)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PYearLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/YearLength"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Tilt" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.305
+anchor_right = 0.98
+anchor_bottom = 0.385
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Tilt"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The angle of the planet's axis of rotation. This causes seasons to occur. Earth's Axial tilt is around 23°"
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Axial Tilt (°)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PTilt" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Tilt"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Detect_ScreenPress" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.75
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_c1ydq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_1xkbj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gfw42")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_kc8w3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8ul1d")
+action_mode = 0
+
+[node name="Detect_ScreenPress" type="Button" parent="Detect_ScreenPress"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+theme = ExtResource("1_c1ydq")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_c1ydq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_1xkbj")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_gfw42")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_kc8w3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8ul1d")
+action_mode = 0
+button_mask = 2
+
+[connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/Filepath/Open_FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="openDialog"]
+[connection signal="dir_selected" from="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit/FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="set_path"]
+[connection signal="button_up" from="Detect_ScreenPress" to="." method="sCamera"]
+[connection signal="pressed" from="Detect_ScreenPress" to="." method="mCameraL"]
+[connection signal="button_up" from="Detect_ScreenPress/Detect_ScreenPress" to="." method="sCamera"]
+[connection signal="pressed" from="Detect_ScreenPress/Detect_ScreenPress" to="." method="mCameraR"]
