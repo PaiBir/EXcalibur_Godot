@@ -70,3 +70,9 @@ func mCameraR():
 
 func sCamera():
 	boss.StopCamera()
+
+func loadDir():
+	pass
+
+func saveDir():
+	pass

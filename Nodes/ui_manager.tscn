@@ -104,18 +104,18 @@ theme = ExtResource("1_c1ydq")
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
+anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
-text = "Detail"
+text = "Planet Detail"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DetailBar" type="HScrollBar" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 0.6
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
@@ -133,18 +133,18 @@ theme = ExtResource("1_c1ydq")
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.5
+anchor_right = 0.6
 anchor_bottom = 0.5
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
-text = "Filepath"
+text = "Project Directory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Open_FileDialog" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 0.6
 anchor_right = 1.0
 anchor_bottom = 0.5
 theme = ExtResource("1_c1ydq")
@@ -172,6 +172,45 @@ theme = ExtResource("1_c1ydq")
 file_mode = 2
 access = 2
 use_native_dialog = true
+
+[node name="SaveLoad" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.305
+anchor_right = 0.98
+anchor_bottom = 0.485
+theme = ExtResource("1_c1ydq")
+
+[node name="File Action" type="Label" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "File Action"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Save" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+text = "Save"
+
+[node name="Load" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+text = "Load"
 
 [node name="Title" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
 layout_mode = 1
@@ -652,6 +691,8 @@ button_mask = 2
 
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/Filepath/Open_FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="openDialog"]
 [connection signal="dir_selected" from="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit/FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="set_path"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Save" to="." method="saveDir"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Load" to="." method="loadDir"]
 [connection signal="button_up" from="Detect_ScreenPress" to="." method="sCamera"]
 [connection signal="pressed" from="Detect_ScreenPress" to="." method="mCameraL"]
 [connection signal="button_up" from="Detect_ScreenPress/Detect_ScreenPress" to="." method="sCamera"]
