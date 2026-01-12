@@ -8,6 +8,7 @@ extends Node
 @export var LayersMenu : Control
 @export var StarMenu : Control
 @export var PlanetMenu : Control
+@export var Uploader : Control
 @export var boss : Worldbase
 
 var prevMenu : int = -1
@@ -76,3 +77,12 @@ func loadDir():
 
 func saveDir():
 	pass
+
+func passImg(role: int, img: ImageTexture): #0: Color, 1: Height, 2: Full spectrum Albedo
+	boss.World.SetTex(role,img)
+
+func passColor():
+	passImg(0,Uploader.get_child(3).texture)
+
+func passHeight():
+	passImg(1,Uploader.get_child(3).texture)

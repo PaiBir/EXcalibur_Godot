@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://g1tq5klptbr0"]
+[gd_scene load_steps=10 format=3 uid="uid://g1tq5klptbr0"]
 
 [ext_resource type="Theme" uid="uid://byptwu7allkj4" path="res://Resources/UI_Theme.tres" id="1_c1ydq"]
 [ext_resource type="Script" uid="uid://dbnb23enw7hpx" path="res://Scripts/UI/UI_control.gd" id="1_val2c"]
 [ext_resource type="Script" uid="uid://mlhtg2877dfu" path="res://Nodes/Use_Files.gd" id="3_1xkbj"]
+[ext_resource type="Script" uid="uid://dpinydx3oekt1" path="res://Nodes/DisplayFile.gd" id="4_gfw42"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c1ydq"]
 
@@ -14,7 +15,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ul1d"]
 
-[node name="UIManager" type="Control" node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu")]
+[node name="UIManager" type="Control" node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu", "Uploader")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,6 +29,7 @@ TechMenu = NodePath("Control Bar/Menu_Location/Technical")
 LayersMenu = NodePath("Control Bar/Menu_Location/Layers")
 StarMenu = NodePath("Control Bar/Menu_Location/Star")
 PlanetMenu = NodePath("Control Bar/Menu_Location/Planet")
+Uploader = NodePath("Control Bar/Menu_Location/Planet/Body/UploadLayers")
 
 [node name="Control Bar" type="Panel" parent="."]
 layout_mode = 1
@@ -61,6 +63,7 @@ anchor_bottom = 0.988
 theme = ExtResource("1_c1ydq")
 
 [node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -167,7 +170,7 @@ Files = NodePath("FileDialog")
 
 [node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit"]
 oversampling_override = 1.0
-title = "Set Directory"
+title = "Open a Directory"
 theme = ExtResource("1_c1ydq")
 file_mode = 2
 access = 2
@@ -499,7 +502,6 @@ placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
 [node name="Planet" type="Control" parent="Control Bar/Menu_Location"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -661,6 +663,82 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
+[node name="UploadLayers" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.405
+anchor_right = 0.98
+anchor_bottom = 0.985
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 0.15
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Upload Layer"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 0.15
+offset_left = 3.0517578e-05
+offset_right = 3.0517578e-05
+theme = ExtResource("1_c1ydq")
+text = "Browse"
+
+[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" node_paths=PackedStringArray("Files")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 0.25
+placeholder_text = "Directory..."
+script = ExtResource("3_1xkbj")
+Files = NodePath("FileDialog")
+
+[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength"]
+title = "Open a File"
+file_mode = 0
+access = 2
+use_native_dialog = true
+
+[node name="TextureRect" type="TextureRect" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.25
+anchor_right = 1.0
+anchor_bottom = 0.55
+expand_mode = 3
+script = ExtResource("4_gfw42")
+
+[node name="Color" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.55
+anchor_right = 0.5
+anchor_bottom = 0.725
+theme = ExtResource("1_c1ydq")
+text = "As Color"
+
+[node name="Height" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.55
+anchor_right = 1.0
+anchor_bottom = 0.725
+theme = ExtResource("1_c1ydq")
+text = "As Height"
+
 [node name="Detect_ScreenPress" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -693,6 +771,12 @@ button_mask = 2
 [connection signal="dir_selected" from="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit/FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="set_path"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Save" to="." method="saveDir"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Load" to="." method="loadDir"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Button" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="openDialog"]
+[connection signal="text_changed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/TextureRect" method="setImage"]
+[connection signal="file_selected" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength/FileDialog" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="set_path"]
+[connection signal="file_selected" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength/FileDialog" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/TextureRect" method="setImage"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Color" to="." method="passColor"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Height" to="." method="passHeight"]
 [connection signal="button_up" from="Detect_ScreenPress" to="." method="sCamera"]
 [connection signal="pressed" from="Detect_ScreenPress" to="." method="mCameraL"]
 [connection signal="button_up" from="Detect_ScreenPress/Detect_ScreenPress" to="." method="sCamera"]

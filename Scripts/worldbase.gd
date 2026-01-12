@@ -106,7 +106,6 @@ func TemperatureToColor(temp : float) -> Color:
 	return(reColor)
 
 func MoveCamera(isLeft : bool):
-	print(isLeft)
 	if isLeft:
 		RotCam = true
 	MoveCam = true
