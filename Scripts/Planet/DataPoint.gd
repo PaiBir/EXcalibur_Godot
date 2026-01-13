@@ -36,6 +36,8 @@ func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conver
 		sPoint.y = atan(point.z/point.x)
 	elif point.x < 0 and point.z >= 0:
 		sPoint.y = atan(point.z/point.x) + PI
+	elif point.x < 0 and point.z < 0:
+		sPoint.y = atan(point.z/point.x) - PI
 	elif point.x == 0 and point.z > 0:
 		sPoint.y = PI / 2
 	elif point.x == 0 and point.z < 0:
@@ -46,4 +48,4 @@ func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conver
 	return Vector2(sPoint.x,sPoint.y)
 
 func SphericalToLatLong(pos : Vector2) ->Vector2:
-	return Vector2((pos.x + PI) / ((2 * PI)/360), ((pos.y * 2)-PI) / (2 * PI)/180)
+	return Vector2((pos.x) / ((2 * PI)/360), ((pos.y + (PI / 2.0))) / (PI/180))

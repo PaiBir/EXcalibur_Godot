@@ -6,7 +6,8 @@ extends Node
 @export var points : Array[PlanetDataPoint]; 
 var currentMesh : Mesh
 var thrd : Array[Thread]
-var sem : Semaphore
+var mut : Mutex
+var Finished : int = 0
 @export var numThreads : int = 11 #10 main, 1 remainder
 @export var rotMod : float = 0.01;
 @export_group("Scientific")
@@ -31,7 +32,7 @@ var MeshManipulator = MeshDataTool.new()
 func _ready() -> void:
 	planetMesh.material_override = PlanetMat
 	planetMesh.rotation_order = EULER_ORDER_XZY
-	sem = Semaphore.new()
+	mut = Mutex.new()
 	for i in range(0,numThreads):
 		thrd.append(Thread.new())
 
@@ -49,6 +50,7 @@ func _process(_delta: float) -> void:
 		for index in range(0,MeshManipulator.get_vertex_count()):
 			MeshManipulator.set_vertex_color(index,Color(randf(), randf(), randf(), 1))
 			points.append(PlanetDataPoint.new(index,MeshManipulator.get_vertex(index)))
+		print("4 corners: 0,0: " + str(points[0].SphericalToLatLong(Vector2(0,0))) + ", 0,1: "+ str(points[0].SphericalToLatLong(Vector2(0,PI))) + ", 1,1:" + str(points[0].SphericalToLatLong(Vector2(2 * PI,PI))))
 		var commitmesh = ArrayMesh.new()
 		MeshManipulator.commit_to_surface(commitmesh)
 		planetMesh.mesh = commitmesh
@@ -61,31 +63,50 @@ func ChemicalBalance():
 	pass
 
 func SetTex(role : int, img : ImageTexture):  #0: Color, 1: Height, 2: Full spectrum Albedo
-	var pointsPerThread : int = floor(points.size() / (numThreads-1))
-	var pointMin : int = 0
-	for thred in thrd:
-		thred.start(_threadsSetTex.bind(role,img,pointMin,max(pointMin+pointsPerThread-1,points.size()-1)))
-		pointMin += pointsPerThread
-	var CanContinue : bool = false
-	while  CanContinue == false:
-		CanContinue = true
-		for thred in thrd:
-			if thred.is_alive():
-				CanContinue = false
+	var pointsPerThread : int = floor(points.size() / (numThreads-1.0))
+	Finished = 0
+	for i in range(0,numThreads):
+		thrd[i].start(_threadsSetTex.bind(i, role,img,pointsPerThread * i,min(pointsPerThread * (i+1),points.size())))
+	while Finished != points.size():
+		await get_tree().create_timer(2).timeout
+	for i in range(0,numThreads):
+		thrd[i].wait_to_finish()
+		thrd[i] = Thread.new()
 	for ClimateNode in points:
 		MeshManipulator.set_vertex_color(ClimateNode.MeshIndex,ClimateNode.color)
 	var commitmesh = ArrayMesh.new()
 	MeshManipulator.commit_to_surface(commitmesh)
 	planetMesh.mesh = commitmesh
+#	for i in range(0,points.size()):
+#		var cmesh = ArrayMesh.new()
+#		points[i].color = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
+#		MeshManipulator.set_vertex_color(points[i].MeshIndex,points[i].color)
+#		MeshManipulator.commit_to_surface(cmesh)
+#		planetMesh.mesh = cmesh
+#		print("\n " + str(i) + 
+#				": Spherical Coordinates: " + str(points[i].SphericalCoordinate) + 
+#				", Lat/Long: " + str(points[i].SphericalToLatLong(points[i].SphericalCoordinate)) + 
+#				", image coordinates: " + str(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()) + 
+#				" (" + str(img.get_size()) + ")")
+#		await get_tree().create_timer(0.5).timeout
+	
 
-func _threadsSetTex(role : int, img : ImageTexture, lwrbound : int, uprbound : int):
-	for i in range(lwrbound,uprbound+1):
-		print(" ")
-		print(points[i].SphericalCoordinate)
-		print(points[i].SphericalToLatLong(points[i].SphericalCoordinate))
-		print(img.get_size())
-		print(((points[i].SphericalToLatLong(points[i].SphericalCoordinate)/Vector2(360,360))+Vector2(0,0.5)) * img.get_size())
+func _threadsSetTex(_selfIndex : int, role : int, img : ImageTexture, lwrbound : int, uprbound : int):
+	for i in range(lwrbound,uprbound):
+		#print("\n " + str(i) + 
+		#		": Spherical Coordinates: " + str(points[i].SphericalCoordinate) + 
+		#		", Lat/Long: " + str(points[i].SphericalToLatLong(points[i].SphericalCoordinate)) + 
+		#		", image coordinates: " + str(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()) + 
+		#		" (" + str(img.get_size()) + ")")
 		if(role == 0):
-			points[i].color = img.get_image().get_pixelv(points[i].SphericalCoordinate * img.get_size())
+			points[i].color = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
 		elif (role == 1):
-			points[i].height = img.get_image().get_pixelv(points[i].SphericalCoordinate * img.get_size()).r
+			points[i].height = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()).r
+		#points[i].color = Color((points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 180.0), (points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 360),0,1)
+		mut.lock()
+		Finished += 1
+		mut.unlock()
+
+func _exit_tree() -> void:
+	for i in range(0,numThreads):
+		thrd[i].wait_to_finish()

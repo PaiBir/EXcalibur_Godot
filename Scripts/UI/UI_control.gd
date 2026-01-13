@@ -62,6 +62,8 @@ func _process(_delta: float) -> void:
 	boss.World.YearLength = $"Control Bar/Menu_Location/Planet/Body/YearLength/PYearLength".text
 	boss.World.tilt = $"Control Bar/Menu_Location/Planet/Body/Tilt/PTilt".text
 	boss.Sensitivity = Vector2(float($"Control Bar/Menu_Location/Technical/Body/X_Sensitivity/XSens".text),float($"Control Bar/Menu_Location/Technical/Body/Y_Sensitivity/YSens".text)) / 100.0
+	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".value = boss.World.Finished
+	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".max_value = boss.World.points.size()
 	
 func mCameraL():
 	boss.MoveCamera(true)
