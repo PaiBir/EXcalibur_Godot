@@ -50,7 +50,6 @@ func _process(_delta: float) -> void:
 		for index in range(0,MeshManipulator.get_vertex_count()):
 			MeshManipulator.set_vertex_color(index,Color(randf(), randf(), randf(), 1))
 			points.append(PlanetDataPoint.new(index,MeshManipulator.get_vertex(index)))
-		print("4 corners: 0,0: " + str(points[0].SphericalToLatLong(Vector2(0,0))) + ", 0,1: "+ str(points[0].SphericalToLatLong(Vector2(0,PI))) + ", 1,1:" + str(points[0].SphericalToLatLong(Vector2(2 * PI,PI))))
 		var commitmesh = ArrayMesh.new()
 		MeshManipulator.commit_to_surface(commitmesh)
 		planetMesh.mesh = commitmesh
@@ -77,32 +76,14 @@ func SetTex(role : int, img : ImageTexture):  #0: Color, 1: Height, 2: Full spec
 	var commitmesh = ArrayMesh.new()
 	MeshManipulator.commit_to_surface(commitmesh)
 	planetMesh.mesh = commitmesh
-#	for i in range(0,points.size()):
-#		var cmesh = ArrayMesh.new()
-#		points[i].color = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
-#		MeshManipulator.set_vertex_color(points[i].MeshIndex,points[i].color)
-#		MeshManipulator.commit_to_surface(cmesh)
-#		planetMesh.mesh = cmesh
-#		print("\n " + str(i) + 
-#				": Spherical Coordinates: " + str(points[i].SphericalCoordinate) + 
-#				", Lat/Long: " + str(points[i].SphericalToLatLong(points[i].SphericalCoordinate)) + 
-#				", image coordinates: " + str(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()) + 
-#				" (" + str(img.get_size()) + ")")
-#		await get_tree().create_timer(0.5).timeout
 	
 
 func _threadsSetTex(_selfIndex : int, role : int, img : ImageTexture, lwrbound : int, uprbound : int):
 	for i in range(lwrbound,uprbound):
-		#print("\n " + str(i) + 
-		#		": Spherical Coordinates: " + str(points[i].SphericalCoordinate) + 
-		#		", Lat/Long: " + str(points[i].SphericalToLatLong(points[i].SphericalCoordinate)) + 
-		#		", image coordinates: " + str(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()) + 
-		#		" (" + str(img.get_size()) + ")")
 		if(role == 0):
 			points[i].color = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
 		elif (role == 1):
 			points[i].height = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()).r
-		#points[i].color = Color((points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 180.0), (points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 360),0,1)
 		mut.lock()
 		Finished += 1
 		mut.unlock()

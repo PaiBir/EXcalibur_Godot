@@ -56,14 +56,14 @@ tab_3/title = "Planet"
 
 [node name="Menu_Location" type="Control" parent="Control Bar"]
 layout_mode = 1
-anchor_left = 0.05
 anchor_top = 0.05
-anchor_right = 0.95
+anchor_right = 0.98
 anchor_bottom = 0.988
 theme = ExtResource("1_c1ydq")
 
 [node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -76,8 +76,8 @@ theme = ExtResource("1_c1ydq")
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.05
+anchor_left = 0.98
+anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
@@ -89,7 +89,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
 anchor_top = 0.01
-anchor_right = 0.99
+anchor_right = 0.96
 anchor_bottom = 0.99
 grow_horizontal = 2
 grow_vertical = 2
@@ -328,6 +328,7 @@ virtual_keyboard_type = 3
 
 [node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -340,8 +341,8 @@ theme = ExtResource("1_c1ydq")
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.05
+anchor_left = 0.98
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 6.1035156e-05
 offset_right = 6.1035156e-05
@@ -350,15 +351,15 @@ grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 max_value = 1.0
 
-[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Layers"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Layers"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
+anchor_right = 0.96
 anchor_bottom = 0.05
 grow_horizontal = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Title"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -372,6 +373,7 @@ vertical_alignment = 1
 
 [node name="Star" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -384,8 +386,8 @@ theme = ExtResource("1_c1ydq")
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.05
+anchor_left = 0.98
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 6.1035156e-05
 offset_right = 6.1035156e-05
@@ -399,7 +401,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
 anchor_top = 0.01
-anchor_right = 0.99
+anchor_right = 0.96
 anchor_bottom = 0.99
 grow_horizontal = 2
 grow_vertical = 2
@@ -502,6 +504,7 @@ placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
 [node name="Planet" type="Control" parent="Control Bar/Menu_Location"]
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -511,11 +514,10 @@ grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
 [node name="P_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Planet"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 1.0
-anchor_right = 1.05
+anchor_left = 0.98
+anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 6.1035156e-05
 offset_right = 6.1035156e-05
@@ -529,7 +531,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
 anchor_top = 0.01
-anchor_right = 0.99
+anchor_right = 0.96
 anchor_bottom = 0.99
 offset_left = -2.002716e-05
 offset_right = -3.0517578e-05
@@ -746,6 +748,70 @@ anchor_top = 0.85
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
+
+[node name="Planet Radius" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 1.005
+anchor_right = 0.98
+anchor_bottom = 1.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The radius of the planet in Earth Radii. Earth's radius is "
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Radius (R🜨)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PRadius" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
+[node name="Planet Mass" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 1.105
+anchor_right = 0.98
+anchor_bottom = 1.185
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The mass of the planet in Earth Masses. Earth's mass is "
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Mass (M🜨)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PMass" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
 
 [node name="Detect_ScreenPress" type="Button" parent="."]
 layout_mode = 1
