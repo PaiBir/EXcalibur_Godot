@@ -110,6 +110,11 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
+tooltip_text = "In the interest of allowing many computers to use this model,
+you have control over your planet's resolution. Detail grows
+exponentially with each step, and will control how many points
+across your planet are modeled."
+mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Planet Detail"
 horizontal_alignment = 1
@@ -372,7 +377,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Star" type="Control" parent="Control Bar/Menu_Location"]
-visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -407,13 +411,42 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="StarMass" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarName" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
 anchor_top = 0.005
 anchor_right = 0.98
 anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarName"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.4
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Star Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SName" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarName"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 1.0
+anchor_bottom = 1.0
+placeholder_text = "Name..."
+
+[node name="StarMass" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.185
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarMass"]
@@ -443,9 +476,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.105
+anchor_top = 0.205
 anchor_right = 0.98
-anchor_bottom = 0.185
+anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity"]
@@ -475,9 +508,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.205
+anchor_top = 0.305
 anchor_right = 0.98
-anchor_bottom = 0.285
+anchor_bottom = 0.385
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarTemperature"]
@@ -503,7 +536,43 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
+[node name="StarBolometricCorrection" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.405
+anchor_right = 0.98
+anchor_bottom = 0.485
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "Not all light from a star is visible, but it still has energy.
+While the exact amount depends on the star, this model
+already handles the basic trends, you can decide the
+strength of those trends yourself."
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Bolometric"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SBolometric" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "0"
+placeholder_text = "Number..."
+virtual_keyboard_type = 3
+
 [node name="Planet" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -539,13 +608,42 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="RotationSpeed" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="PlanetName" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
 anchor_top = 0.005
 anchor_right = 0.98
 anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/PlanetName"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.4
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Planet Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PName" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/PlanetName"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 1.0
+anchor_bottom = 1.0
+placeholder_text = "Name..."
+
+[node name="RotationSpeed" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.185
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed"]
@@ -574,9 +672,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.105
+anchor_top = 0.205
 anchor_right = 0.98
-anchor_bottom = 0.185
+anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Distance"]
@@ -606,9 +704,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.205
+anchor_top = 0.305
 anchor_right = 0.98
-anchor_bottom = 0.285
+anchor_bottom = 0.385
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/YearLength"]
@@ -637,9 +735,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.305
+anchor_top = 0.405
 anchor_right = 0.98
-anchor_bottom = 0.385
+anchor_bottom = 0.485
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Tilt"]
@@ -669,9 +767,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 0.405
+anchor_top = 0.505
 anchor_right = 0.98
-anchor_bottom = 0.985
+anchor_bottom = 1.085
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
@@ -680,6 +778,7 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 0.15
 grow_vertical = 2
+tooltip_text = "Import image data to the model, preferably Equirectangular maps"
 mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Upload Layer"
@@ -753,9 +852,9 @@ theme = ExtResource("1_c1ydq")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 1.005
+anchor_top = 1.105
 anchor_right = 0.98
-anchor_bottom = 1.085
+anchor_bottom = 1.185
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius"]
@@ -764,7 +863,7 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
-tooltip_text = "The radius of the planet in Earth Radii. Earth's radius is "
+tooltip_text = "The radius of the planet in Earth Radii. Earth's radius is 6378 km"
 mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Radius (R🜨)"
@@ -785,9 +884,9 @@ virtual_keyboard_type = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
-anchor_top = 1.105
+anchor_top = 1.205
 anchor_right = 0.98
-anchor_bottom = 1.185
+anchor_bottom = 1.285
 theme = ExtResource("1_c1ydq")
 
 [node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass"]
@@ -796,7 +895,7 @@ anchors_preset = -1
 anchor_right = 0.6
 anchor_bottom = 1.0
 grow_vertical = 2
-tooltip_text = "The mass of the planet in Earth Masses. Earth's mass is "
+tooltip_text = "The mass of the planet in Earth Masses. Earth's mass is 59.8 * 10^23 kilograms"
 mouse_filter = 0
 theme = ExtResource("1_c1ydq")
 text = "Mass (M🜨)"
@@ -845,6 +944,7 @@ button_mask = 2
 [connection signal="dir_selected" from="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit/FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="set_path"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Save" to="." method="saveDir"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Load" to="." method="loadDir"]
+[connection signal="text_submitted" from="Control Bar/Menu_Location/Star/Body/StarName/SName" to="." method="StarNamed"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Button" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="openDialog"]
 [connection signal="text_changed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/TextureRect" method="setImage"]
 [connection signal="file_selected" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength/FileDialog" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="set_path"]

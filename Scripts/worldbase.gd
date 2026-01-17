@@ -14,6 +14,7 @@ var starDiameter : float;
 var starAbsMagnitude : float;
 
 @export_category("Technical")
+@export var StarName : String;
 @export var MSkybox : Material;
 @export var UI_Base : UI_control;
 @export var cam : Camera3D;
@@ -91,6 +92,10 @@ func _process(_delta: float) -> void:
 			CamTurn_Y = CameraPosition.w - diffInPositon.y
 		cam.position = (Vector3(0,0,CamDistance).rotated(Vector3.RIGHT,CamRot_Y)).rotated(Vector3.UP,CamRot_X)
 		cam.rotation = Vector3(CamTurn_Y,CamTurn_X,0)
+
+func UpdateCam():
+	cam.position = (Vector3(0,0,CamDistance).rotated(Vector3.RIGHT,CamRot_Y)).rotated(Vector3.UP,CamRot_X)
+	cam.rotation = Vector3(CamTurn_Y,CamTurn_X,0)
 
 #Based on Mitchell Charity's function as reported by Dan Bruton (https://web.archive.org/web/20241106151814/https://www.physics.sfasu.edu/astro/color/blackbody.html)
 func TemperatureToColor(temp : float) -> Color:

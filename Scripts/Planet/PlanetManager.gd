@@ -11,10 +11,13 @@ var Finished : int = 0
 @export var numThreads : int = 11 #10 main, 1 remainder
 @export var rotMod : float = 0.01;
 @export_group("Scientific")
+@export var PlanetName: String = ""
 @export var DaysSpeed: float = 1 #Earth days
 @export var distance: float = 1 #AU
 @export var tilt: float = 22.5 #degrees
 @export var YearLength: float = 365 #Planet days
+@export var PlanetMass : float = 1 #Earth Masses
+@export var PlanetRadius : float = 1 #Earth Radii
 
 @export_category("Sphere Source") #Planet visualization and generation
 @export var TechnicalAspects : PlanetTechnical
@@ -48,12 +51,41 @@ func _process(_delta: float) -> void:
 		points.clear()
 		MeshManipulator.create_from_surface(TechnicalAspects.Subdivisions[subdivLevel], 0)
 		for index in range(0,MeshManipulator.get_vertex_count()):
-			MeshManipulator.set_vertex_color(index,Color(randf(), randf(), randf(), 1))
-			points.append(PlanetDataPoint.new(index,MeshManipulator.get_vertex(index)))
+			var PColor = Color(randf(), randf(), randf(), 1)
+			MeshManipulator.set_vertex_color(index,PColor)
+			points.append(PlanetDataPoint.new(index,MeshManipulator.get_vertex(index),PColor))
 		var commitmesh = ArrayMesh.new()
 		MeshManipulator.commit_to_surface(commitmesh)
 		planetMesh.mesh = commitmesh
 		prevSubdivLevel = subdivLevel
+
+func forceMesh(subLevel):
+	if(subLevel > TechnicalAspects.Subdivisions.size()-1):
+		subLevel = TechnicalAspects.Subdivisions.size()-1
+	elif(subLevel < 0):
+		subLevel = 0
+	subdivLevel = subLevel
+	prevSubdivLevel = subLevel
+	MeshManipulator.create_from_surface(TechnicalAspects.Subdivisions[subdivLevel], 0)
+	if(points.size() == MeshManipulator.get_vertex_count()):
+		for index in range(0,points.size()):
+			MeshManipulator.set_vertex_color(points[index].MeshIndex,points[index].color)
+	else:
+		for index in range(0,MeshManipulator.get_vertex_count()):
+			MeshManipulator.set_vertex_color(index,Color.WHITE)
+	var commitmesh = ArrayMesh.new()
+	MeshManipulator.commit_to_surface(commitmesh)
+	planetMesh.mesh = commitmesh
+
+func force_colors():
+	if(MeshManipulator.get_vertex_count() == points.size()):
+		for index in range(0,points.size()):
+			MeshManipulator.set_vertex_color(points[index].MeshIndex,points[index].color)
+		var commitmesh = ArrayMesh.new()
+		MeshManipulator.commit_to_surface(commitmesh)
+		planetMesh.mesh = commitmesh
+	else:
+		return
 
 func EnergyBalance():
 	pass

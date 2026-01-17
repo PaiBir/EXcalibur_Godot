@@ -16,9 +16,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	pass
 
-func _init(index : int, pos : Vector3) -> void:
+func _init(index : int, pos : Vector3, pColor : Color = Color.BLACK) -> void:
 	MeshIndex = index
 	SphericalCoordinate = CartesiantUVSpherical(pos)
+	color = pColor
 	
 func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conversion math here (https://en.wikipedia.org/wiki/Spherical_coordinate_system#Coordinate_system_conversions)
 	var sPoint = Vector2.ZERO
