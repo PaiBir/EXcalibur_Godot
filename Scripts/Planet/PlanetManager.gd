@@ -1,30 +1,35 @@
 class_name PlanetManager
 extends Node
 
-@export_category("Planet Properties")
-@export_group("Technical")
-@export var points : Array[PlanetDataPoint]; 
+#Technical aspects
+var points : Array[PlanetDataPoint]; 
 var currentMesh : Mesh
 var thrd : Array[Thread]
 var mut : Mutex
 var Finished : int = 0
-@export var numThreads : int = 11 #10 main, 1 remainder
-@export var rotMod : float = 0.01;
-@export_group("Scientific")
-@export var PlanetName: String = ""
-@export var DaysSpeed: float = 1 #Earth days
-@export var distance: float = 1 #AU
-@export var tilt: float = 22.5 #degrees
-@export var YearLength: float = 365 #Planet days
-@export var PlanetMass : float = 1 #Earth Masses
-@export var PlanetRadius : float = 1 #Earth Radii
+var numThreads : int = 11 #10 main, 1 remainder
+var rotMod : float = 0.001;
 
-@export_category("Sphere Source") #Planet visualization and generation
+#Planet characterisitics
+var PlanetName: String = ""
+var DaysSpeed: float = 1 #Earth days
+var distance: float = 1 #AU
+var tilt: float = 22.5 #degrees
+var YearLength: float = 365 #Planet days
+var PlanetMass : float = 1 #Earth Masses
+var PlanetRadius : float = 1 #Earth Radii
+
+#Model visualisation and execution
 @export var TechnicalAspects : PlanetTechnical
-@export var subdivLevel: int = 0
+var subdivLevel: int = 0
 var prevSubdivLevel: int = -1
 @export var PlanetMat: Material
 @onready var planetMesh : MeshInstance3D = $Display
+var timescale : PlanetDataPoint.timescale = PlanetDataPoint.timescale.year
+var stepsize : float = 1
+var minHeight : float = -10935  #lowest point
+var maxheight : float = 8848.86 #tallest point
+var layers : Array[ModelLayer.LayerType] = [ModelLayer.LayerType.GEO]
 
 @export_category("Root")
 @export var Boss: Worldbase
@@ -53,7 +58,7 @@ func _process(_delta: float) -> void:
 		for index in range(0,MeshManipulator.get_vertex_count()):
 			var PColor = Color(randf(), randf(), randf(), 1)
 			MeshManipulator.set_vertex_color(index,PColor)
-			points.append(PlanetDataPoint.new(index,MeshManipulator.get_vertex(index),PColor))
+			points.append(PlanetDataPoint.new(self,index,MeshManipulator.get_vertex(index),PColor))
 		var commitmesh = ArrayMesh.new()
 		MeshManipulator.commit_to_surface(commitmesh)
 		planetMesh.mesh = commitmesh
@@ -87,11 +92,9 @@ func force_colors():
 	else:
 		return
 
-func EnergyBalance():
-	pass
-
-func ChemicalBalance():
-	pass
+func stepModel():
+	for point in points:
+		point.iterate(timescale, stepsize)
 
 func SetTex(role : int, img : ImageTexture):  #0: Color, 1: Height, 2: Full spectrum Albedo
 	var pointsPerThread : int = floor(points.size() / (numThreads-1.0))
@@ -115,10 +118,37 @@ func _threadsSetTex(_selfIndex : int, role : int, img : ImageTexture, lwrbound :
 		if(role == 0):
 			points[i].color = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
 		elif (role == 1):
-			points[i].height = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size()).r
+			var point = img.get_image().get_pixelv(Vector2(fmod(1.0-(points[i].SphericalToLatLong(points[i].SphericalCoordinate).y / 360.0), 1.0), fmod(points[i].SphericalToLatLong(points[i].SphericalCoordinate).x / 180,1.0)) * img.get_size())
+			points[i].height = ((maxheight-minHeight) * point.r) + minHeight
 		mut.lock()
 		Finished += 1
 		mut.unlock()
+
+func reColor(layrs : Array[ButtonHost.layers]) -> void:
+	print("reColoring")
+	for point in points:
+		var clr : Color = Color.BLACK
+		var channel : int = 0
+		for layer in layrs:
+			if layer == ButtonHost.layers.TRUE:
+				if(channel == 0):
+					clr.r = point.color.r
+				if(channel == 1):
+					clr.g = point.color.g
+				if(channel == 2):
+					clr.b = point.color.b
+			if layer ==  ButtonHost.layers.HEIGHT:
+				if(channel == 0):
+					clr.r = (point.height - minHeight) / (maxheight - minHeight)
+				if(channel == 1):
+					clr.g = (point.height - minHeight) / (maxheight - minHeight)
+				if(channel == 2):
+					clr.b = (point.height - minHeight) / (maxheight - minHeight)
+			channel += 1
+		MeshManipulator.set_vertex_color(point.MeshIndex,clr)
+	var commitmesh = ArrayMesh.new()
+	MeshManipulator.commit_to_surface(commitmesh)
+	planetMesh.mesh = commitmesh
 
 func _exit_tree() -> void:
 	for i in range(0,numThreads):

@@ -14,8 +14,16 @@ config/name="EXcalibur"
 config/version="0.0.1"
 run/main_scene="uid://c54jqmhto323t"
 config/features=PackedStringArray("4.5", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0, 0, 0, 0)
+boot_splash/show_image=false
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+config/icon="uid://o0syd5dfsw1v"
 
 [autoload]
 
 Constants="*res://Scripts/Constants.gd"
+
+[display]
+
+window/size/mode=2

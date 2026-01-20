@@ -1,9 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://g1tq5klptbr0"]
+[gd_scene load_steps=16 format=3 uid="uid://g1tq5klptbr0"]
 
 [ext_resource type="Theme" uid="uid://byptwu7allkj4" path="res://Resources/UI_Theme.tres" id="1_c1ydq"]
 [ext_resource type="Script" uid="uid://dbnb23enw7hpx" path="res://Scripts/UI/UI_control.gd" id="1_val2c"]
 [ext_resource type="Script" uid="uid://mlhtg2877dfu" path="res://Nodes/Use_Files.gd" id="3_1xkbj"]
 [ext_resource type="Script" uid="uid://dpinydx3oekt1" path="res://Nodes/DisplayFile.gd" id="4_gfw42"]
+[ext_resource type="ButtonGroup" uid="uid://bhm5f6ngqvuvf" path="res://Nodes/LayersR.tres" id="4_kc8w3"]
+[ext_resource type="ButtonGroup" uid="uid://dx3t0urmcjgdj" path="res://Nodes/LayersG.tres" id="5_035rc"]
+[ext_resource type="ButtonGroup" uid="uid://ibwei3napdey" path="res://Nodes/LayersB.tres" id="6_foom8"]
+[ext_resource type="Script" uid="uid://dxmx7m61xmh5e" path="res://Scripts/UI/ButtonHost.gd" id="7_foom8"]
+[ext_resource type="Script" uid="uid://br3hx8gda8skb" path="res://Scripts/UI/splash.gd" id="9_fc4pk"]
+[ext_resource type="Texture2D" uid="uid://o0syd5dfsw1v" path="res://Textures/Assets/Logo.png" id="9_pumub"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c1ydq"]
 
@@ -30,6 +36,9 @@ LayersMenu = NodePath("Control Bar/Menu_Location/Layers")
 StarMenu = NodePath("Control Bar/Menu_Location/Star")
 PlanetMenu = NodePath("Control Bar/Menu_Location/Planet")
 Uploader = NodePath("Control Bar/Menu_Location/Planet/Body/UploadLayers")
+RButton = ExtResource("4_kc8w3")
+GButton = ExtResource("5_035rc")
+BButton = ExtResource("6_foom8")
 
 [node name="Control Bar" type="Panel" parent="."]
 layout_mode = 1
@@ -62,7 +71,6 @@ anchor_bottom = 0.988
 theme = ExtResource("1_c1ydq")
 
 [node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
-visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -331,6 +339,36 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
+[node name="DisplayInShadow" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.905
+anchor_right = 0.98
+anchor_bottom = 0.985
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Lighting"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Lighting" type="CheckButton" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_pressed = true
+flat = true
+
 [node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
 clip_contents = true
@@ -359,24 +397,302 @@ max_value = 1.0
 [node name="Body" type="Panel" parent="Control Bar/Menu_Location/Layers"]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.01
 anchor_right = 0.96
-anchor_bottom = 0.05
-grow_horizontal = 2
-theme = ExtResource("1_c1ydq")
-
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.99
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
-text = "LAYERS"
+
+[node name="Color" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.005
+anchor_right = 0.98
+anchor_bottom = 0.085
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Color"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Color"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Button" type="Button" parent="Control Bar/Menu_Location/Layers/Body/Color"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+toggle_mode = true
+text = "All layers"
+
+[node name="Empty" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.105
+anchor_right = 0.98
+anchor_bottom = 0.185
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Empty"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The mass of the star, in Solar Masses. 1 Solar Mass is equivalent to the mass of the Sun"
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Clear"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Empty"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+script = ExtResource("7_foom8")
+
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.333
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_pressed = true
+button_group = ExtResource("4_kc8w3")
+icon_alignment = 1
+
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.333
+anchor_right = 0.667
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_pressed = true
+button_group = ExtResource("5_035rc")
+icon_alignment = 1
+
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.667
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_pressed = true
+button_group = ExtResource("6_foom8")
+icon_alignment = 1
+
+[node name="Height" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.205
+anchor_right = 0.98
+anchor_bottom = 0.285
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Height"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The brightness of the star in Solar Luminosities. Our sun's luminosity is equal to 1"
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Height"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0517578e-05
+offset_right = 3.0517578e-05
+theme = ExtResource("1_c1ydq")
+script = ExtResource("7_foom8")
+prop = 2
+
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.333
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("4_kc8w3")
+icon_alignment = 1
+
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.333
+anchor_right = 0.667
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("5_035rc")
+icon_alignment = 1
+
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.667
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("6_foom8")
+icon_alignment = 1
+
+[node name="Energy" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.305
+anchor_right = 0.98
+anchor_bottom = 0.385
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Energy"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "The temperature of the sun in Kelvin. Our sun is around 5770 to 5776 K, depending on what source you use."
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Recieved Energy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Energy"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0517578e-05
+offset_right = 3.0517578e-05
+theme = ExtResource("1_c1ydq")
+script = ExtResource("7_foom8")
+prop = 3
+
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.333
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("4_kc8w3")
+icon_alignment = 1
+
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.333
+anchor_right = 0.667
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("5_035rc")
+icon_alignment = 1
+
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.667
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("6_foom8")
+icon_alignment = 1
+
+[node name="Latitude" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 0.405
+anchor_right = 0.98
+anchor_bottom = 0.485
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Latitude"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+tooltip_text = "Not all light from a star is visible, but it still has energy.
+While the exact amount depends on the star, this model
+already handles the basic trends, you can decide the
+strength of those trends yourself."
+mouse_filter = 0
+theme = ExtResource("1_c1ydq")
+text = "Latitude"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Latitude"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0517578e-05
+offset_right = 3.0517578e-05
+theme = ExtResource("1_c1ydq")
+script = ExtResource("7_foom8")
+prop = 4
+
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.333
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("4_kc8w3")
+icon_alignment = 1
+
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.333
+anchor_right = 0.667
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("5_035rc")
+icon_alignment = 1
+
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.667
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+button_group = ExtResource("6_foom8")
+icon_alignment = 1
+
 [node name="Star" type="Control" parent="Control Bar/Menu_Location"]
+visible = false
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -940,10 +1256,38 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_8ul1d")
 action_mode = 0
 button_mask = 2
 
+[node name="Splash" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+theme_type_variation = &"Splash"
+script = ExtResource("9_fc4pk")
+FadeInLogo = 0.44762903
+FadeOutBG = 0.6114697
+FadeOutLogo = 0.28526282
+
+[node name="TextureRect" type="TextureRect" parent="Splash"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.1
+anchor_right = 0.5
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_pumub")
+expand_mode = 3
+
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/Filepath/Open_FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="openDialog"]
 [connection signal="dir_selected" from="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit/FileDialog" to="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" method="set_path"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Save" to="." method="saveDir"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Load" to="." method="loadDir"]
+[connection signal="toggled" from="Control Bar/Menu_Location/Technical/Body/DisplayInShadow/Lighting" to="." method="toggleLighting"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Layers/Body/Color/Button" to="." method="setLayersColor"]
 [connection signal="text_submitted" from="Control Bar/Menu_Location/Star/Body/StarName/SName" to="." method="StarNamed"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Button" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="openDialog"]
 [connection signal="text_changed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/TextureRect" method="setImage"]

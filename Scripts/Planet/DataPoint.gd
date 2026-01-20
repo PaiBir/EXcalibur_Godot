@@ -1,26 +1,39 @@
 class_name PlanetDataPoint
 extends Node
 
+enum timescale {
+	hour,
+	day,
+	month,
+	year
+}
+
 var MeshIndex : int = -1
 var SphericalCoordinate : Vector2
 var height : float;
 var color : Color;
+var Terrain : Array[ModelLayer];
+var world : PlanetManager
+var albedo : float
 #Expand as neccesary
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
-
-func _init(index : int, pos : Vector3, pColor : Color = Color.BLACK) -> void:
+func _init(worldParent : PlanetManager, index : int, pos : Vector3, pColor : Color = Color.BLACK) -> void:
 	MeshIndex = index
 	SphericalCoordinate = CartesiantUVSpherical(pos)
 	color = pColor
-	
+	world = worldParent
+	for i in range(0,worldParent.layers.size()):
+		Terrain.append(ModelLayer.new(worldParent,self))
+		Terrain[i].ModelType = worldParent.layers[i]
+
+func iterate(_timescale : timescale, timestep : float):
+	for layer in Terrain:
+		layer.step(_timescale, timestep)
+
+func apply():
+	for layer in Terrain:
+		layer.apply()
+
 func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conversion math here (https://en.wikipedia.org/wiki/Spherical_coordinate_system#Coordinate_system_conversions)
 	var sPoint = Vector2.ZERO
 	if point.y > 0:

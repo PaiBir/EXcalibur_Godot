@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://enviis137eve"]
+
+[ext_resource type="Shader" uid="uid://de2x2olpp7fuk" path="res://Shaders/PlanetShader.gdshader" id="1_2b6gv"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_2b6gv")
+shader_parameter/displayInShadow = false

@@ -15,6 +15,15 @@ var prevMenu : int = -1
 
 var ProjectDir : String
 
+@export var RButton : ButtonGroup
+@export var GButton : ButtonGroup
+@export var BButton : ButtonGroup
+
+var Lighting := false
+
+var btnstate : Array[ButtonHost.layers] = [0 as ButtonHost.layers,0 as ButtonHost.layers,0 as ButtonHost.layers]
+var prvbtnstate : Array[ButtonHost.layers] = [0 as ButtonHost.layers,0 as ButtonHost.layers,0 as ButtonHost.layers]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$"Control Bar/Menu_Location/Technical/Body/Subdivisions/DetailBar".max_value = boss.World.TechnicalAspects.Subdivisions.size()-1
@@ -114,6 +123,61 @@ func _process(_delta: float) -> void:
 	$"Control Bar/Menu_Location/Star/Body".offset_top = ($"Control Bar/Menu_Location/Star/S_Scroll".value) * -s_size
 	$"Control Bar/Menu_Location/Planet/Body".offset_top = ($"Control Bar/Menu_Location/Planet/P_Scroll".value) * -p_size
 	
+	boss.World.PlanetMat.set_shader_parameter("displayInShadow", Lighting)
+	
+	#Layer control
+	if(RButton.get_pressed_button() != null):
+		$"Control Bar/Menu_Location/Layers/Body/Color/Button".button_pressed = false
+		if(GButton.get_pressed_button() == null):
+			var btns = GButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+		if(BButton.get_pressed_button() == null):
+			var btns = BButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+	elif(GButton.get_pressed_button() != null):
+		$"Control Bar/Menu_Location/Layers/Body/Color/Button".button_pressed = false
+		if(RButton.get_pressed_button() == null):
+			var btns = RButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+		if(BButton.get_pressed_button() == null):
+			var btns = BButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+	elif(BButton.get_pressed_button() != null):
+		$"Control Bar/Menu_Location/Layers/Body/Color/Button".button_pressed = false
+		if(RButton.get_pressed_button() == null):
+			var btns = RButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+		if(GButton.get_pressed_button() == null):
+			var btns = GButton.get_buttons()
+			for btn in btns:
+				if btn.get_parent().prop == ButtonHost.layers.EMPTY:
+					btn.button_pressed = true
+					break
+	
+	if(RButton.get_pressed_button() != null):
+		btnstate = [RButton.get_pressed_button().get_parent().prop as ButtonHost.layers, GButton.get_pressed_button().get_parent().prop as ButtonHost.layers, BButton.get_pressed_button().get_parent().prop as ButtonHost.layers]
+	else:
+		if($"Control Bar/Menu_Location/Layers/Body/Color/Button".button_pressed):
+			btnstate = [ButtonHost.layers.TRUE,ButtonHost.layers.TRUE,ButtonHost.layers.TRUE]
+	
+	if btnstate != prvbtnstate:
+		boss.World.reColor(btnstate)
+		prvbtnstate = btnstate
 func mCameraL():
 	boss.MoveCamera(true)
 
@@ -177,7 +241,7 @@ func loadDir():
 				elif(data["Type"] == "ClimateModel"):
 					boss.World.points.clear()
 					for point in data["Model Data"]:
-						var p = PlanetDataPoint.new(point["Index"],Vector3.UP,Color(point["color"]["r"],point["color"]["g"],point["color"]["b"]))
+						var p = PlanetDataPoint.new(boss.World, point["Index"],Vector3.UP,Color(point["color"]["r"],point["color"]["g"],point["color"]["b"]))
 						p.SphericalCoordinate = Vector2(point["Coordinates"]["x"],point["Coordinates"]["y"])
 						p.height = point["Height"]
 						boss.World.points.append(p)
@@ -206,6 +270,7 @@ func loadDir():
 					print("Invalid!")
 			file = fileCrawler.get_next()
 		isfirst = false
+	boss.UpdateCam()
 		
 
 func saveDir():
@@ -317,3 +382,17 @@ func StarNamed(new_text: String) -> void:
 	if(boss.World.PlanetName == ""):
 		boss.World.PlanetName = new_text + " b"
 		$"Control Bar/Menu_Location/Planet/Body/PlanetName/PName".text = new_text + " b"
+
+func toggleLighting(state: bool) -> void:
+	Lighting = !state
+
+func setLayersColor():
+	var btns = RButton.get_buttons()
+	for btn in btns:
+		btn.button_pressed = false
+	btns = GButton.get_buttons()
+	for btn in btns:
+		btn.button_pressed = false
+	btns = BButton.get_buttons()
+	for btn in btns:
+		btn.button_pressed = false

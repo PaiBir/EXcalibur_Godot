@@ -12,6 +12,10 @@ extends Node3D
 @export var starTemp : float = 5776 #K
 var starDiameter : float;
 var starAbsMagnitude : float;
+var pSM : float = 0.0
+var pSL : float = 0.0
+var pST : float = 0.0
+var pBCS : float = 0.0
 
 @export_category("Technical")
 @export var StarName : String;
@@ -56,22 +60,27 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	#Star
-	RealLight.light_energy = (starLuminosity/pow(World.distance,2))
-	RealLight.light_color = TemperatureToColor(starTemp)
-	var Bolometrics : float = 0
-	for segment in BolometricCorrectionBezier:
-		if starMass <= segment.xBound2 and starMass >= segment.xBound1:
-			Bolometrics = segment.sampleCurve(starMass)
-			break
-	var bolometricLuminocity = starLuminosity / pow(2.52,Bolometrics*BolometricCorrectionStrength)
-	starDiameter = 5776.0 / starTemp * sqrt(bolometricLuminocity)
-	starAbsMagnitude = (log(bolometricLuminocity)/log(2.52)) + 4.85
-	var starAngularDiameter = 2 * acos(sqrt(pow(World.distance * Constants.AUdefiniton, 2) - pow(starDiameter * Constants.SunDiameter, 2)) / (World.distance * Constants.AUdefiniton)) / (( PI) / 180.0)
-	if is_nan(starAngularDiameter):
-		starAngularDiameter = 180.0;
-	#Shader
-	MSkybox.set_shader_parameter("star_angular_size", starAngularDiameter);
-	MSkybox.set_shader_parameter("colors", [TemperatureToColor(starTemp + color_temprange), TemperatureToColor(starTemp), TemperatureToColor(starTemp - color_temprange)])
+	if(pSM != starMass || pSL != starLuminosity || pST != starTemp || pBCS != BolometricCorrectionStrength):
+		RealLight.light_energy = (starLuminosity/pow(World.distance,2))
+		RealLight.light_color = TemperatureToColor(starTemp)
+		var Bolometrics : float = 0
+		for segment in BolometricCorrectionBezier:
+			if starMass <= segment.xBound2 and starMass >= segment.xBound1:
+				Bolometrics = segment.sampleCurve(starMass)
+				break
+		var bolometricLuminocity = starLuminosity / pow(2.52,Bolometrics*BolometricCorrectionStrength)
+		starDiameter = 5776.0 / starTemp * sqrt(bolometricLuminocity)
+		starAbsMagnitude = (log(bolometricLuminocity)/log(2.52)) + 4.85
+		var starAngularDiameter = 2 * acos(sqrt(pow(World.distance * Constants.AUdefiniton, 2) - pow(starDiameter * Constants.SunDiameter, 2)) / (World.distance * Constants.AUdefiniton)) / (( PI) / 180.0)
+		if is_nan(starAngularDiameter):
+			starAngularDiameter = 180.0;
+		#Shader
+		MSkybox.set_shader_parameter("star_angular_size", starAngularDiameter);
+		MSkybox.set_shader_parameter("colors", [TemperatureToColor(starTemp + color_temprange), TemperatureToColor(starTemp), TemperatureToColor(starTemp - color_temprange)])
+		pSM = starMass
+		pSL = starLuminosity
+		pST = starTemp
+		pBCS = BolometricCorrectionStrength
 	if(psM != sM):
 		MSkybox.set_shader_parameter("Cubemap_Stars", [starMaps[sM].DOWN,starMaps[sM].FORWARDS,starMaps[sM].RIGHT,starMaps[sM].BACKWARDS,starMaps[sM].LEFT,starMaps[sM].UP])
 		psM = sM
