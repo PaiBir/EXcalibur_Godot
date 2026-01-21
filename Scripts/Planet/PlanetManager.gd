@@ -18,6 +18,9 @@ var tilt: float = 22.5 #degrees
 var YearLength: float = 365 #Planet days
 var PlanetMass : float = 1 #Earth Masses
 var PlanetRadius : float = 1 #Earth Radii
+var GlobalAtmoAlbedo : float = 0.1
+var PressureAtSeaLevel : float = 1 #atm
+var CloudAlbedo : float = 0.9 #Just a guess. Fill in better later
 
 #Model visualisation and execution
 @export var TechnicalAspects : PlanetTechnical
@@ -29,7 +32,7 @@ var timescale : PlanetDataPoint.timescale = PlanetDataPoint.timescale.year
 var stepsize : float = 1
 var minHeight : float = -10935  #lowest point
 var maxheight : float = 8848.86 #tallest point
-var layers : Array[ModelLayer.LayerType] = [ModelLayer.LayerType.GEO]
+var layers : Array[ModelLayer.LayerType] = [ModelLayer.LayerType.AERO,ModelLayer.LayerType.GEO]
 
 @export_category("Root")
 @export var Boss: Worldbase
@@ -95,6 +98,8 @@ func force_colors():
 func stepModel():
 	for point in points:
 		point.iterate(timescale, stepsize)
+	for point in points:
+		point.apply()
 
 func SetTex(role : int, img : ImageTexture):  #0: Color, 1: Height, 2: Full spectrum Albedo
 	var pointsPerThread : int = floor(points.size() / (numThreads-1.0))
@@ -111,6 +116,7 @@ func SetTex(role : int, img : ImageTexture):  #0: Color, 1: Height, 2: Full spec
 	var commitmesh = ArrayMesh.new()
 	MeshManipulator.commit_to_surface(commitmesh)
 	planetMesh.mesh = commitmesh
+	Finished = 0
 	
 
 func _threadsSetTex(_selfIndex : int, role : int, img : ImageTexture, lwrbound : int, uprbound : int):
@@ -125,27 +131,52 @@ func _threadsSetTex(_selfIndex : int, role : int, img : ImageTexture, lwrbound :
 		mut.unlock()
 
 func reColor(layrs : Array[ButtonHost.layers]) -> void:
-	print("reColoring")
-	for point in points:
-		var clr : Color = Color.BLACK
+	var Cmin : Array[float] = [INF,INF,INF]
+	var Cmax : Array[float] = [-INF,-INF,-INF]
+	var Clrs : Array[Color] = []
+	for i in range(0,points.size()):
+		Clrs.append(Color.BLACK)
 		var channel : int = 0
 		for layer in layrs:
 			if layer == ButtonHost.layers.TRUE:
 				if(channel == 0):
-					clr.r = point.color.r
+					Clrs[i].r = points[i].color.r
 				if(channel == 1):
-					clr.g = point.color.g
+					Clrs[i].g = points[i].color.g
 				if(channel == 2):
-					clr.b = point.color.b
-			if layer ==  ButtonHost.layers.HEIGHT:
+					Clrs[i].b = points[i].color.b
+			elif layer ==  ButtonHost.layers.HEIGHT:
 				if(channel == 0):
-					clr.r = (point.height - minHeight) / (maxheight - minHeight)
+					Clrs[i].r = (points[i].height - minHeight) / (maxheight - minHeight)
 				if(channel == 1):
-					clr.g = (point.height - minHeight) / (maxheight - minHeight)
+					Clrs[i].g = (points[i].height - minHeight) / (maxheight - minHeight)
 				if(channel == 2):
-					clr.b = (point.height - minHeight) / (maxheight - minHeight)
+					Clrs[i].b = (points[i].height - minHeight) / (maxheight - minHeight)
+			elif layer == ButtonHost.layers.LATITUDE:
+				if(channel == 0):
+					Clrs[i].r = absf((2 * points[i].SphericalCoordinate.x) - PI) / PI
+				if(channel == 1):
+					Clrs[i].g = absf((2 * points[i].SphericalCoordinate.x) - PI) / PI
+				if(channel == 2):
+					Clrs[i].b = absf((2 * points[i].SphericalCoordinate.x) - PI) / PI
+			elif layer == ButtonHost.layers.ENERGY:
+				if(points[i].sumEnergy() < Cmin[channel]):
+					Cmin[channel] = points[i].sumEnergy()
+				if(points[i].sumEnergy() > Cmax[channel]):
+					Cmax[channel] = points[i].sumEnergy()
 			channel += 1
-		MeshManipulator.set_vertex_color(point.MeshIndex,clr)
+	for i in range(0,points.size()):
+		var channel : int = 0
+		for layer in layrs:
+			if layer ==  ButtonHost.layers.ENERGY:
+				if(channel == 0):
+					Clrs[i].r = (points[i].sumEnergy() - Cmin[channel]) / (Cmax[channel] - Cmin[channel])
+				if(channel == 1):
+					Clrs[i].g = (points[i].sumEnergy() - Cmin[channel]) / (Cmax[channel] - Cmin[channel])
+				if(channel == 2):
+					Clrs[i].b = (points[i].sumEnergy() - Cmin[channel]) / (Cmax[channel] - Cmin[channel])
+			channel += 1
+		MeshManipulator.set_vertex_color(points[i].MeshIndex,Clrs[i])
 	var commitmesh = ArrayMesh.new()
 	MeshManipulator.commit_to_surface(commitmesh)
 	planetMesh.mesh = commitmesh

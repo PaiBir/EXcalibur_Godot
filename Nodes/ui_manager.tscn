@@ -81,7 +81,6 @@ grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
 [node name="T_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Technical"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.98
@@ -368,6 +367,60 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 button_pressed = true
 flat = true
+
+[node name="Title2" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.005
+anchor_right = 1.0
+anchor_bottom = 1.085
+offset_top = -6.1035156e-05
+offset_bottom = -6.1035156e-05
+grow_horizontal = 2
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "MODEL CONTROLS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Step Model" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.01
+anchor_top = 1.105
+anchor_right = 0.98
+anchor_bottom = 1.185
+offset_top = -6.1035156e-05
+offset_bottom = -6.1035156e-05
+theme = ExtResource("1_c1ydq")
+
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Step Model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.6
+anchor_bottom = 1.0
+grow_vertical = 2
+theme = ExtResource("1_c1ydq")
+text = "Step Model"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StepModel" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Step Model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c1ydq")
+text = "One Step"
 
 [node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
 visible = false
@@ -1257,6 +1310,7 @@ action_mode = 0
 button_mask = 2
 
 [node name="Splash" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1287,6 +1341,7 @@ expand_mode = 3
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Save" to="." method="saveDir"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/SaveLoad/Load" to="." method="loadDir"]
 [connection signal="toggled" from="Control Bar/Menu_Location/Technical/Body/DisplayInShadow/Lighting" to="." method="toggleLighting"]
+[connection signal="pressed" from="Control Bar/Menu_Location/Technical/Body/Step Model/StepModel" to="." method="stepModel"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Layers/Body/Color/Button" to="." method="setLayersColor"]
 [connection signal="text_submitted" from="Control Bar/Menu_Location/Star/Body/StarName/SName" to="." method="StarNamed"]
 [connection signal="pressed" from="Control Bar/Menu_Location/Planet/Body/UploadLayers/Button" to="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" method="openDialog"]

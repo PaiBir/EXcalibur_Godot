@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7qatibnalc25"
 path.s3tc="res://.godot/imported/Blender_Colorgrid.png-584bb891b55b305165ee183998cce33b.s3tc.ctex"
+path.etc2="res://.godot/imported/Blender_Colorgrid.png-584bb891b55b305165ee183998cce33b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Blender_Colorgrid.png"
-dest_files=["res://.godot/imported/Blender_Colorgrid.png-584bb891b55b305165ee183998cce33b.s3tc.ctex"]
+dest_files=["res://.godot/imported/Blender_Colorgrid.png-584bb891b55b305165ee183998cce33b.s3tc.ctex", "res://.godot/imported/Blender_Colorgrid.png-584bb891b55b305165ee183998cce33b.etc2.ctex"]
 
 [params]
 

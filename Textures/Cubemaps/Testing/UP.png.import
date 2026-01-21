@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://civtyx4be1v1b"
 path.s3tc="res://.godot/imported/UP.png-f2b684e397a40452b9ecaffad9f183f9.s3tc.ctex"
+path.etc2="res://.godot/imported/UP.png-f2b684e397a40452b9ecaffad9f183f9.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Cubemaps/Testing/UP.png"
-dest_files=["res://.godot/imported/UP.png-f2b684e397a40452b9ecaffad9f183f9.s3tc.ctex"]
+dest_files=["res://.godot/imported/UP.png-f2b684e397a40452b9ecaffad9f183f9.s3tc.ctex", "res://.godot/imported/UP.png-f2b684e397a40452b9ecaffad9f183f9.etc2.ctex"]
 
 [params]
 

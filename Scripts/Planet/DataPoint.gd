@@ -14,7 +14,6 @@ var height : float;
 var color : Color;
 var Terrain : Array[ModelLayer];
 var world : PlanetManager
-var albedo : float
 #Expand as neccesary
 
 func _init(worldParent : PlanetManager, index : int, pos : Vector3, pColor : Color = Color.BLACK) -> void:
@@ -23,7 +22,10 @@ func _init(worldParent : PlanetManager, index : int, pos : Vector3, pColor : Col
 	color = pColor
 	world = worldParent
 	for i in range(0,worldParent.layers.size()):
-		Terrain.append(ModelLayer.new(worldParent,self))
+		var newLayer = ModelLayer.new(worldParent,self)
+		#newLayer.recievedEnergy = (1.0 - calcAlbedo()) * ((worldParent.Boss.starLuminosity / pow(worldParent.distance, 2)) * Constants.SolarConstant)
+		newLayer.recievedEnergy = 0
+		Terrain.append(newLayer)
 		Terrain[i].ModelType = worldParent.layers[i]
 
 func iterate(_timescale : timescale, timestep : float):
@@ -63,3 +65,12 @@ func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conver
 
 func SphericalToLatLong(pos : Vector2) ->Vector2:
 	return Vector2((pos.x) / ((2 * PI)/360), ((pos.y + (PI / 2.0))) / (PI/180))
+
+func calcAlbedo() -> float:
+	return (color.r + color.g + color.b)/3.0
+
+func sumEnergy() -> float:
+	var energy : float = 0
+	for layer in Terrain:
+		energy += layer.recievedEnergy
+	return energy

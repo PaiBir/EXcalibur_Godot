@@ -16,6 +16,7 @@ var pSM : float = 0.0
 var pSL : float = 0.0
 var pST : float = 0.0
 var pBCS : float = 0.0
+var pDist : float = 0.0;
 
 @export_category("Technical")
 @export var StarName : String;
@@ -60,7 +61,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	#Star
-	if(pSM != starMass || pSL != starLuminosity || pST != starTemp || pBCS != BolometricCorrectionStrength):
+	if(pSM != starMass || pSL != starLuminosity || pST != starTemp || pBCS != BolometricCorrectionStrength || pDist != World.distance):
 		RealLight.light_energy = (starLuminosity/pow(World.distance,2))
 		RealLight.light_color = TemperatureToColor(starTemp)
 		var Bolometrics : float = 0
@@ -81,6 +82,7 @@ func _process(_delta: float) -> void:
 		pSL = starLuminosity
 		pST = starTemp
 		pBCS = BolometricCorrectionStrength
+		pDist = World.distance
 	if(psM != sM):
 		MSkybox.set_shader_parameter("Cubemap_Stars", [starMaps[sM].DOWN,starMaps[sM].FORWARDS,starMaps[sM].RIGHT,starMaps[sM].BACKWARDS,starMaps[sM].LEFT,starMaps[sM].UP])
 		psM = sM

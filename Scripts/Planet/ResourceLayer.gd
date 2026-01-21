@@ -18,6 +18,8 @@ var UpperBound : float
 var Changes : Array[Dictionary]
 
 var recievedEnergy : float = 0
+var pressure : float = 1
+var cloudcover : float = 0 #should never be more than 1
 
 func _init(WorldData : PlanetManager, layerPlace : PlanetDataPoint) -> void:
 	world  = WorldData
@@ -28,11 +30,20 @@ func step(timescale : PlanetDataPoint.timescale, timestep : float):
 	if (ModelType == LayerType.EMPTY):
 		pass
 	if (ModelType == LayerType.GEO):
-		if(recievedEnergy == 0):
-			change["Energy"] = (1.0 - place.albedo) * ((world.Boss.starLuminosity / pow(world.distance, 2)) * Constants.SolarConstant)
-	
+		pass
+	if (ModelType == LayerType.AERO):
+		var sWave = cos((2 * place.SphericalCoordinate.x)-PI) * ((world.Boss.starLuminosity / pow(world.distance, 2)) * Constants.SolarConstant)
+		var a0 = minf(1, 0.085 - (0.247 * (log(world.PressureAtSeaLevel / pressure)/log(10))))
+		var ac = 1 - ((1 - a0) / (1 - world.CloudAlbedo))
+		var ReflectedClear = sWave * (((1 - world.GlobalAtmoAlbedo) * (1 - a0)) / (1 - (a0 * world.GlobalAtmoAlbedo)))
+		var ReflectedCloudy = sWave * (((1 - world.GlobalAtmoAlbedo) * (1 - ac)) / (1 - (ac * world.GlobalAtmoAlbedo)))
+		change["ShortwaveEnergy"] = (sWave - ((cloudcover * ReflectedCloudy) + ((1 - cloudcover) * ReflectedClear))) * place.calcAlbedo()
+		#change["LongwaveEnergy"] = 
+	Changes.append(change)
+
 
 func apply():
 	for change in Changes:
-		if change.has("Energy"):
-			recievedEnergy += change["Energy"]
+		if change.has("ShortwaveEnergy"):
+			if (ModelType == LayerType.AERO):
+				recievedEnergy += change["ShortwaveEnergy"]

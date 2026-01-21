@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://3kij0rm6yyax"
 path.s3tc="res://.godot/imported/Stars_Cmap_0_B.png-9bff2078b6aad7054e4eda08c60ccbc0.s3tc.ctex"
+path.etc2="res://.godot/imported/Stars_Cmap_0_B.png-9bff2078b6aad7054e4eda08c60ccbc0.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Cubemaps/Stars/0/Stars_Cmap_0_B.png"
-dest_files=["res://.godot/imported/Stars_Cmap_0_B.png-9bff2078b6aad7054e4eda08c60ccbc0.s3tc.ctex"]
+dest_files=["res://.godot/imported/Stars_Cmap_0_B.png-9bff2078b6aad7054e4eda08c60ccbc0.s3tc.ctex", "res://.godot/imported/Stars_Cmap_0_B.png-9bff2078b6aad7054e4eda08c60ccbc0.etc2.ctex"]
 
 [params]
 

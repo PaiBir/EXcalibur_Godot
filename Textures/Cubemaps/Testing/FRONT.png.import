@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8nsh2a1lmbwc"
 path.s3tc="res://.godot/imported/FRONT.png-97ec8b966b71b6ae40a93f6f59879455.s3tc.ctex"
+path.etc2="res://.godot/imported/FRONT.png-97ec8b966b71b6ae40a93f6f59879455.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Cubemaps/Testing/FRONT.png"
-dest_files=["res://.godot/imported/FRONT.png-97ec8b966b71b6ae40a93f6f59879455.s3tc.ctex"]
+dest_files=["res://.godot/imported/FRONT.png-97ec8b966b71b6ae40a93f6f59879455.s3tc.ctex", "res://.godot/imported/FRONT.png-97ec8b966b71b6ae40a93f6f59879455.etc2.ctex"]
 
 [params]
 

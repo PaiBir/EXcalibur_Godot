@@ -11,5 +11,5 @@
 
 [resource]
 script = ExtResource("8_p7fjm")
-Subdivisions = Array[Mesh]([ExtResource("1_iel2m"), ExtResource("2_3370u"), ExtResource("3_mtmkd"), ExtResource("4_yirs4"), ExtResource("5_g6gp0"), ExtResource("6_5n0be"), ExtResource("7_02p3u")])
+Subdivisions = Array[Mesh]([ExtResource("1_iel2m"), ExtResource("2_3370u"), ExtResource("3_mtmkd"), ExtResource("4_yirs4"), ExtResource("5_g6gp0"), ExtResource("6_5n0be"), ExtResource("7_02p3u"), ExtResource("7_02p3u")])
 metadata/_custom_type_script = "uid://usvx1mvcpetj"

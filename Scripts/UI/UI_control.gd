@@ -50,45 +50,37 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	#switch view
 	if prevMenu != Tabs.current_tab:
-		print("Switching Tab! Set Tab:" + str(Tabs.current_tab) + ", Old Tab:" + str(prevMenu))
-		if Tabs.current_tab == 0:
-			TechMenu.visible = true
-			LayersMenu.visible = false
-			StarMenu.visible = false
-			PlanetMenu.visible = false
-			var scrl : VScrollBar = TechMenu.get_child(0)
-			var furthest_child : Control = TechMenu.get_child(1).get_child(-1)
-			scrl.max_value = 1/furthest_child.anchor_bottom
-			scrl.value = 0
-		if Tabs.current_tab == 1:
-			TechMenu.visible = false
-			LayersMenu.visible = true
-			StarMenu.visible = false
-			PlanetMenu.visible = false
-			var scrl : VScrollBar = LayersMenu.get_child(0)
-			var furthest_child : Control = LayersMenu.get_child(1).get_child(-1)
-			scrl.max_value = 1/furthest_child.anchor_bottom
-			scrl.value = 0
-		if Tabs.current_tab == 2:
-			TechMenu.visible = false
-			LayersMenu.visible = false
-			StarMenu.visible = true
-			PlanetMenu.visible = false
-			var scrl : VScrollBar = StarMenu.get_child(0)
-			var furthest_child : Control = StarMenu.get_child(1).get_child(-1)
-			scrl.max_value = 1/furthest_child.anchor_bottom
-			scrl.value = 0
-		if Tabs.current_tab == 3:
-			TechMenu.visible = false
-			LayersMenu.visible = false
-			StarMenu.visible = false
-			PlanetMenu.visible = true
-			var scrl : VScrollBar = PlanetMenu.get_child(0)
-			var furthest_child : Control = PlanetMenu.get_child(1).get_child(-1)
-			scrl.max_value = 1/furthest_child.anchor_bottom
-			scrl.value = 0
+		switchTab()
 		prevMenu = Tabs.current_tab
-	#assignments
+	assignValues()
+	handleUI()
+	handleLayers()
+
+
+func switchTab():
+	print("Switching Tab! Set Tab:" + str(Tabs.current_tab) + ", Old Tab:" + str(prevMenu))
+	if Tabs.current_tab == 0:
+		TechMenu.visible = true
+		LayersMenu.visible = false
+		StarMenu.visible = false
+		PlanetMenu.visible = false
+	if Tabs.current_tab == 1:
+		TechMenu.visible = false
+		LayersMenu.visible = true
+		StarMenu.visible = false
+		PlanetMenu.visible = false
+	if Tabs.current_tab == 2:
+		TechMenu.visible = false
+		LayersMenu.visible = false
+		StarMenu.visible = true
+		PlanetMenu.visible = false
+	if Tabs.current_tab == 3:
+		TechMenu.visible = false
+		LayersMenu.visible = false
+		StarMenu.visible = false
+		PlanetMenu.visible = true
+
+func assignValues():
 	boss.World.subdivLevel = $"Control Bar/Menu_Location/Technical/Body/Subdivisions/DetailBar".value
 	boss.starMass = $"Control Bar/Menu_Location/Star/Body/StarMass/SMass".text
 	boss.starLuminosity = $"Control Bar/Menu_Location/Star/Body/StarLuminosity/SLuminosity".text
@@ -107,25 +99,27 @@ func _process(_delta: float) -> void:
 	if(float($"Control Bar/Menu_Location/Technical/Body/CameraDistance/CamDist".text) != boss.CamDistance):
 		boss.CamDistance = $"Control Bar/Menu_Location/Technical/Body/CameraDistance/CamDist".text
 		boss.UpdateCam()
-	
+
+func handleUI():
 	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".value = boss.World.Finished
 	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".max_value = boss.World.points.size()
-	var t_size = $"Control Bar/Menu_Location/Technical/Body".get_size().y
-	var l_size = $"Control Bar/Menu_Location/Layers/Body".get_size().y
-	var s_size = $"Control Bar/Menu_Location/Star/Body".get_size().y
-	var p_size = $"Control Bar/Menu_Location/Planet/Body".get_size().y
-	$"Control Bar/Menu_Location/Technical/Body".offset_bottom = ($"Control Bar/Menu_Location/Technical/T_Scroll".value) * -t_size
-	$"Control Bar/Menu_Location/Layers/Body".offset_bottom = ($"Control Bar/Menu_Location/Layers/L_Scroll".value) * -l_size
-	$"Control Bar/Menu_Location/Star/Body".offset_bottom = ($"Control Bar/Menu_Location/Star/S_Scroll".value) * -s_size
-	$"Control Bar/Menu_Location/Planet/Body".offset_bottom = ($"Control Bar/Menu_Location/Planet/P_Scroll".value) * -p_size
-	$"Control Bar/Menu_Location/Technical/Body".offset_top = ($"Control Bar/Menu_Location/Technical/T_Scroll".value) * -t_size
-	$"Control Bar/Menu_Location/Layers/Body".offset_top = ($"Control Bar/Menu_Location/Layers/L_Scroll".value) * -l_size
-	$"Control Bar/Menu_Location/Star/Body".offset_top = ($"Control Bar/Menu_Location/Star/S_Scroll".value) * -s_size
-	$"Control Bar/Menu_Location/Planet/Body".offset_top = ($"Control Bar/Menu_Location/Planet/P_Scroll".value) * -p_size
+	var t_size = $"Control Bar/Menu_Location/Technical/Body".get_child($"Control Bar/Menu_Location/Technical/Body".get_child_count()-1).anchor_bottom - 1.0
+	var l_size = $"Control Bar/Menu_Location/Layers/Body".get_child($"Control Bar/Menu_Location/Layers/Body".get_child_count()-1).anchor_bottom - 1.0
+	var s_size = $"Control Bar/Menu_Location/Star/Body".get_child($"Control Bar/Menu_Location/Star/Body".get_child_count()-1).anchor_bottom - 1.0
+	var p_size = $"Control Bar/Menu_Location/Planet/Body".get_child($"Control Bar/Menu_Location/Planet/Body".get_child_count()-1).anchor_bottom - 1.0
+
+	$"Control Bar/Menu_Location/Technical/Body".offset_bottom = ($"Control Bar/Menu_Location/Technical/T_Scroll".value) * -t_size * $"Control Bar/Menu_Location/Technical/Body".size.y
+	$"Control Bar/Menu_Location/Layers/Body".offset_bottom = ($"Control Bar/Menu_Location/Layers/L_Scroll".value) * -l_size * $"Control Bar/Menu_Location/Layers/Body".size.y
+	$"Control Bar/Menu_Location/Star/Body".offset_bottom = ($"Control Bar/Menu_Location/Star/S_Scroll".value) * -s_size * $"Control Bar/Menu_Location/Star/Body".size.y
+	$"Control Bar/Menu_Location/Planet/Body".offset_bottom = ($"Control Bar/Menu_Location/Planet/P_Scroll".value) * -p_size * $"Control Bar/Menu_Location/Planet/Body".size.y
+	$"Control Bar/Menu_Location/Technical/Body".offset_top = ($"Control Bar/Menu_Location/Technical/T_Scroll".value) * -t_size * $"Control Bar/Menu_Location/Technical/Body".size.y
+	$"Control Bar/Menu_Location/Layers/Body".offset_top = ($"Control Bar/Menu_Location/Layers/L_Scroll".value) * -l_size * $"Control Bar/Menu_Location/Layers/Body".size.y
+	$"Control Bar/Menu_Location/Star/Body".offset_top = ($"Control Bar/Menu_Location/Star/S_Scroll".value) * -s_size * $"Control Bar/Menu_Location/Star/Body".size.y
+	$"Control Bar/Menu_Location/Planet/Body".offset_top = ($"Control Bar/Menu_Location/Planet/P_Scroll".value) * -p_size * $"Control Bar/Menu_Location/Planet/Body".size.y
 	
 	boss.World.PlanetMat.set_shader_parameter("displayInShadow", Lighting)
-	
-	#Layer control
+
+func handleLayers():
 	if(RButton.get_pressed_button() != null):
 		$"Control Bar/Menu_Location/Layers/Body/Color/Button".button_pressed = false
 		if(GButton.get_pressed_button() == null):
@@ -178,6 +172,7 @@ func _process(_delta: float) -> void:
 	if btnstate != prvbtnstate:
 		boss.World.reColor(btnstate)
 		prvbtnstate = btnstate
+
 func mCameraL():
 	boss.MoveCamera(true)
 
@@ -271,7 +266,6 @@ func loadDir():
 			file = fileCrawler.get_next()
 		isfirst = false
 	boss.UpdateCam()
-		
 
 func saveDir():
 	var PlanetPoints = []
@@ -396,3 +390,7 @@ func setLayersColor():
 	btns = BButton.get_buttons()
 	for btn in btns:
 		btn.button_pressed = false
+
+
+func stepModel() -> void:
+	boss.World.stepModel()

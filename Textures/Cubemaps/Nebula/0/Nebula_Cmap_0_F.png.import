@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b57q0xx5kc0kb"
 path.s3tc="res://.godot/imported/Nebula_Cmap_0_F.png-b462d5a5bdce8def9b1aebaaaa644df6.s3tc.ctex"
+path.etc2="res://.godot/imported/Nebula_Cmap_0_F.png-b462d5a5bdce8def9b1aebaaaa644df6.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://Textures/Cubemaps/Nebula/0/Nebula_Cmap_0_F.png"
-dest_files=["res://.godot/imported/Nebula_Cmap_0_F.png-b462d5a5bdce8def9b1aebaaaa644df6.s3tc.ctex"]
+dest_files=["res://.godot/imported/Nebula_Cmap_0_F.png-b462d5a5bdce8def9b1aebaaaa644df6.s3tc.ctex", "res://.godot/imported/Nebula_Cmap_0_F.png-b462d5a5bdce8def9b1aebaaaa644df6.etc2.ctex"]
 
 [params]
 
