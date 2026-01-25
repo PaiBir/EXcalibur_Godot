@@ -18,8 +18,11 @@ var UpperBound : float
 var Changes : Array[Dictionary]
 
 var recievedEnergy : float = 0
+#AERO model
 var pressure : float = 1
 var cloudcover : float = 0 #should never be more than 1
+var sigma : float = 0 #between 0 and 1
+var atmosphere : Array[AtmoGas]
 
 func _init(WorldData : PlanetManager, layerPlace : PlanetDataPoint) -> void:
 	world  = WorldData

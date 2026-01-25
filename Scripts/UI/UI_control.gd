@@ -101,6 +101,24 @@ func assignValues():
 		boss.UpdateCam()
 
 func handleUI():
+	if Input.is_action_just_pressed("scrollUp"):
+		if Tabs.current_tab == 0:
+			$"Control Bar/Menu_Location/Technical/T_Scroll".value = max(min($"Control Bar/Menu_Location/Technical/T_Scroll".value - 0.1, 1.0), 0.0)
+		#elif Tabs.current_tab == 1:
+		#	$"Control Bar/Menu_Location/Layers/L_Scroll".value = max(min($"Control Bar/Menu_Location/Layers/L_Scroll".value - 0.1, 1.0), 0.0)
+		#elif Tabs.current_tab == 2:
+		#	$"Control Bar/Menu_Location/Star/S_Scroll".value = max(min($"Control Bar/Menu_Location/Star/S_Scroll".value - 0.1, 1.0), 0.0)
+		elif Tabs.current_tab == 3:
+			$"Control Bar/Menu_Location/Planet/P_Scroll".value = max(min($"Control Bar/Menu_Location/Planet/P_Scroll".value - 0.1, 1.0), 0.0)
+	if Input.is_action_just_pressed("scrollDown"):
+		if Tabs.current_tab == 0:
+			$"Control Bar/Menu_Location/Technical/T_Scroll".value = max(min($"Control Bar/Menu_Location/Technical/T_Scroll".value + 0.1, 1.0), 0.0)
+		#elif Tabs.current_tab == 1:
+		#	$"Control Bar/Menu_Location/Layers/L_Scroll".value = max(min($"Control Bar/Menu_Location/Layers/L_Scroll".value + 0.1, 1.0), 0.0)
+		#elif Tabs.current_tab == 2:
+		#	$"Control Bar/Menu_Location/Star/S_Scroll".value = max(min($"Control Bar/Menu_Location/Star/S_Scroll".value + 0.1, 1.0), 0.0)
+		elif Tabs.current_tab == 3:
+			$"Control Bar/Menu_Location/Planet/P_Scroll".value = max(min($"Control Bar/Menu_Location/Planet/P_Scroll".value + 0.1, 1.0), 0.0)
 	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".value = boss.World.Finished
 	$"Control Bar/Menu_Location/Planet/Body/UploadLayers/ProgressBar".max_value = boss.World.points.size()
 	var t_size = $"Control Bar/Menu_Location/Technical/Body".get_child($"Control Bar/Menu_Location/Technical/Body".get_child_count()-1).anchor_bottom - 1.0

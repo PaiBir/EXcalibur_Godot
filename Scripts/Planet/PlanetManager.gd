@@ -20,7 +20,24 @@ var PlanetMass : float = 1 #Earth Masses
 var PlanetRadius : float = 1 #Earth Radii
 var GlobalAtmoAlbedo : float = 0.1
 var PressureAtSeaLevel : float = 1 #atm
-var CloudAlbedo : float = 0.9 #Just a guess. Fill in better later
+var CloudProperties : Array[Dictionary] = [
+	{
+		"Albedo" = 0.25,
+		"Transmissivity" = 0.75,
+		"Absorptivity" = 0.005
+	},
+	{
+		"Albedo" = 0.60,
+		"Transmissivity" = 0.38,
+		"Absorptivity" = 0.02
+	},
+	{
+		"Albedo" = 0.70,
+		"Transmissivity" = 0.36,
+		"Absorptivity" = 0.035
+	}
+]
+var AtmoComp : Array[AtmoGas]
 
 #Model visualisation and execution
 @export var TechnicalAspects : PlanetTechnical
@@ -32,7 +49,7 @@ var timescale : PlanetDataPoint.timescale = PlanetDataPoint.timescale.year
 var stepsize : float = 1
 var minHeight : float = -10935  #lowest point
 var maxheight : float = 8848.86 #tallest point
-var layers : Array[ModelLayer.LayerType] = [ModelLayer.LayerType.AERO,ModelLayer.LayerType.GEO]
+var layers : Array[ModelLayer.LayerType] = [ModelLayer.LayerType.AERO,ModelLayer.LayerType.AERO,ModelLayer.LayerType.AERO,ModelLayer.LayerType.GEO]
 
 @export_category("Root")
 @export var Boss: Worldbase
