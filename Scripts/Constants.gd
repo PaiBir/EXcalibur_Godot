@@ -4,6 +4,37 @@ static var StefanBoltzmanConstant: float = 5.67037e-8 #W/M^2K^4
 static var SunDiameter := 6.957e8
 static var AUdefiniton := 149597870700
 static var SolarConstant := 1370 #Wm^2
+static var EarthDiameter := 12756 #km
+
+func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conversion math here (https://en.wikipedia.org/wiki/Spherical_coordinate_system#Coordinate_system_conversions)
+	var sPoint = Vector2.ZERO
+	if point.y > 0:
+		sPoint.x = atan(sqrt((point.x * point.x) + (point.z * point.z)) / point.y)
+	elif point.y <  0:
+		sPoint.x = PI + atan(sqrt((point.x * point.x) + (point.z * point.z)) / point.y)
+	elif point.y == 0 and sqrt((point.x * point.x) + (point.z * point.z)) != 0:
+		sPoint.x = PI / 2
+	else:
+		sPoint.x = 0
+	
+	#PSI (y)
+	if point.x > 0:
+		sPoint.y = atan(point.z/point.x)
+	elif point.x < 0 and point.z >= 0:
+		sPoint.y = atan(point.z/point.x) + PI
+	elif point.x < 0 and point.z < 0:
+		sPoint.y = atan(point.z/point.x) - PI
+	elif point.x == 0 and point.z > 0:
+		sPoint.y = PI / 2
+	elif point.x == 0 and point.z < 0:
+		sPoint.y = -PI / 2
+	else:
+		sPoint.y = 0
+	
+	return Vector2(sPoint.x,sPoint.y)
+
+func SphericalToLatLong(pos : Vector2) ->Vector2:
+	return Vector2((pos.x) / ((2 * PI)/360), ((pos.y + (PI / 2.0))) / (PI/180))
 
 static var gases : Array[Dictionary] = [ #Needs sources
 	#EARTH

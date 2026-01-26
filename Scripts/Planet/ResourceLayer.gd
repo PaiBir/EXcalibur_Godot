@@ -1,3 +1,4 @@
+#DEPRECIATED
 class_name ModelLayer
 extends Node
 
