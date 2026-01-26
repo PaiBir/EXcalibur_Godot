@@ -1,10 +1,12 @@
 extends Node
 
 static var StefanBoltzmanConstant: float = 5.67037e-8 #W/M^2K^4
+static var graviationalConstant : float = 6.667e-11 #Newtons per m&2/kg^2
 static var SunDiameter := 6.957e8
 static var AUdefiniton := 149597870700
 static var SolarConstant := 1370 #Wm^2
 static var EarthDiameter := 12756 #km
+static var EarthMass := 59.8e23 #kg
 
 func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conversion math here (https://en.wikipedia.org/wiki/Spherical_coordinate_system#Coordinate_system_conversions)
 	var sPoint = Vector2.ZERO
@@ -66,3 +68,29 @@ static var gases : Array[Dictionary] = [ #Needs sources
 	#TITAN
 	
 ]
+
+# CLIMBER_X
+static var latentHeatEvap : float
+static var latentHeatSubl : float
+static var density_ice := 910.0 #kg/m^3
+static var density_water := 1000.0 #kg/m^3
+static var density_seawater := 1028.0 #kg/m^3
+static var density_asthenosphere := 3.3e3 #kg/m^3
+
+static var heatcapacity_air := 1000 #J/kg/K
+static var heatcapacity_ice := 2110 #J/kg/K
+static var heatcapacity_water := 4187 #J/kg/K
+
+static var thermalconductivity_air := 0.023 #W/m/K
+static var thermalconductivity_ice := 2.2 #W/m/K
+static var thermalconductivity_water := 0.6 #W/m/K
+
+static var emis_snow := 0.99 #"longwave emissivity of water, presumably how much recieved energy is released as longwave radiation
+static var emis_water := 0.98 #"longwave emissivity of water, presumably how much recieved energy is released as longwave radiation
+
+static var LatentHeatofEvaporation := 2501e3 #J/kg
+static var LatentHeatofFusion := 334e3 #J/kg
+static var LatentHeatofSublimation := LatentHeatofEvaporation + LatentHeatofFusion #J/kg
+
+static var specificGasConstant_dryair = 287.058 #J/kg/K
+static var specificGasConstant_watervapor = 461.5 #J/kg/K

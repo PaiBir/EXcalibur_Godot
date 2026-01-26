@@ -20,6 +20,7 @@ var PlanetMass : float = 1 #Earth Masses
 var PlanetRadius : float = 1 #Earth Radii
 var GlobalAtmoAlbedo : float = 0.1
 var PressureAtSeaLevel : float = 1 #atm
+var Gravity : float = 9.81 #m/s^2
 var CloudProperties : Array[Dictionary] = [
 	{
 		"Albedo" = 0.25,
@@ -83,6 +84,7 @@ func _process(_delta: float) -> void:
 		MeshManipulator.commit_to_surface(commitmesh)
 		planetMesh.mesh = commitmesh
 		prevSubdivLevel = subdivLevel
+	Gravity = (Constants.graviationalConstant * (PlanetMass * Constants.EarthMass)) / pow(PlanetRadius * (Constants.EarthDiameter / 2.0), 2)
 
 func forceMesh(subLevel):
 	if(subLevel > TechnicalAspects.Subdivisions.size()-1):

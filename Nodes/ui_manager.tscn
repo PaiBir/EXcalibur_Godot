@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://g1tq5klptbr0"]
+[gd_scene format=3 uid="uid://g1tq5klptbr0"]
 
 [ext_resource type="Theme" uid="uid://byptwu7allkj4" path="res://Resources/UI_Theme.tres" id="1_c1ydq"]
 [ext_resource type="Script" uid="uid://dbnb23enw7hpx" path="res://Scripts/UI/UI_control.gd" id="1_val2c"]
@@ -21,7 +21,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ul1d"]
 
-[node name="UIManager" type="Control" node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu", "Uploader")]
+[node name="UIManager" type="Control" unique_id=1738520998 node_paths=PackedStringArray("Menu", "Tabs", "TechMenu", "LayersMenu", "StarMenu", "PlanetMenu", "Uploader")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,7 +40,7 @@ RButton = ExtResource("4_kc8w3")
 GButton = ExtResource("5_035rc")
 BButton = ExtResource("6_foom8")
 
-[node name="Control Bar" type="Panel" parent="."]
+[node name="Control Bar" type="Panel" parent="." unique_id=714396094]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.75
@@ -50,7 +50,7 @@ grow_horizontal = 0
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="TabBar" type="TabBar" parent="Control Bar"]
+[node name="TabBar" type="TabBar" parent="Control Bar" unique_id=836079570]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -63,14 +63,14 @@ tab_1/title = "Layers"
 tab_2/title = "Star"
 tab_3/title = "Planet"
 
-[node name="Menu_Location" type="Control" parent="Control Bar"]
+[node name="Menu_Location" type="Control" parent="Control Bar" unique_id=941129776]
 layout_mode = 1
 anchor_top = 0.05
 anchor_right = 0.98
 anchor_bottom = 0.988
 theme = ExtResource("1_c1ydq")
 
-[node name="Technical" type="Control" parent="Control Bar/Menu_Location"]
+[node name="Technical" type="Control" parent="Control Bar/Menu_Location" unique_id=1941060939]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -81,7 +81,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="T_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Technical"]
+[node name="T_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Technical" unique_id=581836603]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.98
@@ -93,7 +93,7 @@ theme = ExtResource("1_c1ydq")
 max_value = 1.0
 page = 0.1
 
-[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Technical"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Technical" unique_id=1588445383]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -104,7 +104,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="Subdivisions" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Subdivisions" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=1313320719]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -113,7 +113,7 @@ anchor_right = 0.98
 anchor_bottom = 0.085
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions" unique_id=1194563051]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -129,7 +129,7 @@ text = "Planet Detail"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DetailBar" type="HScrollBar" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions"]
+[node name="DetailBar" type="HScrollBar" parent="Control Bar/Menu_Location/Technical/Body/Subdivisions" unique_id=1795640945]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -138,7 +138,7 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 rounded = true
 
-[node name="Filepath" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Filepath" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=1577825233]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -147,7 +147,7 @@ anchor_right = 0.98
 anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Filepath" unique_id=241001964]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -158,7 +158,7 @@ text = "Project Directory"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Open_FileDialog" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Filepath"]
+[node name="Open_FileDialog" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Filepath" unique_id=513848905]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -167,7 +167,7 @@ anchor_bottom = 0.5
 theme = ExtResource("1_c1ydq")
 text = "Browse"
 
-[node name="LineEdit" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Filepath" node_paths=PackedStringArray("Files")]
+[node name="LineEdit" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Filepath" unique_id=355693201 node_paths=PackedStringArray("Files")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -182,7 +182,7 @@ placeholder_text = "Directory..."
 script = ExtResource("3_1xkbj")
 Files = NodePath("FileDialog")
 
-[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit"]
+[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Technical/Body/Filepath/LineEdit" unique_id=1728364432]
 oversampling_override = 1.0
 title = "Open a Directory"
 theme = ExtResource("1_c1ydq")
@@ -190,7 +190,7 @@ file_mode = 2
 access = 2
 use_native_dialog = true
 
-[node name="SaveLoad" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="SaveLoad" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=1580733926]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -199,7 +199,7 @@ anchor_right = 0.98
 anchor_bottom = 0.485
 theme = ExtResource("1_c1ydq")
 
-[node name="File Action" type="Label" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+[node name="File Action" type="Label" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad" unique_id=1504139052]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -210,7 +210,7 @@ text = "File Action"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Save" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+[node name="Save" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad" unique_id=433373397]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -219,7 +219,7 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 text = "Save"
 
-[node name="Load" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad"]
+[node name="Load" type="Button" parent="Control Bar/Menu_Location/Technical/Body/SaveLoad" unique_id=950112102]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -229,7 +229,7 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 text = "Load"
 
-[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Title" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=783442309]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.505
@@ -238,7 +238,7 @@ anchor_bottom = 0.585
 grow_horizontal = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title" unique_id=516862611]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -250,7 +250,7 @@ text = "CAMERA CONTROLS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="X_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="X_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=872396874]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -259,7 +259,7 @@ anchor_right = 0.98
 anchor_bottom = 0.685
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity" unique_id=785276753]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
@@ -270,7 +270,7 @@ text = "X Sensitivity"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="XSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity"]
+[node name="XSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/X_Sensitivity" unique_id=179047103]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -280,7 +280,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Y_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Y_Sensitivity" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=1570893535]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -289,7 +289,7 @@ anchor_right = 0.98
 anchor_bottom = 0.785
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity" unique_id=238010021]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
@@ -300,7 +300,7 @@ text = "Y Sensitivity"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="YSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity"]
+[node name="YSens" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/Y_Sensitivity" unique_id=135226870]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -310,7 +310,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="CameraDistance" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="CameraDistance" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=171349041]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -319,7 +319,7 @@ anchor_right = 0.98
 anchor_bottom = 0.885
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance" unique_id=1144586503]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
@@ -330,7 +330,7 @@ text = "Camera Distance"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CamDist" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance"]
+[node name="CamDist" type="LineEdit" parent="Control Bar/Menu_Location/Technical/Body/CameraDistance" unique_id=518296618]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -340,7 +340,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="DisplayInShadow" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="DisplayInShadow" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=1071196157]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -349,7 +349,7 @@ anchor_right = 0.98
 anchor_bottom = 0.985
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow" unique_id=1649974562]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
@@ -360,7 +360,7 @@ text = "Lighting"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Lighting" type="CheckButton" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow"]
+[node name="Lighting" type="CheckButton" parent="Control Bar/Menu_Location/Technical/Body/DisplayInShadow" unique_id=270312099]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -370,7 +370,7 @@ theme = ExtResource("1_c1ydq")
 button_pressed = true
 flat = true
 
-[node name="Title2" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Title2" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=7708251]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.005
@@ -381,7 +381,7 @@ offset_bottom = -6.1035156e-05
 grow_horizontal = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title2"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Title2" unique_id=215891097]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -393,7 +393,7 @@ text = "MODEL CONTROLS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Step Model" type="Panel" parent="Control Bar/Menu_Location/Technical/Body"]
+[node name="Step Model" type="Panel" parent="Control Bar/Menu_Location/Technical/Body" unique_id=78434630]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -404,7 +404,7 @@ offset_top = -6.1035156e-05
 offset_bottom = -6.1035156e-05
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Step Model"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Technical/Body/Step Model" unique_id=1127076485]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -415,7 +415,7 @@ text = "Step Model"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StepModel" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Step Model"]
+[node name="StepModel" type="Button" parent="Control Bar/Menu_Location/Technical/Body/Step Model" unique_id=1691116954]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -424,7 +424,7 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 text = "One Step"
 
-[node name="Layers" type="Control" parent="Control Bar/Menu_Location"]
+[node name="Layers" type="Control" parent="Control Bar/Menu_Location" unique_id=292072317]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -435,7 +435,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="L_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Layers"]
+[node name="L_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Layers" unique_id=1788436547]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -450,7 +450,7 @@ theme = ExtResource("1_c1ydq")
 max_value = 1.0
 page = 0.1
 
-[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Layers"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Layers" unique_id=1196026049]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -461,7 +461,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="Color" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+[node name="Color" type="Panel" parent="Control Bar/Menu_Location/Layers/Body" unique_id=1686081818]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -470,7 +470,7 @@ anchor_right = 0.98
 anchor_bottom = 0.085
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Color"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Color" unique_id=2125700278]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -482,7 +482,7 @@ text = "Color"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="Control Bar/Menu_Location/Layers/Body/Color"]
+[node name="Button" type="Button" parent="Control Bar/Menu_Location/Layers/Body/Color" unique_id=662827703]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -492,7 +492,7 @@ theme = ExtResource("1_c1ydq")
 toggle_mode = true
 text = "All layers"
 
-[node name="Empty" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+[node name="Empty" type="Panel" parent="Control Bar/Menu_Location/Layers/Body" unique_id=2054285030]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -501,7 +501,7 @@ anchor_right = 0.98
 anchor_bottom = 0.185
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Empty"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Empty" unique_id=1634794610]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -514,7 +514,7 @@ text = "Clear"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Empty"]
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Empty" unique_id=777624644]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -523,7 +523,7 @@ anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 script = ExtResource("7_foom8")
 
-[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder" unique_id=1812355484]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.333
@@ -533,7 +533,7 @@ button_pressed = true
 button_group = ExtResource("4_kc8w3")
 icon_alignment = 1
 
-[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder" unique_id=676430743]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.333
@@ -544,7 +544,7 @@ button_pressed = true
 button_group = ExtResource("5_035rc")
 icon_alignment = 1
 
-[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder"]
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Empty/ButtonHolder" unique_id=999533008]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.667
@@ -555,7 +555,7 @@ button_pressed = true
 button_group = ExtResource("6_foom8")
 icon_alignment = 1
 
-[node name="Height" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+[node name="Height" type="Panel" parent="Control Bar/Menu_Location/Layers/Body" unique_id=1240960860]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -564,7 +564,7 @@ anchor_right = 0.98
 anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Height"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Height" unique_id=1177904220]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -577,7 +577,7 @@ text = "Height"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Height"]
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Height" unique_id=114663807]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -589,7 +589,7 @@ theme = ExtResource("1_c1ydq")
 script = ExtResource("7_foom8")
 prop = 2
 
-[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder" unique_id=1464554828]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.333
@@ -598,7 +598,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("4_kc8w3")
 icon_alignment = 1
 
-[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder" unique_id=1219464169]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.333
@@ -608,7 +608,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("5_035rc")
 icon_alignment = 1
 
-[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder"]
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Height/ButtonHolder" unique_id=2075710193]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.667
@@ -618,7 +618,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("6_foom8")
 icon_alignment = 1
 
-[node name="Energy" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+[node name="Energy" type="Panel" parent="Control Bar/Menu_Location/Layers/Body" unique_id=253287364]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -627,7 +627,7 @@ anchor_right = 0.98
 anchor_bottom = 0.385
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Energy"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Energy" unique_id=1388194409]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -640,7 +640,7 @@ text = "Recieved Energy"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Energy"]
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Energy" unique_id=425838740]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -652,7 +652,7 @@ theme = ExtResource("1_c1ydq")
 script = ExtResource("7_foom8")
 prop = 3
 
-[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder" unique_id=1289248124]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.333
@@ -661,7 +661,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("4_kc8w3")
 icon_alignment = 1
 
-[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder" unique_id=215399011]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.333
@@ -671,7 +671,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("5_035rc")
 icon_alignment = 1
 
-[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder"]
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Energy/ButtonHolder" unique_id=1328677569]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.667
@@ -681,7 +681,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("6_foom8")
 icon_alignment = 1
 
-[node name="Latitude" type="Panel" parent="Control Bar/Menu_Location/Layers/Body"]
+[node name="Latitude" type="Panel" parent="Control Bar/Menu_Location/Layers/Body" unique_id=1863987981]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -690,7 +690,7 @@ anchor_right = 0.98
 anchor_bottom = 0.485
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Latitude"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Layers/Body/Latitude" unique_id=83210394]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -706,7 +706,7 @@ text = "Latitude"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Latitude"]
+[node name="ButtonHolder" type="Panel" parent="Control Bar/Menu_Location/Layers/Body/Latitude" unique_id=324488237]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -718,7 +718,7 @@ theme = ExtResource("1_c1ydq")
 script = ExtResource("7_foom8")
 prop = 4
 
-[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+[node name="R" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder" unique_id=1725079235]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.333
@@ -727,7 +727,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("4_kc8w3")
 icon_alignment = 1
 
-[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+[node name="G" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder" unique_id=850788661]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.333
@@ -737,7 +737,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("5_035rc")
 icon_alignment = 1
 
-[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder"]
+[node name="B" type="CheckBox" parent="Control Bar/Menu_Location/Layers/Body/Latitude/ButtonHolder" unique_id=1550711283]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.667
@@ -747,7 +747,7 @@ theme = ExtResource("1_c1ydq")
 button_group = ExtResource("6_foom8")
 icon_alignment = 1
 
-[node name="Star" type="Control" parent="Control Bar/Menu_Location"]
+[node name="Star" type="Control" parent="Control Bar/Menu_Location" unique_id=1410399801]
 visible = false
 clip_contents = true
 layout_mode = 1
@@ -758,7 +758,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="S_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Star"]
+[node name="S_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Star" unique_id=521204305]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -773,7 +773,7 @@ theme = ExtResource("1_c1ydq")
 max_value = 1.0
 page = 0.1
 
-[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Star"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Star" unique_id=411540227]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -784,7 +784,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="StarName" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarName" type="Panel" parent="Control Bar/Menu_Location/Star/Body" unique_id=528736530]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -793,7 +793,7 @@ anchor_right = 0.98
 anchor_bottom = 0.085
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarName"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarName" unique_id=1343725958]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.4
@@ -805,7 +805,7 @@ text = "Star Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SName" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarName"]
+[node name="SName" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarName" unique_id=1223531110]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.4
@@ -813,7 +813,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 placeholder_text = "Name..."
 
-[node name="StarMass" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarMass" type="Panel" parent="Control Bar/Menu_Location/Star/Body" unique_id=1544487883]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -822,7 +822,7 @@ anchor_right = 0.98
 anchor_bottom = 0.185
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarMass"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarMass" unique_id=1497618388]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -835,7 +835,7 @@ text = "Mass (M☉)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SMass" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarMass"]
+[node name="SMass" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarMass" unique_id=1249415688]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -845,7 +845,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="StarLuminosity" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarLuminosity" type="Panel" parent="Control Bar/Menu_Location/Star/Body" unique_id=1346921652]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -854,7 +854,7 @@ anchor_right = 0.98
 anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity" unique_id=2080209]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -867,7 +867,7 @@ text = "Luminosity (L☉)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SLuminosity" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity"]
+[node name="SLuminosity" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarLuminosity" unique_id=1106984202]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -877,7 +877,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="StarTemperature" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarTemperature" type="Panel" parent="Control Bar/Menu_Location/Star/Body" unique_id=323068337]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -886,7 +886,7 @@ anchor_right = 0.98
 anchor_bottom = 0.385
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarTemperature"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarTemperature" unique_id=1772798568]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -899,7 +899,7 @@ text = "Temperature (K)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="STemperature" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarTemperature"]
+[node name="STemperature" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarTemperature" unique_id=1901207241]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -909,7 +909,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="StarBolometricCorrection" type="Panel" parent="Control Bar/Menu_Location/Star/Body"]
+[node name="StarBolometricCorrection" type="Panel" parent="Control Bar/Menu_Location/Star/Body" unique_id=1093133233]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -918,7 +918,7 @@ anchor_right = 0.98
 anchor_bottom = 0.485
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection" unique_id=492168964]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -934,7 +934,7 @@ text = "Bolometric"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SBolometric" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection"]
+[node name="SBolometric" type="LineEdit" parent="Control Bar/Menu_Location/Star/Body/StarBolometricCorrection" unique_id=1465131516]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -944,7 +944,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Planet" type="Control" parent="Control Bar/Menu_Location"]
+[node name="Planet" type="Control" parent="Control Bar/Menu_Location" unique_id=683388023]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -954,7 +954,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="P_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Planet"]
+[node name="P_Scroll" type="VScrollBar" parent="Control Bar/Menu_Location/Planet" unique_id=167412564]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.98
@@ -968,7 +968,7 @@ theme = ExtResource("1_c1ydq")
 max_value = 1.0
 page = 0.1
 
-[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Planet"]
+[node name="Body" type="Panel" parent="Control Bar/Menu_Location/Planet" unique_id=1646497601]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -981,7 +981,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_c1ydq")
 
-[node name="PlanetName" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="PlanetName" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=1639309320]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -990,7 +990,7 @@ anchor_right = 0.98
 anchor_bottom = 0.085
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/PlanetName"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/PlanetName" unique_id=166725511]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.4
@@ -1002,7 +1002,7 @@ text = "Planet Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PName" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/PlanetName"]
+[node name="PName" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/PlanetName" unique_id=1398577449]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.4
@@ -1010,7 +1010,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 placeholder_text = "Name..."
 
-[node name="RotationSpeed" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="RotationSpeed" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=2024042875]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1019,7 +1019,7 @@ anchor_right = 0.98
 anchor_bottom = 0.185
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed" unique_id=41706413]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1031,7 +1031,7 @@ text = "Day Length (hrs)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed"]
+[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/RotationSpeed" unique_id=380003802]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1041,7 +1041,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Distance" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="Distance" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=949621892]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1050,7 +1050,7 @@ anchor_right = 0.98
 anchor_bottom = 0.285
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Distance"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Distance" unique_id=208278315]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1063,7 +1063,7 @@ text = "Distance (AU)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PDistance" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Distance"]
+[node name="PDistance" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Distance" unique_id=1747800856]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1073,7 +1073,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="YearLength" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="YearLength" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=515939136]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1082,7 +1082,7 @@ anchor_right = 0.98
 anchor_bottom = 0.385
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/YearLength"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/YearLength" unique_id=676892902]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1094,7 +1094,7 @@ text = "Orbit Period (days)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PYearLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/YearLength"]
+[node name="PYearLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/YearLength" unique_id=1709497585]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1104,7 +1104,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Tilt" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="Tilt" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=1645999348]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1113,7 +1113,7 @@ anchor_right = 0.98
 anchor_bottom = 0.485
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Tilt"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Tilt" unique_id=513751121]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1126,7 +1126,7 @@ text = "Axial Tilt (°)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PTilt" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Tilt"]
+[node name="PTilt" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Tilt" unique_id=1481726138]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1136,7 +1136,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="UploadLayers" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="UploadLayers" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=482900563]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1145,7 +1145,7 @@ anchor_right = 0.98
 anchor_bottom = 1.085
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=390833007]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1158,7 +1158,7 @@ text = "Upload Layer"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="Button" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=463630063]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1169,7 +1169,7 @@ offset_right = 3.0517578e-05
 theme = ExtResource("1_c1ydq")
 text = "Browse"
 
-[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" node_paths=PackedStringArray("Files")]
+[node name="PDayLength" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=325244231 node_paths=PackedStringArray("Files")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.15
@@ -1179,13 +1179,13 @@ placeholder_text = "Directory..."
 script = ExtResource("3_1xkbj")
 Files = NodePath("FileDialog")
 
-[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength"]
+[node name="FileDialog" type="FileDialog" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers/PDayLength" unique_id=932963651]
 title = "Open a File"
 file_mode = 0
 access = 2
 use_native_dialog = true
 
-[node name="TextureRect" type="TextureRect" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="TextureRect" type="TextureRect" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=1643536672]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.25
@@ -1194,7 +1194,7 @@ anchor_bottom = 0.55
 expand_mode = 3
 script = ExtResource("4_gfw42")
 
-[node name="Color" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="Color" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=1633445381]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.55
@@ -1203,7 +1203,7 @@ anchor_bottom = 0.7
 theme = ExtResource("1_c1ydq")
 text = "As Color"
 
-[node name="Height" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="Height" type="Button" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=720033468]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -1213,7 +1213,7 @@ anchor_bottom = 0.7
 theme = ExtResource("1_c1ydq")
 text = "As Height"
 
-[node name="ProgressBar" type="ProgressBar" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers"]
+[node name="ProgressBar" type="ProgressBar" parent="Control Bar/Menu_Location/Planet/Body/UploadLayers" unique_id=660919004]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.85
@@ -1221,7 +1221,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_c1ydq")
 
-[node name="Planet Radius" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="Planet Radius" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=1871908331]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1230,7 +1230,7 @@ anchor_right = 0.98
 anchor_bottom = 1.185
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius" unique_id=1785279111]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1243,7 +1243,7 @@ text = "Radius (R🜨)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PRadius" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius"]
+[node name="PRadius" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Radius" unique_id=621571153]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1253,7 +1253,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Planet Mass" type="Panel" parent="Control Bar/Menu_Location/Planet/Body"]
+[node name="Planet Mass" type="Panel" parent="Control Bar/Menu_Location/Planet/Body" unique_id=1260563681]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.01
@@ -1262,7 +1262,7 @@ anchor_right = 0.98
 anchor_bottom = 1.285
 theme = ExtResource("1_c1ydq")
 
-[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass"]
+[node name="Label" type="Label" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass" unique_id=305465300]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.6
@@ -1275,7 +1275,7 @@ text = "Mass (M🜨)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PMass" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass"]
+[node name="PMass" type="LineEdit" parent="Control Bar/Menu_Location/Planet/Body/Planet Mass" unique_id=1283100165]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -1285,7 +1285,7 @@ text = "0"
 placeholder_text = "Number..."
 virtual_keyboard_type = 3
 
-[node name="Detect_ScreenPress" type="Button" parent="."]
+[node name="Detect_ScreenPress" type="Button" parent="." unique_id=472291717]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.75
@@ -1298,7 +1298,7 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_kc8w3")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_8ul1d")
 action_mode = 0
 
-[node name="Detect_ScreenPress" type="Button" parent="Detect_ScreenPress"]
+[node name="Detect_ScreenPress" type="Button" parent="Detect_ScreenPress" unique_id=418442329]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -1313,7 +1313,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_8ul1d")
 action_mode = 0
 button_mask = 2
 
-[node name="Splash" type="Panel" parent="."]
+[node name="Splash" type="Panel" parent="." unique_id=1066480846]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1328,7 +1328,7 @@ FadeInLogo = 0.44762903
 FadeOutBG = 0.6114697
 FadeOutLogo = 0.28526282
 
-[node name="TextureRect" type="TextureRect" parent="Splash"]
+[node name="TextureRect" type="TextureRect" parent="Splash" unique_id=1553268866]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
