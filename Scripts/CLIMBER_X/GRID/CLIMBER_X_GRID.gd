@@ -8,7 +8,7 @@ var MeshTris : Array[Array] = []
 var OutputArray : Array[Array] = []
 
 func _ready() -> void:
-	for i in range(0,3):
+	for i in range(1,int(OUTPUTTER.OUTPUTARRAY.OUTPUTSIZE)):
 		OutputArray.append([])
 
 #FIGURE OUT OCEAN BASINS

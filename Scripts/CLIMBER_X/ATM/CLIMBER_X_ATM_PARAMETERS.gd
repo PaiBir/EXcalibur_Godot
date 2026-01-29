@@ -176,7 +176,7 @@ var cp : float = 1000 #J/kg/K, specific heat of air at constant pressure
 var cv : float = 715 #J/kg/K, specific heat of air at constant volume
 var atmosphere_mass : float = 5.12e18 #kg, total mass of atmosphere. This WILL be replaced, mark my words
 
-func atm_params_init(fromFile : bool):
+func atm_params_init(fromFile : bool = false):
 	gad =  Planet.Gravity/ cp
 	atmosphere_scale = (Constants.specificGasConstant_dryair * (Planet.Boss.starLuminosity/pow(2.52,Planet.Boss.BolometricCorrectionStrength)))/Planet.Gravity
 	## If a file is being loaded, it makes sense to just pull the values here, and then maybe trigger a thing that updates the UI.
@@ -328,8 +328,7 @@ func atm_param_load(data):
 	l_output_extended = data["l_output_extended"]
 	tam_init = data["tam_init"]
 
-func atm_param_save() -> Dictionary:
-	var data = {}
+func atm_param_save(data : Dictionary = {}) -> Dictionary:
 	data["nstep_fast"] = nstep_fast
 	data["fcormin"] = fcormin
 	data["fcoramin"] = fcoramin

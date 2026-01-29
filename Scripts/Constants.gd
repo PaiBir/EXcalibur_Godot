@@ -8,6 +8,9 @@ static var SolarConstant := 1370 #Wm^2
 static var EarthDiameter := 12756 #km
 static var EarthMass := 59.8e23 #kg
 
+#Derived from David A. Randall et. al. (2002)
+static var basePointDistEarth = 3717.4
+
 func CartesiantUVSpherical(point : Vector3) -> Vector2: #Based off of the conversion math here (https://en.wikipedia.org/wiki/Spherical_coordinate_system#Coordinate_system_conversions)
 	var sPoint = Vector2.ZERO
 	if point.y > 0:
@@ -92,5 +95,10 @@ static var LatentHeatofEvaporation := 2501e3 #J/kg
 static var LatentHeatofFusion := 334e3 #J/kg
 static var LatentHeatofSublimation := LatentHeatofEvaporation + LatentHeatofFusion #J/kg
 
-static var specificGasConstant_dryair = 287.058 #J/kg/K
-static var specificGasConstant_watervapor = 461.5 #J/kg/K
+static var specificGasConstant_dryair := 287.058 #J/kg/K
+static var specificGasConstant_watervapor := 461.5 #J/kg/K
+
+static var EarthAngularVelocity := 7.2921e-5 #l/s (I have no clue what unit l is)
+
+#Bibliography
+# Randall, D. A.; Ringler, T. D.; Heikes, R. P.; Jones, P.; Baumgardner, J. Climate Modeling with Spherical Geodesic Grids. Computing in Science & Engineering 2002, 4 (5), 32–41. https://doi.org/10.1109/MCISE.2002.1032427.
