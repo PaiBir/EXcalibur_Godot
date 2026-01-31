@@ -30,6 +30,7 @@ var llwr_a : Array[int] = [0,0,0,0]
 var surfaceArea : float = 4.0 * PI * pow(atmosphere_parameters.Planet.PlanetRadius * (Constants.EarthDiameter/2.0),2.0)
 var dy : float #Dunno what these are
 var esqr : float
+var dxt : Array[float]
 
 ##To make it fit every planet better, pressure levels can be configured
 var k_pressures = [
@@ -98,10 +99,10 @@ func atm_grid_init(fromFile : bool = false) -> int:
 		dy = PI * (atmosphere_parameters.Planet.PlanetRadius * (Constants.EarthDiameter/2.0))
 		
 		#Leaving out the establishment of fit, fiu, thetat, cost, ect. because it appears to be grid-specific
-		#same with esqr
 		
 		#Coriolis stuff
 		for i in range(0,climber_grid.OutputArray[0].size()):
+			dxt.append(dy*cos(PI * (-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.LATLONGPOSITION][i].y) / 180.0))
 			#I don't actually understand what fit and fiu are calculating. This requires additional research because Climber-X is lacking in comments
 			var coriolispos = sin(PI * (-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.LATLONGPOSITION][i].y) / 180.0)
 			var direction = 1
@@ -117,7 +118,7 @@ func atm_grid_init(fromFile : bool = false) -> int:
 			climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.PLANETARYBOUNDARYLAYER][i] = atmosphere_parameters.pblp - (atmosphere_parameters.pblp - atmosphere_parameters.pble)*pow(cos(PI * (-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.LATLONGPOSITION][i].y) / 180.0),2)
 		
 		#Pressure stuff
-		atmosphere_parameters.ra = atmosphere_parameters.p0 / Constants.specificGasConstant_dryair
+		atmosphere_parameters.ra = atmosphere_parameters.p0 / (Constants.specificGasConstant_dryair * Constants.ZeroCelsius)
 		atmosphere_parameters.ps0 = atmosphere_parameters.atmosphere_mass/(esqr * atmosphere_parameters.Planet.Gravity)
 		for i in range(km):
 			dpl.append(pl[i] + pl[i+1])
@@ -140,3 +141,60 @@ func atm_grid_init(fromFile : bool = false) -> int:
 		
 	ModelIntialized = true
 	return 0
+
+func atm_grid_update(first:Array[Array]):
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.ZS].size()):
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.ZS][i] = zsa_scale * climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.ZS][i]
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.ZS].size()):
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i] = zsa_scale * climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i]
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i] = climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i] * zsa_scale_dyn
+	var zsa_smooth = smooth_atm_mod.smooth2(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE],climber_grid.MeshTris,nsmooth_zsa)
+	
+	#topography
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE].size()):
+		var ValidInts : Array[int] = []
+		for tri in climber_grid.MeshTris:
+			if (tri.find(i) != -1):
+				if(ValidInts.find(tri[0]) == -1):
+					ValidInts.append(tri[0])
+				if(ValidInts.find(tri[1]) == -1):
+					ValidInts.append(tri[1])
+				if(ValidInts.find(tri[2]) == -1):
+					ValidInts.append(tri[2])
+		if(ValidInts.find(i) != -1):
+			ValidInts.remove_at(ValidInts.find(i))
+		var slope = 0
+		for j in ValidInts:
+			slope += (min(3000, climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i]) - min(3000, climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][j]))/dxt[i]
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SLOPE][i] = slope
+	var smoothslope = smooth_atm_mod.smooth2(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SLOPE],climber_grid.MeshTris,1)
+	climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SLOPE] = smoothslope
+	
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.PRESSUREATSURFACE]):
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.PRESSUREATSURFACE][i] = exp(-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i]/atmosphere_parameters.atmosphere_scale)
+	
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.PRESSUREATSURFACE_SMOOTH]):
+		climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.PRESSUREATSURFACE_SMOOTH][i] = exp(-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE_SMOOTH][i]/atmosphere_parameters.atmosphere_scale)
+	
+	if (!atmosphere_parameters.l_p0_var):
+		var deltapressure = 0
+		for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE].size()):
+			deltapressure += exp(-climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i] /  atmosphere_parameters.atmosphere_scale) * ((dxt[i]*dy)/esqr)
+		atmosphere_parameters.p0 = atmosphere_parameters.ps0 / deltapressure #Average sea level pressure
+	
+	atmosphere_parameters.amas = atmosphere_parameters.p0 / atmosphere_parameters.Planet.Gravity #Average mass of atmospheric column
+	
+	atmosphere_parameters.ra = atmosphere_parameters.p0 / (Constants.specificGasConstant_dryair * Constants.ZeroCelsius)
+	 
+
+	for i in range(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.KINDEXTERRAIN].size()):
+		for j in range(km):
+			#K-index of first layer above topography
+			if(zc[j] >= climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i]):
+				climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.KINDEXTERRAIN][i] = j
+			#K index for vertical velocity for clouds
+			if(zc[j] > max(climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.SURFACE][i], atmosphere_parameters.hcld_base)):
+				climber_grid.OutputArray[OUTPUTTER.OUTPUTARRAY.KINDEXCLOUDS][i] = j
+		
+	
+	return {"zsa_smooth" : zsa_smooth}

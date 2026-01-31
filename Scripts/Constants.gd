@@ -100,5 +100,7 @@ static var specificGasConstant_watervapor := 461.5 #J/kg/K
 
 static var EarthAngularVelocity := 7.2921e-5 #l/s (I have no clue what unit l is)
 
+static var ZeroCelsius = 273.15
+
 #Bibliography
 # Randall, D. A.; Ringler, T. D.; Heikes, R. P.; Jones, P.; Baumgardner, J. Climate Modeling with Spherical Geodesic Grids. Computing in Science & Engineering 2002, 4 (5), 32–41. https://doi.org/10.1109/MCISE.2002.1032427.

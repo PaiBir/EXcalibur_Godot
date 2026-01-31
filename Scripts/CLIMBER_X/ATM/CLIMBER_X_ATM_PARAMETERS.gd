@@ -178,7 +178,7 @@ var atmosphere_mass : float = 5.12e18 #kg, total mass of atmosphere. This WILL b
 
 func atm_params_init(fromFile : bool = false):
 	gad =  Planet.Gravity/ cp
-	atmosphere_scale = (Constants.specificGasConstant_dryair * (Planet.Boss.starLuminosity/pow(2.52,Planet.Boss.BolometricCorrectionStrength)))/Planet.Gravity
+	atmosphere_scale = (Constants.specificGasConstant_dryair * Constants.ZeroCelsius)/Planet.Gravity
 	## If a file is being loaded, it makes sense to just pull the values here, and then maybe trigger a thing that updates the UI.
 	## Otherwise, the UI should be setting all initial values automatically, 
 	if(fromFile):
