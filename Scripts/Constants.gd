@@ -73,8 +73,6 @@ static var gases : Array[Dictionary] = [ #Needs sources
 ]
 
 # CLIMBER_X
-static var latentHeatEvap : float
-static var latentHeatSubl : float
 static var density_ice := 910.0 #kg/m^3
 static var density_water := 1000.0 #kg/m^3
 static var density_seawater := 1028.0 #kg/m^3
