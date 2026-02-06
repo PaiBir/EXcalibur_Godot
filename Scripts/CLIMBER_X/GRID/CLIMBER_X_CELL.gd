@@ -15,24 +15,6 @@ var Planetary_Boundary_Layer : float = 0
 #I have no clue what the K-indicies actually are, air speed?
 var K_Index_Effective : float = 0 #"k-index for vertical velocity for clouds", whatever that means?
 var K_Index_Terrain : float = 0
-#Something with the surface?
-var ZS : Array[float] = []
-#Height of the surface of the planet
-var Surface : float = 0
-#Smoothed height of the surface of the planet
-var Surface_Smooth : float = 0
-#The elevation change around the point
-var Slope : float = 0
-#Atmospheric Pressure at the surface
-var Pressure_At_Surface : float = 0
-#Atmospheric Pressure at the smoothed surface
-var Pressure_At_Surface_Smooth : float = 0
-#Surface Air Density
-var Surface_Air_Density : float = 0
-#No clue
-var ra2a : float = 0
-var ra2 : Array[float] = []
-var ps : float = 0
 
 func _init(realPos : Vector3, latlon : Vector2) -> void:
 	Real_Position = realPos

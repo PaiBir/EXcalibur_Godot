@@ -56,9 +56,9 @@ var pcmin : float
 var pcmax : float
 var ptopdyn : float
 
-var hcld_base : float
-var i_lw_cld : int
-var c_lw_clot : float
+var CloudHeight_Base : float
+var i_lw_Cloud : int
+var c_lw_CloudOpticalThickness : float
 var ak_co2 : float
 var beta_co2 : float
 var ak_wv : float
@@ -90,7 +90,7 @@ var c_wrt : Array[float] = [0,0,0,0]
 
 var c_hrs : Array[float] = [0,0,0,0,0,0]
 
-var c_clot : Array[float] = [0,0,0,0]
+var c_CloudOpticalThickness : Array[float] = [0,0,0,0]
 
 var c_syn : Array[float] = [0,0,0,0,0,0,0,0]
 var windmin : float
@@ -114,12 +114,12 @@ var i_acbar : int
 var acbar_max : float
 var acbar_scale : float
 
-var c_cld : Array[float] = [0,0,0,0,0,0,0,0,0] #1, 2, 3, 4, 5, 55, 6, 7, 8, -> 0,1,2,3,4,5,6,7,8
-var l_cld_low_ice : bool
-var cld_max : float
-var nsmooth_cld : int
+var c_Cloud : Array[float] = [0,0,0,0,0,0,0,0,0] #1, 2, 3, 4, 5, 55, 6, 7, 8, -> 0,1,2,3,4,5,6,7,8
+var l_Cloud_low_ice : bool
+var Cloud_max : float
+var nsmooth_Cloud : int
 
-var c_hcld : Array[float] = [0,0,0,0]
+var c_CloudHeight : Array[float] = [0,0,0,0]
 
 var c_weff : float
 var c_woro : float
@@ -239,7 +239,7 @@ func atm_param_load(data):
 	hgamt = data["hgamt"]
 	c_gam_rel = data["c_gam_rel"]
 	nsmooth_gam = data["nsmooth_gam"]
-	nsmooth_cld = data["nsmooth_cld"]
+	nsmooth_Cloud = data["nsmooth_Cloud"]
 	i_tsl = data["i_tsl"]
 	i_tslz = data["i_tslz"]
 	c_tsl_gam = data["c_tsl_gam"]
@@ -247,9 +247,9 @@ func atm_param_load(data):
 	tsl_gams_min_lnd = data["tsl_gams_min_lnd"]
 	tsl_gams_min_ice = data["tsl_gams_min_ice"]
 	c_wrt = data["c_wrt"]
-	hcld_base = data["hcld_base"]
-	i_lw_cld = data["i_lw_cld"]
-	c_lw_clot = data["c_lw_clot"]
+	CloudHeight_Base = data["CloudHeight_Base"]
+	i_lw_Cloud = data["i_lw_Cloud"]
+	c_lw_CloudOpticalThickness = data["c_lw_CloudOpticalThickness"]
 	ak_co2 = data["ak_co2"]
 	beta_co2 = data["beta_co2"]
 	ak_wv = data["ak_wv"]
@@ -262,7 +262,7 @@ func atm_param_load(data):
 	ecs_scale = data["ecs_scale"]
 	ecs_scale_dT = data["ecs_scale_dT"]
 	c_hrs = data["c_hrs"]
-	c_clot = data["c_clot"]
+	c_CloudOpticalThickness = data["c_CloudOpticalThickness"]
 	c_syn = data["c_syn"]
 	windmin = data["windmin"]
 	synsurmin = data["synsurmin"]
@@ -281,10 +281,10 @@ func atm_param_load(data):
 	i_acbar = data["i_acbar"]
 	acbar_max = data["acbar_max"]
 	acbar_scale = data["acbar_scale"]
-	c_cld = data["c_cld"]
-	l_cld_low_ice = data["l_cld_low_ice"]
-	c_hcld = data["c_hcld"]
-	cld_max = data["cld_max"]
+	c_Cloud = data["c_Cloud"]
+	l_Cloud_low_ice = data["l_Cloud_low_ice"]
+	c_CloudHeight = data["c_CloudHeight"]
+	Cloud_max = data["Cloud_max"]
 	c_woro = data["c_woro"]
 	c_weff = data["c_weff"]
 	i_rbstr = data["i_rbstr"]
@@ -371,7 +371,7 @@ func atm_param_save(data : Dictionary = {}) -> Dictionary:
 	data["hgamt"] = hgamt
 	data["c_gam_rel"] = c_gam_rel
 	data["nsmooth_gam"] = nsmooth_gam
-	data["nsmooth_cld"] = nsmooth_cld
+	data["nsmooth_Cloud"] = nsmooth_Cloud
 	data["i_tsl"] = i_tsl
 	data["i_tslz"] = i_tslz
 	data["c_tsl_gam"] = c_tsl_gam
@@ -379,9 +379,9 @@ func atm_param_save(data : Dictionary = {}) -> Dictionary:
 	data["tsl_gams_min_lnd"] = tsl_gams_min_lnd
 	data["tsl_gams_min_ice"] = tsl_gams_min_ice
 	data["c_wrt"] = c_wrt
-	data["hcld_base"] = hcld_base
-	data["i_lw_cld"] = i_lw_cld
-	data["c_lw_clot"] = c_lw_clot
+	data["CloudeHeight_Base"] = CloudHeight_Base
+	data["i_lw_Cloud"] = i_lw_Cloud
+	data["c_lw_CloudOpticalThickness"] = c_lw_CloudOpticalThickness
 	data["ak_co2"] = ak_co2
 	data["beta_co2"] = beta_co2
 	data["ak_wv"] = ak_wv
@@ -394,7 +394,7 @@ func atm_param_save(data : Dictionary = {}) -> Dictionary:
 	data["ecs_scale"] = ecs_scale
 	data["ecs_scale_dT"] = ecs_scale_dT
 	data["c_hrs"] = c_hrs
-	data["c_clot"] = c_clot
+	data["c_CloudOpticalThickness"] = c_CloudOpticalThickness
 	data["c_syn"] = c_syn
 	data["windmin"] = windmin
 	data["synsurmin"] = synsurmin
@@ -413,10 +413,10 @@ func atm_param_save(data : Dictionary = {}) -> Dictionary:
 	data["i_acbar"] = i_acbar
 	data["acbar_max"] = acbar_max
 	data["acbar_scale"] = acbar_scale
-	data["c_cld"] = c_cld
-	data["l_cld_low_ice"] = l_cld_low_ice
-	data["c_hcld"] = c_hcld
-	data["cld_max"] = cld_max
+	data["c_Cloud"] = c_Cloud
+	data["l_Cloud_low_ice"] = l_Cloud_low_ice
+	data["c_CloudHeight"] = c_CloudHeight
+	data["Cloud_max"] = Cloud_max
 	data["c_woro"] = c_woro
 	data["c_weff"] = c_weff
 	data["i_rbstr"] = i_rbstr

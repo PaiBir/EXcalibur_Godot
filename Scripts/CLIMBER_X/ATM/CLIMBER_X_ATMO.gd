@@ -4,6 +4,25 @@ extends Node
 var atmosphere_parameters : ATM_PARAM
 var atm_grid : GRID
 
+var pl : float
+var zl : float
+
+var Atm_CO2 : float #ppmv
+var Equivalent_CO2 : float #ppmv
+var Atm_CH4 : float #ppb
+var Atm_N2O : float #ppb
+var Atm_CFC11 : float #ppt
+var Atk_CFC12 : float #ppt
+
+var Hadley_Cell_Width : float #radians
+var InterTropicalConvergenceZone_Position : float #radians
+
+var eccentricity : float
+var precession : float
+var obliquity : float
+
+var t2m_glob_ann : float = 0
+var dt2m_glob_ann_cum : float = 0
 
 func Flux(fax, fay, tp, q3, d3, cam, diffusiveXenergy, diffusiveYenergy, diffusiveXwater, diffusiveYwater, diffusiveXdust, diffusiveYdust, convectiveEnergy, convectiveWater, convectiveDust, convectiveCO2, fluxXenergy, fluxXwater, fluxXdust, fluxXCO2, fluxYenergy, fluxYwater, fluxYdust, fluxYCO2, fdXenergy, fdXwater, fdXdust, fdXCO2, fdYenergy, fdYwater, fdYdust, fdYCO2):
 	var i : int

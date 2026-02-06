@@ -52,6 +52,7 @@ var kplpo : Array[int] = []
 var exp_zc : Array[float] = []
 
 func atm_grid_init(fromFile : bool = false) -> int:
+	climber_grid.climber_grid_init(GRID.GridType.ATMOSPHERIC)
 	#This won't alway be loaded from a file. See the atmosphere parameters for an idea of how this will generally be operated
 	if(fromFile):
 		var AtmParams = FileAccess.open(atmosphere_parameters.Output.OutputDirectory + "/CLIMBER_Model/Atmosphere/atm_param.json",FileAccess.READ)
@@ -199,7 +200,7 @@ func atm_grid_update(frst:Array[Array]):
 			if(zc[j] >= climber_grid.OutputArray[i].Surface):
 				climber_grid.OutputArray[i].K_Index_Terrain = j
 			#K index for vertical velocity for clouds
-			if(zc[j] > max(climber_grid.OutputArray[i].Surface, atmosphere_parameters.hcld_base)):
+			if(zc[j] > max(climber_grid.OutputArray[i].Surface, atmosphere_parameters.CloudHeight_Base)):
 				climber_grid.OutputArray[i].K_Index_Effective = j
 		#Surface air stuff based on elevation
 		climber_grid.OutputArray[i].Surface_Air_Density = climber_grid.OutputArray[i].Pressure_At_Surface*exp(-climber_grid.OutputArray[i].Surface / atmosphere_parameters.atmosphere_scale)
