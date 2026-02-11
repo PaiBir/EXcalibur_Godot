@@ -166,7 +166,7 @@ var Time_Out_TS : bool = false
 var Time_Out_TS_Geo : bool = false
 var Time_Out_TS_Clim : bool = false
 var Time_Out_TS_SMB : bool = false
-var Time_Out_TS_CMN : bool = false
+var Time_Out_CMN : bool = false
 var Time_Out_Atmosphere : bool = false
 var Time_Out_Land : bool = false
 var Time_Out_Ocean : bool = false
@@ -478,3 +478,103 @@ func timer_update():
 		BMB_EOM = false
 		BMB_EOY = false
 		Time_Out_BMB = false
+	
+	if(Controller.FLAG_ICESHEET):
+		Time_Call_Ice = fmod(Step + NStep_Day - 1, Step_Ice) == 0
+		Time_Out_Ice = (fmod(Year_True,NYear_Out_Ice) == 0) and (Current_Year > Year_Out_Start)
+	else:
+		Time_Call_Ice = false
+		Time_Out_Ice = false
+	
+	if(Controller.FLAG_GEO or (Controller.I_Fake_Geo == 1)):
+		Time_Call_Geo = (StepOfYear == 1) and (fmod(Year_True,Number_Of_Years_Geo) == 0)
+		Time_Out_Geo = (fmod(Year_True,NYear_Out_Geo) == 0) and (Current_Year > Year_Out_Start)
+	else:
+		Time_Call_Geo = false
+		Time_Out_Geo = false
+	
+	Time_SOY = StepOfYear == 1
+	BND_SOY = StepOfYear == 1
+	
+	#Seasons
+	if(Year_Call_Accel):
+		Time_Call_Clim = (fmod(Step, 1) == 0)
+		if(NStep_Month == 0):
+			Time_EOM = 0
+		else:
+			Time_EOM = (fmod(StepOfYear, NStep_Month) == 0)
+		Time_EOY = (fmod(StepOfYear, NStep_Year) == 0)
+	else:
+		Time_Call_Clim = false
+		Time_EOM = false
+		Time_EOY = 0
+	
+	#Output
+	Time_Out_CMN = (fmod(Year_True,NYear_Out_CMN) == 0) and (Current_Year >= Year_Out_Start)
+	
+	if(Time_SOY):
+		#time series for geo
+		Year_Out_TS_GEO = int(fmod(Year_True, NYear_Out_TS_GEO))
+		if(Year_Out_TS_GEO == 0):
+			Year_Out_TS_GEO = NYear_Out_TS_GEO
+		if((Year_True == Number_Of_Years_Geo) or (Year_Out_TS_GEO == NYear_Out_TS_GEO)):
+			Time_Out_TS_Geo = true
+		else:
+			Time_Out_TS_Geo = false
+		@warning_ignore("integer_division")
+		Year_Out_TS_GEO = Year_Out_TS_GEO / Number_Of_Years_Geo
+		
+		#time series for Climate (other than ice sheets and SMB)
+		Year_Out_TS_CLIM = int(fmod(Year_True, NYear_Out_TS_Acceleration))
+		if(Year_Out_TS_CLIM == 0):
+			Year_Out_TS_CLIM = NYear_Out_TS_Acceleration
+		if((Year_True == Number_Of_Years_Climate) or (Year_Out_TS_CLIM == NYear_Out_TS_Acceleration)):
+			Time_Out_TS_Clim = true
+		else:
+			Time_Out_TS_Clim = false
+		@warning_ignore("integer_division")
+		Year_Out_TS_CLIM = Year_Out_TS_CLIM / Number_Of_Years_Climate
+		
+		#time series for SMB
+		Year_Out_TS_SMB = int(fmod(Year_True, NYear_Out_TS_SMB))
+		if(Year_Out_TS_SMB == 0):
+			Year_Out_TS_SMB = NYear_Out_TS_SMB
+		if((Year_True == Number_Of_Years_Geo) or (Year_Out_TS_SMB == NYear_Out_TS_SMB)):
+			Time_Out_TS_SMB = true
+		else:
+			Time_Out_TS_SMB = false
+		@warning_ignore("integer_division")
+		Year_Out_TS_SMB = max(1,Year_Out_TS_SMB / Year_SMB)
+		
+		#time series for ice sheets
+		Year_Out_TS = int(fmod(Year_True, NYear_Out_TS))
+		if(Year_Out_TS == 0):
+			Year_Out_TS = NYear_Out_TS
+		if((Year_True == Number_Of_Years) or (Year_Out_TS == NYear_Out_TS)):
+			Time_Out_TS = true
+		else:
+			Time_Out_TS = false
+		@warning_ignore("integer_division")
+		Year_Out_TS = Year_Out_TS / Number_Of_Years
+	
+	if((Geo_Years >= 1) and (Year_True == 1)):
+		Year_Out_TS_GEO = 1
+	
+	if((Acceleration > 1) and (Year_True == 1)):
+		Year_Out_TS_CLIM = 1
+		Year_Out_TS_SMB = 1
+	
+	Write_Restart = false
+	if (Controller.i_write_restart == 0):
+		#Only write at the end
+		Write_Restart = (fmod(StepOfYear,NStep_Year) == 0) and (Year_True == Number_Of_Years)
+	elif (Controller.i_write_restart == 1):
+		#Regular frequency writing
+		Write_Restart = (fmod(StepOfYear,NStep_Year) == 0) and ((fmod(Year_True, Controller.n_year_write_restart) == 0) or ((Year_True == Number_Of_Years)))
+	elif (Controller.i_write_restart == 2):
+		#Specified times for writing
+		for i in range(Controller.years_write_restart):
+			if (fmod(StepOfYear,NStep_Year) == 0) and (Controller.years_write_restart[i] == Current_Year):
+				Write_Restart = true
+	
+	print("step = %s, year = %s, year_clim = %s, month = %s \n" % [Step,Year_True,Year_Climate,Month],"year_call_accel = %s\nDayOfYear = %s, StepOfYear = %s, time_SOY = %s" % [Year_Call_Accel,DayOfYear,StepOfYear,Time_SOY]) #truncated output checker. Expand if there are issues.

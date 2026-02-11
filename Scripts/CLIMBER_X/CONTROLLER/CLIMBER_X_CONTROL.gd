@@ -15,6 +15,7 @@ var RESTART_ICE_SHEET : bool = false
 var RESTART_SMB : bool = false
 var RESTART_BMB : bool = false
 #Don't know what to do with "Restart in dir"
+#So, as far as I can tell, this stuff is for either saving in case of failure, or it is basic data saving? Unsure
 var i_write_restart : int = 0
 var n_year_write_restart : int = 0
 var years_write_restart : Array[int] = []
@@ -55,3 +56,5 @@ var Year_Average_Offline : int = 0
 var FEEDBACKS : bool = false
 
 #Orbit and Star details to be handled by non-climber elements
+
+var I_Fake_Geo :int = 0
