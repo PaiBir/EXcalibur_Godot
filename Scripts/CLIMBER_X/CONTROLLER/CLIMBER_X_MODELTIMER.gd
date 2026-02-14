@@ -578,3 +578,50 @@ func timer_update():
 				Write_Restart = true
 	
 	print("step = %s, year = %s, year_clim = %s, month = %s \n" % [Step,Year_True,Year_Climate,Month],"year_call_accel = %s\nDayOfYear = %s, StepOfYear = %s, time_SOY = %s" % [Year_Call_Accel,DayOfYear,StepOfYear,Time_SOY]) #truncated output checker. Expand if there are issues.
+
+func monthTodaily(n : int):
+	var m0 : Array[int] = []
+	var m1 : Array[int] = []
+	var wtm0 : Array[float] = []
+	var wtm1 : Array[float] = []
+	var mid = DaysPerMonth / 2.0
+	var mnth = 0
+	#Interpolate
+	for i in range(n):
+		for j in range(MonthsPerYear+1):
+			if (j*DaysPerMonth) > i:
+				break
+			mnth = j
+		m1.append(mnth)
+		m0.append(mnth-1)
+		if (m1[i] > MonthsPerYear):
+			m1[i] = int(fmod(m1[i],MonthsPerYear))
+		if (m0[i] < 0):
+			m0[i] = int(fmod(m0[i],MonthsPerYear))
+		
+		var temp = int(fmod(i-mid,DaysPerMonth))
+		if (temp < 0):
+			temp = DaysPerMonth + i-mid
+		wtm1.append(abs(fmod(temp,DaysPerMonth)))
+		wtm0.append(MonthsPerYear - wtm1[i])
+		
+		var wtot = wtm0[i] + wtm1[i]
+		wtm0[i] = wtm0[i]/wtot
+		wtm1[i] = wtm1[i]/wtot
+	return {"m0" : m0, "m1" : m1, "wtm0" : wtm0, "wtm1" : wtm1}
+
+func timer_print():
+	if(Time_Call_Atmosphere):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [Atmosphere_SOD,Atmosphere_EOD,Atmosphere_EOM,Atmosphere_EOY])
+	if(Time_Call_Ocean):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [Ocean_SOD,Ocean_EOD,Ocean_EOM,Ocean_EOY])
+	if(Time_Call_SeaIce):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [SeaIce_SOD,SeaIce_EOD,SeaIce_EOM,SeaIce_EOY])
+	if(Time_Call_Land):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [Land_SOD,Land_EOD,Land_EOM,Land_EOY])
+	if(Time_Call_BGC):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [BGC_SOD,BGC_EOD,BGC_EOM,BGC_EOY])
+	if(Time_Call_SMB):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [SMB_SOD,SMB_EOD,SMB_EOM,SMB_EOY])
+	if(Time_Call_BMB):
+		print("atm: SOD = %s, EOD = %s, EOM = %s, EOY = %s" % [BMB_SOD,BMB_EOD,BMB_EOM,BMB_EOY])

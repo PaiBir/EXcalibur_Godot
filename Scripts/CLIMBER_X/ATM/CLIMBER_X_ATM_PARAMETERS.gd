@@ -176,6 +176,12 @@ var cp : float = 1000 #J/kg/K, specific heat of air at constant pressure
 var cv : float = 715 #J/kg/K, specific heat of air at constant volume
 var atmosphere_mass : float = 5.12e18 #kg, total mass of atmosphere. This WILL be replaced, mark my words
 
+#NEW parameters:
+var minimum_cloud_fraction = 0.1
+var density_so4 = 1.769E3
+var height_so4 = 1500
+var alpha_c = 2.5E-9
+
 func atm_params_init(fromFile : bool = false):
 	gad =  Planet.Gravity/ cp
 	atmosphere_scale = (Constants.specificGasConstant_dryair * Constants.ZeroCelsius)/Planet.Gravity
