@@ -98,6 +98,8 @@ static var specificGasConstant_watervapor := 461.5 #J/kg/K
 
 static var EarthAngularVelocity := 7.2921e-5 #l/s (I have no clue what unit l is)
 
+static var karman = 0.4 #von Karman constant
+
 static var ZeroCelsius = 273.15
 
 #Bibliography

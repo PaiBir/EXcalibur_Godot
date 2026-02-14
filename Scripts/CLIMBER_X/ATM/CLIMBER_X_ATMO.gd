@@ -17,6 +17,9 @@ var Atm_N2O : float #ppb
 var Atm_CFC11 : float #ppt
 var Atk_CFC12 : float #ppt
 
+#CRISA
+var z_reference := 100.0 #meters, reference height
+
 #Aspects from ATM_DEF
 var Hadley_Cell_Width : float #radians
 var InterTropicalConvergenceZone_Position : float #radians
@@ -28,6 +31,10 @@ var obliquity : float
 var t2m_glob_ann : float = 0
 var dt2m_glob_ann_cum : float = 0
 
+func sum(a,b):
+	return a+b
+
+##Adifa
 func Flux():
 	for j in (range(atm_grid.OutputArray.size())):
 		var neighbors = []
@@ -159,8 +166,9 @@ func Flux():
 			(atm_grid.OutputArray[j] as ATM_CELL).conv_dust[i] += (((atm_grid.OutputArray[j] as ATM_CELL).fa_dust[i] - (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).fa_dust[anti_neighbors[i]]) + ((atm_grid.OutputArray[j] as ATM_CELL).fd_dust[i] - (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).fddust[anti_neighbors[i]])) / (atm_grid.OutputArray[i] as ATM_CELL).sqr
 			(atm_grid.OutputArray[j] as ATM_CELL).conv_co2[i] += (((atm_grid.OutputArray[j] as ATM_CELL).fa_co2[i] - (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).fa_co2[anti_neighbors[i]]) + ((atm_grid.OutputArray[j] as ATM_CELL).fd_co2[i] - (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).fd_CO2[anti_neighbors[i]])) / (atm_grid.OutputArray[i] as ATM_CELL).sqr
 
-
+##Clouds
 func Clouds():
+	var cldlw : Array[float] = []
 	for j in range(atm_grid.OutputArray.size()):
 		(atm_grid.OutputArray[j] as ATM_CELL).fweff = tanh(atmosphere_parameters.c_Cloud[2] * (atm_grid.OutputArray[j] as ATM_CELL).weff)
 		##Cloud Fraction
@@ -185,5 +193,176 @@ func Clouds():
 		##Cloud Optical Thickness
 		var tcldm : float = (atm_grid.OutputArray[j] as ATM_CELL).T2a - Constants.ZeroCelsius - atmosphere_parameters.c_CloudOpticalThickness[0]
 		var ftemp : float = min(1.0, 1.0 + tanh(-tcldm / atmosphere_parameters.c_CloudOpticalThickness[1]))
-		var clotl : float = min(10.0, atmosphere_parameters.c_CloudOpticalThickness[2] * ftemp * ((atm_grid.OutputArray[j] as ATM_CELL).cloud))
+		var clotl : float = min(10.0, atmosphere_parameters.c_CloudOpticalThickness[2] * ftemp * pow((atm_grid.OutputArray[j] as ATM_CELL).Cloud_Fraction * (atm_grid.OutputArray[j] as ATM_CELL).AtmosphericWaterContent, atmosphere_parameters.c_CloudOpticalThickness[3]))
 		
+		#account for sulfate aerosols
+		if (atmosphere_parameters.l_so4_ie):
+			##anthropogenic influence
+			#m^-2
+			var anthro_so4 : float = (atm_grid.OutputArray[j] as ATM_CELL).SO4_Load / (atmosphere_parameters.density_so4 * 4 / 3 * PI * pow(atmosphere_parameters.r_so4,3))
+			#m^-3
+			var N_anthro_so4 : float = anthro_so4 / atmosphere_parameters.height_so4
+			#anthropogenic influence at cloud base (m^-3)
+			var cloud_so4 : float = N_anthro_so4 * exp(-1) + atmosphere_parameters.N_so4_nat
+			
+			var f_mod = (1.0 - exp(-atmosphere_parameters.alpha_c * cloud_so4)) / (1 - exp(-atmosphere_parameters.alpha_c * atmosphere_parameters.N_so4_nat))
+			
+			clotl = clotl * pow(f_mod, 0.33)
+			
+		(atm_grid.OutputArray[j] as ATM_CELL).Cloud_Optical_Thickness = (0.1 * clotl) + (0.9 * (atm_grid.OutputArray[j] as ATM_CELL).Cloud_Optical_Thickness)
+		cldlw.append((atm_grid.OutputArray[j] as ATM_CELL).Cloud_Fraction_Low)
+	
+	var smthed_cldlow = atm_grid.smooth_atm_mod.smooth2(cldlw,atm_grid.MeshTris,atmosphere_parameters.nsmooth_Cloud)
+	
+	for i in range(atm_grid.OutputArray.size()):
+		(atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction_Low = smthed_cldlow[i]
+		var cldn = min(max(1 - (1 - (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction_RH) * (1 - (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction_Low), atmosphere_parameters.minimum_cloud_fraction), atmosphere_parameters.Cloud_max)
+		(atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction = (0.1 * cldn) + (0.9 * (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction)
+
+##Crisa
+#Computation of the "cross-isobar angle", which I believe is basically the direction of change in the pressure level
+func Crisa():
+	var acbar_temp : Array[float] = []
+	var acbar_sc_temp : Array[float] = []
+	for i in range(atm_grid.OutputArray.size()):
+		## Drag coefficient
+		for n in range(5): #This number needs to be manually updated if more surface types are added
+			if ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.OCEAN): #OCEAN
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = atmosphere_parameters.cd0_ocn
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains[n] = atmosphere_parameters.cd0_ocn
+			if ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.SIC): #SEA ICE
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = atmosphere_parameters.cd0_sic
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains[n] = atmosphere_parameters.cd0_sic
+			if ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.LAKE): #LAKE
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = atmosphere_parameters.cd0_ocn
+				(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains[n] = atmosphere_parameters.cd0_ocn
+			else: #LAND OR ICE SHEET
+				if ((atm_grid.OutputArray[i] as ATM_CELL).frst[n] > 0):
+					(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = pow((Constants.karman/log(z_reference/((atm_grid.OutputArray[i] as ATM_CELL).Surface_Roughness[n] + (atm_grid.OutputArray[i] as ATM_CELL).Mountain_Roughness))),2)
+					(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains[n] = (Constants.karman/log(z_reference / (atm_grid.OutputArray[i] as ATM_CELL).Surface_Roughness[n]))
+				else:
+					(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = 0.01
+					(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] = 0.01
+		
+		#Grid cell average
+		(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_Average = (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient.reduce(sum,.0) * (atm_grid.OutputArray[i] as ATM_CELL).frst
+		#Average without mountains (orography)
+		(atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains_Average = (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains.reduce(sum,.0) * (atm_grid.OutputArray[i] as ATM_CELL).frst
+		
+		## The "Fun" part: Cross-Isobar Angles
+		
+		var rhs : float = 0
+		if (atmosphere_parameters.i_acbar == 1):
+			rhs = (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_Average / sqrt(abs(max(abs(2 * (Constants.EarthAngularVelocity * atmosphere_parameters.Planet.DaysSpeed) * sin(PI * (-atm_grid.OutputArray[i].LatLong.y) / 180.0)),atmosphere_parameters.fcoramin)))
+		elif (atmosphere_parameters.i_acbar == 2):
+			rhs = ((atm_grid.OutputArray[i] as ATM_CELL).frst[(atm_grid.surfaceTypes.SIC as int)] * (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_NoMountains_Average + (1-(atm_grid.OutputArray[i] as ATM_CELL).frst[(atm_grid.surfaceTypes.SIC as int)]) * (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient_Average) / sqrt(abs(max(abs(2 * (Constants.EarthAngularVelocity * atmosphere_parameters.Planet.DaysSpeed) * sin(PI * (-atm_grid.OutputArray[i].LatLong.y) / 180.0)),atmosphere_parameters.fcoramin)))
+		
+		var alfa := 0.0
+		var alfa0 := 0.0
+		var alfa1 := PI/4.0
+		for j in range(10): #Don't know why 10
+			alfa = 0.5*(alfa0 + alfa1)
+			var rhsn = sin(alfa)/sqrt(1.0-sin(2.0*alfa))
+			if (rhsn > rhs):
+				alfa1 = alfa
+			else:
+				alfa0 = alfa
+		alfa = min(max(alfa * atmosphere_parameters.acbar_scale, 0.05), atmosphere_parameters.acbar_max)
+		(atm_grid.OutputArray[i] as ATM_CELL).Acbar = alfa
+		(atm_grid.OutputArray[i] as ATM_CELL).sin_cos_Acbar = sin(alfa) * cos(alfa)
+		
+		acbar_temp.append(alfa)
+		acbar_sc_temp.append(sin(alfa) * cos(alfa))
+		
+		#solving cross-isobar angle per surface
+		for n in range(5): #Manually update if more surface types are added
+			rhs = (atm_grid.OutputArray[i] as ATM_CELL).Drag_Coefficient[n] / sqrt(abs(max(abs(2 * (Constants.EarthAngularVelocity * atmosphere_parameters.Planet.DaysSpeed) * sin(PI * (-atm_grid.OutputArray[i].LatLong.y) / 180.0)),atmosphere_parameters.fcoramin)))
+			alfa0 = 0
+			alfa1 = PI/4.0
+			for j in range(10):
+				alfa = 0.5*(alfa0 + alfa1)
+				var rhsn = sin(alfa)/sqrt(1.0-sin(2.0*alfa))
+				if (rhsn > rhs):
+					alfa1 = alfa
+				else:
+					alfa0 = alfa
+			alfa = min(max(alfa * atmosphere_parameters.acbar_scale, 0.05), atmosphere_parameters.acbar_max)
+			(atm_grid.OutputArray[i] as ATM_CELL).cos_Acbar[n] = cos(alfa)
+			(atm_grid.OutputArray[i] as ATM_CELL).sin_Acbar[n] = cos(alfa)
+			(atm_grid.OutputArray[i] as ATM_CELL).epsa[n] = sqrt(1 - sin(2 * alfa))
+	
+	var sm_acbar = atm_grid.smooth_atm_mod.smooth2(acbar_temp,atm_grid.MeshTris,atmosphere_parameters.nsmooth_acbar)
+	var sm_acbar_sc = atm_grid.smooth_atm_mod.smooth2(acbar_sc_temp,atm_grid.MeshTris,atmosphere_parameters.nsmooth_acbar)
+	
+	for i in range(atm_grid.OutputArray.size()):
+		(atm_grid.OutputArray[i] as ATM_CELL).Acbar = sm_acbar[i]
+		(atm_grid.OutputArray[i] as ATM_CELL).sin_cos_Acbar = sm_acbar_sc[i]
+
+##Dust
+func Dust():
+	for i in range(atm_grid.OutputArray.size()):
+		# Dust load
+		var heff = (atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale * atmosphere_parameters.atmosphere_scale / ((atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale + atmosphere_parameters.atmosphere_scale)
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Load = (atm_grid.OutputArray[i] as ATM_CELL).Surface_Dust_Ratio
+		
+		#Dry and wet dust deposition
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Dry_Deposition = atmosphere_parameters.c_dust_dry / (atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale * (atm_grid.OutputArray[i] as ATM_CELL).Dust_Load
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Wet_Deposition = atmosphere_parameters.c_dust_wet * (atm_grid.OutputArray[i] as ATM_CELL).Precipitation_Total * (atm_grid.OutputArray[i] as ATM_CELL).Dust_Load
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Deposition = (atm_grid.OutputArray[i] as ATM_CELL).Dust_Dry_Deposition + (atm_grid.OutputArray[i] as ATM_CELL).Dust_Wet_Deposition
+		
+		#Optical thickness
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Optical_Thickness = (atm_grid.OutputArray[i] as ATM_CELL).Dust_Load * atmosphere_parameters.c_dust_mec
+
+##VESTA
+#computation of lapse rate and height scales of moisture and dust
+func hscales():
+	for i in range(atm_grid.OutputArray.size()):
+		#Lapse Rate
+		var gs : Array[float] = []
+		gs.resize(5)
+		for n in range(5): #Manually set if the number of surfaces changes
+			var dt : float = ((atm_grid.OutputArray[i] as ATM_CELL).Skin_Temp[n]-(atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp)
+			if ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.OCEAN): #over ocean
+				if dt > 0:
+					gs[n] = (atmosphere_parameters.c_gam[3] * sqrt(dt))
+				else:
+					gs[n] = 10e-3 * dt
+				gs[n] = max(min(atmosphere_parameters.gams_max_ocn,gs[n]),atmosphere_parameters.gams_min_ocn)
+			elif ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.LAND): #over land
+				if ((atm_grid.OutputArray[i] as ATM_CELL).frst[n] > 0):
+					if (dt > 0):
+						gs[n] = atmosphere_parameters.c_gam[4] * dt
+					else:
+						gs[n] = atmosphere_parameters.c_gam[5] * dt
+					if ((atm_grid.OutputArray[i] as ATM_CELL).rb_sur > 50):
+						gs[n] = max(5e-3,gs[n]) #minimum lapse rate over land when rb_sur > 30 W/m2
+					gs[n] = max(min(atmosphere_parameters.gams_max_lnd,gs[n]), -atmosphere_parameters.gams_max_lnd)
+				#If the ground is frozen, screw it I guess
+			elif ((n as ATM_GRID.surfaceTypes) == atm_grid.surfaceTypes.LAKE): #over a lake
+				var gsl = [0,0]
+				if ((atm_grid.OutputArray[i] as ATM_CELL).frst[n] > 0): #icefree lakes are the same as the ocean 
+					if dt > 0:
+						gsl[0] = (atmosphere_parameters.c_gam[3] * sqrt(dt))
+					else:
+						gsl[0] = 10e-3 * dt
+					gsl[0] = max(min(atmosphere_parameters.gams_max_ocn,gs[n]),atmosphere_parameters.gams_min_ocn)
+				# icy lakes however, are the same as sea ice
+				gsl[2] = max(min(atmosphere_parameters.c_gam[4]*dt, atmosphere_parameters.gams_max_lnd), -atmosphere_parameters.gams_max_lnd)
+				gs[n] = (1.0-(atm_grid.OutputArray[i] as ATM_CELL).f_ice_lake) * gsl[0] + ((atm_grid.OutputArray[i] as ATM_CELL).f_ice_lake * gsl[1])
+		var gam_s
+
+#vertical structure
+func vesta():
+	pass
+
+#compute vertical temperature profile
+func t_proof():
+	pass
+
+#compute vertical relative humidity profile
+func rh_proof():
+	pass
+
+#compute height of tropopause
+func tropo_height():
+	pass
