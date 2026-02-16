@@ -57,7 +57,7 @@ var Precipitation_wcon : float = 0
 var Precipitation_over : float = 0
 var Cloud_Height : float = 0 #m
 var Cloud_Optical_Thickness : float = 0
-var Cloude_Albedo : float = 0
+var Cloud_Albedo : float = 0
 var Tropopause_Height : float = 0 #m
 var Tropopause_Pressure : float = 0
 var Tropopause_Temperature : float = 0 #K
@@ -106,7 +106,7 @@ var Rskina : float = 0
 var Temperature : Array[float] = [] #K
 var Specific_Humidity : Array[float] = [] #kg/kg
 var Temperature_Potential : Array[float] = []
-var Dust_Mass_Mixing : Array[float] = []
+var Dust_Mass_Mixing : float = 0
 
 var Acbar : float = 0
 var sin_cos_Acbar : float = 0

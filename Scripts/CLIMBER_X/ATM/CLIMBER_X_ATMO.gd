@@ -20,6 +20,10 @@ var Atk_CFC12 : float #ppt
 #CRISA
 var z_reference := 100.0 #meters, reference height
 
+#VESTA
+var hrs_min = 1e3
+var hrsmax = 10e3
+
 #Aspects from ATM_DEF
 var Hadley_Cell_Width : float #radians
 var InterTropicalConvergenceZone_Position : float #radians
@@ -71,7 +75,7 @@ func Flux():
 		for k in range(atm_grid.km):
 			var temperaturePotential_main := (atm_grid.OutputArray[j] as ATM_CELL).Temperature_Potential[k]
 			var specific_humidity_main := (atm_grid.OutputArray[j] as ATM_CELL).Specific_Humidity[k]
-			var dust_mass_ratio_main := (atm_grid.OutputArray[j] as ATM_CELL).Dust_Mass_Mixing[k]
+			var dust_mass_ratio_main := (atm_grid.OutputArray[j] as ATM_CELL).Dust_Mass_Mixing
 			var c3_main := (atm_grid.OutputArray[j] as ATM_CELL).Cam
 			var fa_main := (atm_grid.OutputArray[j] as ATM_CELL).fa[k]
 			
@@ -88,7 +92,7 @@ func Flux():
 			for i in range(neighbors):
 				temperaturePotential_neighbor = (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).Temperature_Potential[k]
 				specific_humidity_neighbor = (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).Specific_Humidity[k]
-				dust_mass_ratio_neighbor = (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).Dust_Mass_Mixing[k]
+				dust_mass_ratio_neighbor = (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).Dust_Mass_Mixing
 				c3_neighbor = (atm_grid.OutputArray[neighbors[i]] as ATM_CELL).Cam
 				
 				##Advective flux
@@ -303,7 +307,7 @@ func Dust():
 	for i in range(atm_grid.OutputArray.size()):
 		# Dust load
 		var heff = (atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale * atmosphere_parameters.atmosphere_scale / ((atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale + atmosphere_parameters.atmosphere_scale)
-		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Load = (atm_grid.OutputArray[i] as ATM_CELL).Surface_Dust_Ratio
+		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Load = (atm_grid.OutputArray[i] as ATM_CELL).Surface_Dust_Ratio * heff * (atm_grid.OutputArray[i] as ATM_CELL).ra_2_Average
 		
 		#Dry and wet dust deposition
 		(atm_grid.OutputArray[i] as ATM_CELL).Dust_Dry_Deposition = atmosphere_parameters.c_dust_dry / (atm_grid.OutputArray[i] as ATM_CELL).Dust_Height_scale * (atm_grid.OutputArray[i] as ATM_CELL).Dust_Load
@@ -349,7 +353,16 @@ func hscales():
 				# icy lakes however, are the same as sea ice
 				gsl[2] = max(min(atmosphere_parameters.c_gam[4]*dt, atmosphere_parameters.gams_max_lnd), -atmosphere_parameters.gams_max_lnd)
 				gs[n] = (1.0-(atm_grid.OutputArray[i] as ATM_CELL).f_ice_lake) * gsl[0] + ((atm_grid.OutputArray[i] as ATM_CELL).f_ice_lake * gsl[1])
-		var gam_s
+		var gam_s : float = gs.reduce(sum,0) * (atm_grid.OutputArray[i] as ATM_CELL).frst.reduce(sum,0)
+		#Bottom
+		var gam_b : float = atmosphere_parameters.c_gam[0] - atmosphere_parameters.c_gam[1] * (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Specific_Humidity
+		#Top
+		var gam_t : float = gam_b - atmosphere_parameters.c_gam[1] * (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Specific_Humidity + atmosphere_parameters.c_gam[2]
+		
+		#Height scale for relative humidity
+		var fi : float = max(min(atmosphere_parameters.c_hrs[5] * ((PI * (-(atm_grid.OutputArray[i] as ATM_CELL).LatLong.y) / 180.0) - InterTropicalConvergenceZone_Position) / (0.5 * Hadley_Cell_Width), PI/2.0), -PI/2.0)
+		var f_trop : float = 1-sin(fi)
+		var hrs : float = min(max(), atmosphere_parameters.hrs)
 
 #vertical structure
 func vesta():
