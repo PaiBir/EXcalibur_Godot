@@ -43,7 +43,7 @@ func SphericalToLatLong(pos : Vector2) ->Vector2:
 
 static var gases : Array[Dictionary] = [ #Needs sources
 	#EARTH
-	{"Name": "Nitrogen", "Weight":0}, 
+	{"Name": "Nitrogen", "Weight":0},
 	{"Name": "Atmoic Oxogen", "Weight":0},
 	{"Name": "Molecular Oxygen", "Weight":0},
 	{"Name": "Helium", "Weight":0},
@@ -104,3 +104,17 @@ static var ZeroCelsius = 273.15
 
 #Bibliography
 # Randall, D. A.; Ringler, T. D.; Heikes, R. P.; Jones, P.; Baumgardner, J. Climate Modeling with Spherical Geodesic Grids. Computing in Science & Engineering 2002, 4 (5), 32–41. https://doi.org/10.1109/MCISE.2002.1032427.
+
+func FQSAT_sp (T : float, p: float) -> float: #Not entirely sure what this function is *doing*
+	var Ti : float = 248
+	var r_w : float = 0
+	if(T > ZeroCelsius):
+		r_w = 1
+	elif ((T > Ti) and (T < ZeroCelsius)):
+		r_w = 1 - ((ZeroCelsius - T) / (ZeroCelsius - Ti))
+	else:
+		r_w = 0
+	
+	var qsatw = 380.0047 * exp( 17.625 * (T - ZeroCelsius) / (T - 30.11)) / p # Pascals, water
+	var qsati = 380.1726 * exp( 22.587 * (T - ZeroCelsius) / (T + 0.71)) / p # Pascals, ice
+	return ((r_w * qsatw) + ((1 - r_w) * qsati))

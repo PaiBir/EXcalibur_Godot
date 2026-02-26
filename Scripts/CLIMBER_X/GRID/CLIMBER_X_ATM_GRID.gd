@@ -27,7 +27,7 @@ var llwr_a : Array[int] = [0,0,0,0]
 ##A lot of variables relating to the grid are being left out because they do not apply to a geodesic grid
 
 var surfaceArea : float = 4.0 * PI * pow(atmosphere_parameters.Planet.PlanetRadius * (Constants.EarthDiameter/2.0),2.0)
-var dy : float #Dunno what these are
+var dy : float
 var esqr : float
 var dxt : Array[float]
 

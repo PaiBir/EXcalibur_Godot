@@ -43,6 +43,7 @@ var LapseRate_Lower_Tropo : float = 0 #K/m
 var LapseRate_Upper_Tropo : float = 0 #K/m
 var Surface_Dust_Ratio : float = 0 #kg/kg
 var Vertical_Humidity_Scale : float = 0 #m
+var Vertical_Effective_Humidity_Scale : float = 0 #m
 var AtmosphericWaterContent : float = 0 #kg/m^2
 var Cloud_Fraction_RH : float = 0
 var Cloud_Fraction_Low : float = 0
@@ -106,7 +107,7 @@ var Rskina : float = 0
 var Temperature : Array[float] = [] #K
 var Specific_Humidity : Array[float] = [] #kg/kg
 var Temperature_Potential : Array[float] = []
-var Dust_Mass_Mixing : float = 0
+var Dust_Mass_Mixing : Array[float] = []
 
 var Acbar : float = 0
 var sin_cos_Acbar : float = 0

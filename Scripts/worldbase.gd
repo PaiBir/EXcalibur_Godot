@@ -32,6 +32,7 @@ var sM : int;
 var nM : int;
 var psM : int = -1;
 var pnM : int = -1;
+var frac_visible_UV : float = 0.45 #For earth. need equations to handle this for any star
 
 #CAMERA
 var CamDistance : float = 2 #Units
