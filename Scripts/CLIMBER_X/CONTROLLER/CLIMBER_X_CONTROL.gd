@@ -57,4 +57,134 @@ var FEEDBACKS : bool = false
 
 #Orbit and Star details to be handled by non-climber elements
 
-var I_Fake_Geo :int = 0
+var ivolc : int = 0
+var volc_const : float = 0
+var volc_file : String = ""
+var volc_scale : float = 0
+
+var isea_level : int = 0
+var sea_level_const : float = 0
+var sea_level_init : float = 0
+var sea_level_file : String = ""
+
+var ico2 : int = 0
+var id13c : int = 0
+var id14c : int = 0
+var co2_const : float = 0
+var d13c_atm_const : float = 0
+var d14c_atm_const : float = 0
+var co2_file : String = ""
+var d13c_file : String = ""
+var d14c_file : String = ""
+
+var dco2_dt : float = 0
+var co2_max : float = 0
+
+var ico2_rad : int = 0
+var co2_ref : float = 0
+var co2_rad_const : float = 0
+var co2_rad_file : String = ""
+
+var iC14_production : int = 0
+var C14_production_const : float = 0
+var C14_production_file : String = ""
+
+var ico2_degas : int = 0
+var co2_degas_const : float = 0
+var d13c_degas : float = 0
+var co2_degas_file : String = ""
+
+var FLAG_WEATHERING : bool = false
+
+var d13c_weath : float = 0
+
+var ico2_emis : int = 0
+var co2_emis_const : float = 0
+var co2_emis_file : String = ""
+var co2_pulse : float = 0
+var k_emis_fb : float = 0
+var C_emis_gb : float = 0
+var co2_emis_min : float = 0
+
+var id13C_emis : int = 0
+var d13C_emis_const : float = 0
+var d13C_emis_file : String = ""
+
+var FLAG_C13 : bool = false
+var FLAG_C14 : bool = false
+var FLAG_OCEAN_CO2 : bool = false
+var FLAG_LAND_CO2 : bool = false
+
+var ich4 : int = 0
+var ch4_ref : float = 0
+var ch4_const : float = 0
+var i_ch4_tau : float = 0
+var ch4_tau_const : float = 0
+var ch4_file : String = ""
+var ch4_tau_file : String = ""
+var ch4_NOx_VOC_file : String = ""
+
+var ich4_rad : int = 0
+var ch4_rad_const : float = 0
+var ch4_rad_file : String = ""
+
+var in2o : int = 0
+var n2o_ref : float = 0
+var n2o_const : float = 0
+var i_n2o_tau : int = 0
+var n2o_tau_const : float = 0
+var n2o_file : String = ""
+
+var in2o_rad : int = 0
+var n2o_rad_const : float = 0
+var n2o_rad_file : String = ""
+
+var in2o_emis : int = 0
+var n2o_emis_const : float = 0
+var n2o_emis_file : String = ""
+
+var iso4 : int = 0
+var so4_const : float = 0
+var so4_file : String = ""
+
+var io3 : int = 0
+var o3_const : float = 0
+var o3_file_const : String = ""
+var o3_file_var : String = ""
+
+var icfc : int = 0
+var cfc11_const : float = 0
+var cfc_12_const : float = 0
+var cfc_file : String = ""
+
+var iluc : int = 0
+var luc_file : String = ""
+
+var idist : int = 0
+var dist_file : String = ""
+
+var in_dir : String = ""
+var out_dir : String = ""
+
+var I_Fake_ATM : int = 0
+var PRC_forcing : int = 0
+var I_Fake_Dust : int = 0
+var I_Fake_OCEAN : int = 0
+var I_Fake_SEA_ICE : int = 0
+var I_Fake_Ice : int = 0
+var I_Fake_GEO : int = 0
+
+var Fake_ATM_CONST_FILE : String = ""
+var Fake_ATM_VAR_FILE : String = ""
+var Fake_DUST_CONST_FILE : String = ""
+var Fake_DUST_VAR_FILE : String = ""
+var Fake_OCEAN_CONST_FILE : String = ""
+var Fake_OCEAN_VAR_FILE : String = ""
+var Fake_SEA_ICE_CONST_FILE : String = ""
+var Fake_SEA_ICE_VAR_FILE : String = ""
+var Fake_LAND_CONST_FILE : String = ""
+var Fake_ICE_VAR_FILE : String = ""
+var Fake_ICE_CONST_FILE : String = ""
+var Fake_GEO_VAR_FILE : String = ""
+var Fake_GEO_CONST_FILE : String = ""
+var Fake_GEO_REF_FILE : String = ""

@@ -1,7 +1,7 @@
 class_name CLIMBER_X_ATMO
 extends Node
 
-#ADIFA
+##ADIFA
 var atmosphere_parameters : ATM_PARAM
 var atm_grid : ATM_GRID
 var model_timer : MODELTIMER
@@ -12,16 +12,16 @@ var Equivalent_CO2 : float #ppmv
 var Atm_CH4 : float #ppb
 var Atm_N2O : float #ppb
 var Atm_CFC11 : float #ppt
-var Atk_CFC12 : float #ppt
+var Atm_CFC12 : float #ppt
 
-#CRISA
+##CRISA
 var z_reference := 100.0 #meters, reference height
 
-#VESTA
+##VESTA
 var hrs_min : float = 1e3
 var hrs_max : float = 10e3
 
-#SHORT-WAVE RADIATION
+##SHORT-WAVE RADIATION
 var p_sw : Array[float] = [-1.97, 0.82, 0.35, 0.67]
 var alf_sw : Array[float] = [7.73e-2, 2.39e-2, 1.51e2]
 var gam_ar_sw : Array[float] = [2.75,0.636]
@@ -29,7 +29,24 @@ var gl_c_sw : float = 0.14
 var cld_gt : float = 1000
 var c_itf_o = 0.98
 
-#Aspects from ATM_DEF
+##LONG-WAVE RADIATION
+var emis_lw : float = 1 #atmospheric emissivity
+var h0_lw : float = 0 #height scale (cm)
+var beta0_lw : float = 1.66
+#CO2
+var a0_co2_lw : float = 0.247
+var a1_co2_lw : float = 0.755
+var q_co2_lw : float = 0
+#Ozone
+var ak_o3_lw : float = 0.6 #"from tuning of total LW contribution by O3
+var a_o3_lw : float = 8.246
+var beta_o3_lw : float = 0.539
+
+var z_atm_lw : float = 30e3
+
+var feedbackanalysis : bool = false
+
+##Aspects from ATM_DEF
 var Hadley_Cell_Width : float #radians
 var InterTropicalConvergenceZone_Position : float #radians
 
@@ -52,7 +69,6 @@ func sum(a : Array,b : Array, o : int) -> float: #o = 0: addition, o = 1: subtra
 		elif o == 3:
 			total += (a[i] / b[i])
 	return total
-
 
 ##Adifa
 func Flux():
@@ -617,7 +633,6 @@ func sw_radiation(frost_power : float, run_dswd_dalb : bool = false):
 #calculation of the short-wave radiation at the top and bototm of the atmosphere in a single column using two-stream approximation
 func sw_radiation_col(solar_top : float, coszen : float, cld : float, q2 : float, ra2 : float, alb_sur_vu_s : float, alb_sur_ir_s : float, alb_sur_vu_c : float, alb_sur_ir_c : float, aerosol_ot : float, aerosol_im : float, so4 : float, cld_ot : float, h_c : float, h_q : float, run_dswd_dalb : bool = false) -> Dictionary:
 	var out_col : Dictionary = {}
-	var alb_cld : float = 0
 	#This function comes with a key!
 	# ift_			integral transmission function
 	#    _atm_		entire atmosphere
@@ -842,7 +857,6 @@ func sw_radiation_col(solar_top : float, coszen : float, cld : float, q2 : float
 	alb_cld_vu = 1 - (1 - alb_sct_vu) * exp(-b_c * cld_ot ** p_sw[3])
 	alb_cld_ir = 1 - (1 - alb_sct_ir) * exp(-b_c * cld_ot ** p_sw[3])
 	out_col["alb_cld"] = alb_cld_vu
-	alb_cld = alb_cld_vu
 	
 	#Planetary Albedo
 	alb_atm_ir_c = (alb_cld_ir + (1 - alb_cld_ir) ** 2 * alb_sa_ir_c) / (1 - alb_cld_ir * alb_sa_ir_s) * itf_w_ir_c * itf_c_ir * itf_a_ir_c * itf_o_ir_c
@@ -955,11 +969,98 @@ func sw_radiation_col(solar_top : float, coszen : float, cld : float, q2 : float
 		drqh_dz = 1e-3 * 100 * h_q * (ra2 * q2 / (-100 * h_q) + q2 * ra2 / (-100 * atmosphere_parameters.atmosphere_scale))
 		dm_w_c_d1_dz = 1 / cos_zen * drqh_dz
 		dm_w_c_d2_dz = dm_w_s_d1_dz + (1 - 0.7788008) * 2 / cos_zen_o * drqh_dz
-		ditf_w_ir_c_d1_dz = atmosphere_parameters.a1_w * (atmosphere_parameters.b1_w) * exp(-atmosphere_parameters.b1_w * m_w_s_d1) * dm_w_s_d1_dz + atmosphere_parameters.a2_w * (-atmosphere_parameters.b2_w) * exp(-atmosphere_parameters.b2_w * m_w_s_d1) * dm_w_s_d1_dz
-		ditf_w_ir_c_d2_dz = atmosphere_parameters.a1_w * (atmosphere_parameters.b1_w) * exp(-atmosphere_parameters.b1_w * m_w_s_d2) * dm_w_s_d2_dz + atmosphere_parameters.a2_w * (-atmosphere_parameters.b2_w) * exp(-atmosphere_parameters.b2_w * m_w_s_d2) * dm_w_s_d2_dz
-		out_col["dswd_dz_ir_cld"] = solar_top * ((1 - alb_cld_ir) * itf_c_ir_d1 * itf_a_vu_d1 * itf_o_vu_d1 * ditf_w_ir_c_d1_dz + (1 - alb_cld_ir) * alb_sa_ir_s * alb_sct_ir / (1 - alb_sct_ir * alb_sa_ir_s) * itf_c_ir_d2 * itf_a_ir_d2 * itf_o_ir_d2 * ditf_w_ir_s_d2_dz) * 100 #W/m2/m
+		ditf_w_ir_c_d1_dz = atmosphere_parameters.a1_w * (atmosphere_parameters.b1_w) * exp(-atmosphere_parameters.b1_w * m_w_s_d1) * dm_w_c_d1_dz + atmosphere_parameters.a2_w * (-atmosphere_parameters.b2_w) * exp(-atmosphere_parameters.b2_w * m_w_s_d1) * dm_w_c_d1_dz
+		ditf_w_ir_c_d2_dz = atmosphere_parameters.a1_w * (atmosphere_parameters.b1_w) * exp(-atmosphere_parameters.b1_w * m_w_s_d2) * dm_w_c_d2_dz + atmosphere_parameters.a2_w * (-atmosphere_parameters.b2_w) * exp(-atmosphere_parameters.b2_w * m_w_s_d2) * dm_w_c_d2_dz
+		out_col["dswd_dz_ir_cld"] = solar_top * ((1 - alb_cld_ir) * itf_c_ir_d1 * itf_a_vu_d1 * itf_o_vu_d1 * ditf_w_ir_c_d1_dz + (1 - alb_cld_ir) * alb_sa_ir_s * alb_sct_ir / (1 - alb_sct_ir * alb_sa_ir_s) * itf_c_ir_d2 * itf_a_ir_d2 * itf_o_ir_d2 * ditf_w_ir_c_d2_dz) * 100 #W/m2/m
 	
 	#Final calculation!
 	out_col["solar_sur"] = (1 - cld) * out_col["solar_sur_s"] + cld * out_col["solar_sur_c"]
 	
 	return out_col
+
+##LW_RADIATION
+
+#driver for long-wave radiation
+func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], gams_q : Array[float] = [], gamb_q : Array[float] = [], gamt_q : Array[float] = [], tam_q : Array[float] = [], ttrop_q : Array[float] = [], htrop_q : Array[float] = []):
+	#W/m2/ppm
+	var a1 : float = -2.4e-7
+	var b1 : float = 7.2e-4
+	var c1 : float = -2.1e-4
+	var a2 : float = -8e-6
+	var b2 : float = 4.2e-6
+	var c2 : float = -4.9e-6
+	var a3 : float = -1e-6
+	var b3 : float = -8.2e-6
+	
+	
+	if(gams_q.size() > 0):
+		feedbackanalysis = true
+	else:
+		feedbackanalysis = false
+	
+	h0_lw = atmosphere_parameters.atmosphere_scale * 100 #m -> cm
+	
+	##Compute Effective CO2 concentration for longwave radiation
+	#Using table 1 in Etminan et al., 2016
+	var co2_bar : float = 0.5 * (Atm_CO2 + controller.co2_ref)
+	var ch4_bar : float = 0.5 * (Atm_CH4 + controller.ch4_ref)
+	var n2o_bar : float = 0.5 * (Atm_N2O + controller.n2o_ref)
+	
+	var rf_co2 = (a1 * (Atm_CO2 - controller.co2_ref) ** 2 + b1 * abs(Atm_CO2 + controller.co2_ref) + c1 * controller.n2o_bar + 5.36) * log(Atm_CO2 / controller.co2_ref)
+	var rf_n2o = (a2 * co2_bar + b2 * n2o_bar + c2 * ch4_bar + 0.117) * (sqrt(Atm_N2O) - sqrt(controller.n2o_ref))
+	var rf_ch4 = (a3 * ch4_bar + b3 * n2o_bar + 0.043) * (sqrt(Atm_CH4) - sqrt(controller.ch4_ref))
+	var rf_cfc11 = 0.25 * 1e-3 + Atm_CFC11 #Table 3 from Myhre et al., 1998
+	var rf_cfc12 = 0.33 * 1e-3 * Atm_CFC12 #Table 3 from Myhre et al., 1998
+	
+	#Convert Greenhouse Gases into CO2 concentration
+	var co2e = controller.co2_ref * exp((rf_co2 + rf_ch4 + rf_n2o + rf_cfc11 + rf_cfc12) / (a1 * (Atm_CO2 - controller.co2_ref) ** 2 + b1 * abs(Atm_CO2 - controller.co2_ref) + c1 * n2o_bar + 5.36)) #ppmv
+	co2e = exp(ecs_scale * log(co2e) + (1 - ecs_scale) * log(controller.co2_ref))
+	
+	#ppm to mass mixing
+	var q_co2_lw = co2e * 1e-6 * 44.0095 / 28.97 #kg/kg
+	
+	for i in range(atm_grid.OutputArray.size()):
+		for n in atm_grid.numSurfaceTypes:
+			var zlwr : float = 0
+			var tlwr : float = 0
+			var qlwr : float = 0
+			var o3lwr : float = 0
+			#Atmospheric charactreristics at vertical levels
+			if(!feedbackanalysis):
+				var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration)
+				zlwr = Out_Col_L["zlwr"]
+				tlwr = Out_Col_L["tlwr"]
+				qlwr = Out_Col_L["qlwr"]
+				o3lwr = Out_Col_L["o3lwr"]
+			else:
+				var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration, gams_q[i], gamb_q[i], gamt_q[i], tam_q[i], ttrop_q[i], htrop_q[i])
+				zlwr = Out_Col_L["zlwr"]
+				tlwr = Out_Col_L["tlwr"]
+				qlwr = Out_Col_L["qlwr"]
+				o3lwr = Out_Col_L["o3lwr"]
+			
+			#Clear sky and cloudy conditions
+			var Out_Col = lwr_transfer((atm_grid.OutputArray[i] as ATM_CELL).ra_2[2], (atm_grid.OutputArray[n] as ATM_CELL).Cloud_Optical_Thickness, zlwr, tlwr, qlwr, o3lwr)
+			var BSB : Array[bool] = Out_Col["BSB"]
+			var DCS : Array[bool] = Out_Col["DCS"]
+			var DCL : Array[bool] = Out_Col["DCL"]
+
+#combine clear sky and cloudy long-wave radiation
+func lwr_total():
+	pass
+
+#derive temperature, humidity and ozone at long-wave radiation levels
+func lwr_column(zsa : float, zs : float, htrop : float, hcld : float, gams : float, gamb : float, gamt : float, tam : float, ram : float, hrm : float, ttrop : float, O3 : Array[float], gams_q : float = 0.0, gamb_q : float = 0.0, gamt_q : float = 0.0, tam_q : float = 0.0, ttrop_q : float = 0.0, htrop_q : float = 0.0):
+	pass
+
+#computation of long-wave radiation transfer
+func lwr_transfer(ra2 : float, clot : float, zlwr : float, tlwr : float, qlwr : float, o3lwr : float):
+	pass
+
+#computation of long-wave radiation fluxes for clear sky conditions
+func lwr_clear_sky():
+	pass
+
+#computation of long-rave radiation fluxes for cloudy conditions
+func lwr_clouds():
+	pass
