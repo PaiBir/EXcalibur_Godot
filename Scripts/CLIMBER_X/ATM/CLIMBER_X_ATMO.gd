@@ -36,7 +36,6 @@ var beta0_lw : float = 1.66
 #CO2
 var a0_co2_lw : float = 0.247
 var a1_co2_lw : float = 0.755
-var q_co2_lw : float = 0
 #Ozone
 var ak_o3_lw : float = 0.6 #"from tuning of total LW contribution by O3
 var a_o3_lw : float = 8.246
@@ -45,6 +44,22 @@ var beta_o3_lw : float = 0.539
 var z_atm_lw : float = 30e3
 
 var feedbackanalysis : bool = false
+
+## FEEDBACKS
+var i_control : int = 0
+var i_pl : int  = 1
+var i_wv : int  = 2
+var i_cld : int = 3
+var i_lr : int  = 4
+var i_alb : int = 5
+var i_cld_frac : int = 6
+var i_cld_clot : int = 7
+var i_cld_hcld : int = 8
+var i_lr_gam : int  = 9
+var i_lr_tam : int  = 10
+var i_temp : int = 11
+var i_all : int = 12
+var nfb : int = 12
 
 ##Aspects from ATM_DEF
 var Hadley_Cell_Width : float #radians
@@ -1017,50 +1032,410 @@ func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], gams_q : Array[
 	co2e = exp(ecs_scale * log(co2e) + (1 - ecs_scale) * log(controller.co2_ref))
 	
 	#ppm to mass mixing
-	var q_co2_lw = co2e * 1e-6 * 44.0095 / 28.97 #kg/kg
+	var q_co2 = co2e * 1e-6 * 44.0095 / 28.97 #kg/kg
 	
 	for i in range(atm_grid.OutputArray.size()):
+		var flwr_sur : Array[float] = []
+		flwr_sur.resize(atm_grid.numSurfaceTypes)
+		var flwr_top : Array[float] = []
+		flwr_top.resize(atm_grid.numSurfaceTypes)
+		var flwr_top_cs : Array[float] = []
+		flwr_top_cs.resize(atm_grid.numSurfaceTypes)
+		var flwr_top_cld : Array[float] = []
+		flwr_top_cld.resize(atm_grid.numSurfaceTypes)
+		var flwr_tro : Array[float] = []
+		flwr_tro.resize(atm_grid.numSurfaceTypes)
+		var flwr_cld : Array[float] = []
+		flwr_cld.resize(atm_grid.numSurfaceTypes)
+		(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur.resize(atm_grid.numSurfaceTypes)
+		(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_cs.resize(atm_grid.numSurfaceTypes)
+		(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_Cloud.resize(atm_grid.numSurfaceTypes)
+		var fst : Array[float] = []
+		fst.resize(atm_grid.numSurfaceTypes)
 		for n in atm_grid.numSurfaceTypes:
-			var zlwr : float = 0
-			var tlwr : float = 0
-			var qlwr : float = 0
-			var o3lwr : float = 0
-			#Atmospheric charactreristics at vertical levels
-			if(!feedbackanalysis):
-				var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration)
-				zlwr = Out_Col_L["zlwr"]
-				tlwr = Out_Col_L["tlwr"]
-				qlwr = Out_Col_L["qlwr"]
-				o3lwr = Out_Col_L["o3lwr"]
+			var zlwr : Array[float] = []
+			var tlwr : Array[float] = []
+			var qlwr : Array[float] = []
+			var o3lwr : Array[float] = []
+			fst[n] = (atm_grid.OutputArray[i] as ATM_CELL).frst[n]
+			if((fst[n] > 0) or (n == (atm_grid.surfaceTypes.OCEAN as int))):
+				#Atmospheric charactreristics at vertical levels
+				if(!feedbackanalysis):
+					var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration)
+					zlwr = Out_Col_L["zlwr"]
+					tlwr = Out_Col_L["tlwr"]
+					qlwr = Out_Col_L["qlwr"]
+					o3lwr = Out_Col_L["o3lwr"]
+				else:
+					var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration, gams_q[i], gamb_q[i], gamt_q[i], tam_q[i], ttrop_q[i], htrop_q[i])
+					zlwr = Out_Col_L["zlwr"]
+					tlwr = Out_Col_L["tlwr"]
+					qlwr = Out_Col_L["qlwr"]
+					o3lwr = Out_Col_L["o3lwr"]
+				
+				#Clear sky and cloudy conditions
+				var Out_Col = lwr_transfer((atm_grid.OutputArray[i] as ATM_CELL).ra_2[2], (atm_grid.OutputArray[n] as ATM_CELL).Cloud_Optical_Thickness, zlwr, tlwr, qlwr, o3lwr, q_co2)
+				var BSB : Array[float] = Out_Col["BSB"]
+				var DCS : Array[Array] = Out_Col["DCS"]
+				var DCL : Array[Array] = Out_Col["DCL"]
+				
+				#Fluxes for clear and cloudy conditions
+				Out_Col = lwr_clear_sky(flwr_up_sur[i][n], BSB, DCS)
+				var fcs_up = Out_Col["fcs_up"]
+				var fcs_dw = Out_Col["fcs_dw"]
+				
+				Out_Col = lwr_clouds(flwr_up_sur[i][n], BSB, DCL)
+				var fcl_up = Out_Col["fcl_up"]
+				var fcl_dw = Out_Col["fcl_dw"]
+				
+				#Total fluxes
+				Out_Col = lwr_total((atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction, fcs_up, fcs_dw, fcl_up, fcl_dw)
+				flwr_sur[n] = Out_Col["flwr_sur"]
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur[n] = Out_Col["flwr_dw_sur"]
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_cs[n] = Out_Col["flwr_dw_sur_cs"]
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_Cloud[n] = Out_Col["flwr_dw_sur_cld"]
+				flwr_top[n] = Out_Col["flwr_top"]
+				flwr_top_cs[n] = Out_Col["flwr_top_cs"]
+				flwr_top_cld[n] = Out_Col["flwr_top_cld"]
+				flwr_tro[n] = Out_Col["flwr_tro"]
+				flwr_cld[n] = Out_Col["flwr_cld"]
 			else:
-				var Out_Col_L = lwr_column((atm_grid.OutputArray[i] as ATM_CELL).Surface, (atm_grid.OutputArray[i] as ATM_CELL).ZS[n], (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height, (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height, (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp, (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity, (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale, (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature, (atm_grid.OutputArray[i] as ATM_CELL).Ozone_Concentration, gams_q[i], gamb_q[i], gamt_q[i], tam_q[i], ttrop_q[i], htrop_q[i])
-				zlwr = Out_Col_L["zlwr"]
-				tlwr = Out_Col_L["tlwr"]
-				qlwr = Out_Col_L["qlwr"]
-				o3lwr = Out_Col_L["o3lwr"]
-			
-			#Clear sky and cloudy conditions
-			var Out_Col = lwr_transfer((atm_grid.OutputArray[i] as ATM_CELL).ra_2[2], (atm_grid.OutputArray[n] as ATM_CELL).Cloud_Optical_Thickness, zlwr, tlwr, qlwr, o3lwr)
-			var BSB : Array[bool] = Out_Col["BSB"]
-			var DCS : Array[bool] = Out_Col["DCS"]
-			var DCL : Array[bool] = Out_Col["DCL"]
+				flwr_sur[n] = 0
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur[n] = 0
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_cs[n] = 0
+				(atm_grid.OutputArray[i] as ATM_CELL).flwr_dw_sur_Cloud[n] = 0
+				flwr_top[n] = 0
+				flwr_top_cs[n] = 0
+				flwr_top_cld[n] = 0
+				flwr_tro[n] = 0
+				flwr_cld[n] = 0
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_sur = sum(flwr_sur,fst,2)
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_top = sum(flwr_top,fst,2)
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_top_Clear = sum(flwr_top_cs,fst,2)
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_top_Cloudy = sum(flwr_top_cld,fst,2)
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_tro = sum(flwr_tro,fst,2)
+		(atm_grid.OutputArray[i] as ATM_CELL).lwr_Cloudy = sum(flwr_cld,fst,2)
 
 #combine clear sky and cloudy long-wave radiation
-func lwr_total():
-	pass
+func lwr_total(cld : float, fcs_up : Array[float], fcs_dw : Array[float], fcl_up : Array[float], fcl_dw : Array[float]):
+	var OutCol : Dictionary = {}
+	#Surface Fluxes
+	OutCol["flwr_sur"] = (1 - cld) * (fcs_dw[0] - fcs_up[0]) + cld * (fcl_dw[0] - fcl_up[0])
+	OutCol["flwr_dw_sur"] = (1 - cld) * fcs_dw[0] + cld * fcl_dw[0]
+	OutCol["flwr_dw_sur_cs"] = fcs_dw[0]
+	OutCol["flwr_dw_sur_cld"] = fcl_dw[0]
+	
+	#Net fluxes at TOA, positive down
+	OutCol["flwr_top"] = -((1 - cld) * fcs_dw[atm_grid.llwr]) + cld * fcl_up[atm_grid.llwr]
+	OutCol["flwr_top_cs"] = -fcs_up[atm_grid.llwr]
+	OutCol["flwr_top_cld"] = -fcl_up[atm_grid.llwr]
+	
+	#Fluxes at the tropopause
+	var k : int = atm_grid.llwr_a[2]
+	OutCol["flwr_up_tro"] = (1 - cld) * fcs_up[k] + cld * fcl_up[k]
+	OutCol["flwr_dw_tro"] = (1 - cld) * fcs_dw[k] + cld * fcl_dw[k]
+	OutCol["flwr_tro"] = OutCol["flwr_dw_tro"] - OutCol["flwr_up_tro"]
+	
+	#Fluxes at cloud base
+	k = atm_grid.llwr_a[0]
+	OutCol["flwr_up_cld"] = (1 - cld) * fcs_up[k] + cld * fcl_up[k]
+	OutCol["flwr_dw_cld"] = (1 - cld) * fcs_dw[k] + cld * fcl_dw[k]
+	OutCol["flwr_cld"] = OutCol["flwr_dw_cld"] - OutCol["flwr_up_cld"]
+	
+	return OutCol
 
 #derive temperature, humidity and ozone at long-wave radiation levels
-func lwr_column(zsa : float, zs : float, htrop : float, hcld : float, gams : float, gamb : float, gamt : float, tam : float, ram : float, hrm : float, ttrop : float, O3 : Array[float], gams_q : float = 0.0, gamb_q : float = 0.0, gamt_q : float = 0.0, tam_q : float = 0.0, ttrop_q : float = 0.0, htrop_q : float = 0.0):
-	pass
+func lwr_column(zsa : float, zs : float, htrop : float, hcld : float, gams : float, gamb : float, gamt : float, tam : float, ram : float, hrm : float, ttrop : float, O3 : Array[float], gams_q : float = -INF, gamb_q : float = 0.0, gamt_q : float = 0.0, tam_q : float = 0.0, ttrop_q : float = 0.0, htrop_q : float = 0.0):
+	var OutCol : Dictionary = {}
+	#Cloud parameters
+	var z_cld_bot : float = zs + atmosphere_parameters.hpbl
+	var z_cld_top : float = min(max(hcld, z_cld_bot + 1000), htrop - 1000)
+	
+	#Layers thickness
+	var dz_l1 : float = (z_cld_bot - zs) / (atm_grid.nlwr_a[0] - 1)
+	var dz_l2 : float = (z_cld_top - z_cld_bot) / atm_grid.nlwr_a[1]
+	var dz_l3 : float = (htrop - z_cld_top) / atm_grid.nlwr_a[2]
+	var dz_l4 : float = (z_atm_lw - htrop) / atm_grid.nlwr_a[3]
+	
+	#LEVELS:
+	#K = 1: Surface
+	#K = nlwr_a[0]: Cloud Bottom
+	#K = nlwr_a[1]: Cloud Top
+	#K = nlwr_a[2]: Tropopause
+	#K = nlwr_a[3]: Top of the Atmosphere
+	
+	OutCol["zlwr"] = []
+	OutCol["zlwr"].append(zs)
+	
+	for k in range(1,atm_grid.nlwr_a[0]):
+		OutCol["zlwr"].append(OutCol["zlwr"][k-1] + dz_l1)
+	
+	for k in range(atm_grid.nlwr_a[0],atm_grid.nlwr_a[1]):
+		OutCol["zlwr"].append(OutCol["zlwr"][k-1] + dz_l2)
+	
+	for k in range(atm_grid.nlwr_a[1],atm_grid.nlwr_a[2]):
+		OutCol["zlwr"].append(OutCol["zlwr"][k-1] + dz_l3)
+	
+	for k in range(atm_grid.nlwr_a[2],atm_grid.nlwr_a[3]):
+		OutCol["zlwr"].append(OutCol["zlwr"][k-1] + dz_l4)
+	
+	##Temperature and Humidity at Levels
+	# Surface
+	var tamz : float = t_prof(zs, OutCol["zlwr"][0],tam, gams, gamb, gamt, htrop, 0)
+	OutCol["tlwr"] = []
+	OutCol["qlwr"] = []
+	OutCol["tlwr"].append(tamz)
+	OutCol["qlwr"].append(Constants.FQSAT_sp(OutCol["tlwr"][0], atmosphere_parameters.p0 * exp(-OutCol["zlwr"][0] / atmosphere_parameters.atmosphere_scale)) * ram)
+	
+	#Troposphere
+	for k in range(1,atm_grid.nlwr_a[2]):
+		OutCol["tlwr"].append(t_prof(zs, OutCol["zlwr"][k],tam, gams, gamb, gamt, htrop, 1))
+		var rqlwr : float = rh_prof(zs, OutCol["zlwr"][k], ram, hrm, htrop)
+		OutCol["qlwr"].append(Constants.FQSAT_sp(OutCol["tlwr"][k], atmosphere_parameters.p0 * exp(-OutCol["zlwr"][k] / atmosphere_parameters.atmosphere_scale)) * rqlwr)
+	
+	#Stratosphere
+	var qtrop : float = Constants.FQSAT_sp(ttrop, atmosphere_parameters.p0 * exp(-htrop / atmosphere_parameters.atmosphere_scale)) * atmosphere_parameters.rh_strat
+	for k in range(atm_grid.nlwr_a[2] + 1,atm_grid.nlwr_a[3]):
+		OutCol["tlwr"].append(ttrop)
+		OutCol["qlwr"].append(qtrop)
+	
+	#Feedback analysis
+	if(gams_q != -INF):
+		tamz = t_prof(zsa, OutCol["zlwr"][0], tam_q, gams_q, gamb_q, gamt_q, htrop_q, 0)
+		qtrop = Constants.FQSAT_sp(ttrop_q, atmosphere_parameters.p0 * exp(-htrop_q / atmosphere_parameters.atmosphere_scale)) * atmosphere_parameters.rh_strat
+		for k in range(1, atm_grid.nlwr_a[3]):
+			#NOTICE: Possible issue at tropopause? Be on the lookout
+			if(OutCol["zlwr"][k] <= (htrop_q + 10)):
+				#Troposphere
+				var tlwr_q : float = t_prof(zs, OutCol["zlwr"][k], tamz, gams_q, gamb_q, gamt_q, htrop_q, 1)
+				var rqlwr : float = rh_prof(zs, OutCol["zlwr"][k], ram, hrm, htrop_q)
+				OutCol["qlwr"][k] = Constants.FQSAT_sp(tlwr_q, atmosphere_parameters.p0 * exp(-OutCol["zlwr"][k] / atmosphere_parameters.atmosphere_scale)) * rqlwr
+			else:
+				#Stratosphere
+				OutCol["qlwr"][k] = qtrop
+	
+	OutCol["O3lwr"] = []
+	if(atmosphere_parameters.l_o3):
+		#interpolate Ozone to Longwave Radiation levels
+		for k in range(0,atm_grid.nlwr_a[3]):
+			if(OutCol["zlwr"][k] < atm_grid.zl[0]):
+				var w = (OutCol["zlwr"][k] - atm_grid.zl[0]) / (atm_grid.zl[1] - atm_grid.zl[0])
+				OutCol["O3lwr"].append((1 - w) * O3[0] + w * O3[1])
+			elif (OutCol["zlwr"][k] >= atm_grid.zl[atm_grid.kmc]):
+				var w = (OutCol["zlwr"][k] - atm_grid.zl[0]) / (atm_grid.zl[atm_grid.kmc] - atm_grid.zl[atm_grid.kmc - 1])
+				OutCol["O3lwr"].append((1 - w) * O3[atm_grid.kmc - 1] + w * O3[atm_grid.kmc])
+			else:
+				for kk in range(1, atm_grid.kmc):
+					if((OutCol["zlwr"][k] >= atm_grid.zl[kk - 1]) and (OutCol["zlwr"][k] <= atm_grid.zl[kk])):
+						var w = (OutCol["zlwr"][k] - atm_grid.zl[0]) / (atm_grid.zl[kk] - atm_grid.zl[kk - 1])
+						OutCol["O3lwr"].append((1 - w) * O3[kk - 1] + w * O3[kk])
+	else:
+		OutCol["O3lwr"].append(0)
+	
+	return OutCol
 
 #computation of long-wave radiation transfer
-func lwr_transfer(ra2 : float, clot : float, zlwr : float, tlwr : float, qlwr : float, o3lwr : float):
-	pass
+func lwr_transfer(ra2 : float, clot : float, zlwr : Array[float], tlwr : Array[float], qlwr : Array[float], o3lwr : Array[float], q_co2 : float):
+	var OutCol : Dictionary = {}
+	OutCol["BSB"] = []
+	OutCol["DCS"] = []
+	OutCol["DCL"] = []
+	OutCol["DCS"].resize(atm_grid.llwr)
+	OutCol["DCL"].resize(atm_grid.llwr)
+	var ksize : Array[float] = []
+	ksize.resize(atm_grid.llwr)
+	OutCol["DCS"].fill(ksize)
+	OutCol["DCL"].fill(ksize)
+	
+	var expc : Array[float] = []
+	var am_cld : Array[float] = []
+	var am_o3 : Array[float] = []
+	var am_wv : Array[float] = []
+	var am_co2 : Array[float] = []
+	expc.resize(atm_grid.llwr + 5)
+	am_cld.resize(atm_grid.llwr + 5)
+	am_o3.resize(atm_grid.llwr + 5)
+	am_wv.resize(atm_grid.llwr + 5)
+	am_co2.resize(atm_grid.llwr + 5)
+	
+	#Conversion to "CGS" units
+	var rhos : float = ra2 * 0.001
+	var zsur : float = zlwr[0] * 100
+	var kappa_co2 : float = (atmosphere_parameters.ak_co2 + 1) / h0_lw
+	
+	#Intermediate levels
+	for k in range(atm_grid.llwr):
+		var zlsk : float = zlwr[k] * 100
+		expc[k] = exp(-kappa_co2 * zlsk)
+		OutCol["BSB"].append(emis_lw * Constants.StefanBoltzmanConstant * tlwr[k] ** 4)
+	
+	#Absorption in the layers
+	
+	for k in range(atm_grid.llwr - 1):
+		var Z1 : float = zlwr[k] * 100
+		var Z2 : float = zlwr[k + 1] * 100
+		var Zm : float = 0.5 * (Z1 + Z2)
+		var dZ : float = Z2 - Z1
+		
+		var hq : float = 0
+		#Water Vapor
+		var ql1 : float = qlwr[k]
+		var ql2 : float = qlwr[k + 1]
+		if ((ql1 > ql2) and (ql2 > 0)):
+			#Assume exponential
+			hq = min(dZ / log(ql1 / ql2), h0_lw)
+		else:
+			hq = h0_lw
+		var kappa_wv : float = (atmosphere_parameters.ak_wv + 1) / h0_lw + 1 / hq
+		am_wv[k] = rhos * ql1 * exp(Z1 / hq + zsur / h0_lw) / kappa_wv * (exp(-kappa_wv * Z1) - exp(-kappa_wv * Z2))
+		
+		#Co2
+		am_co2[k] = q_co2 / kappa_co2 * (expc[k] - expc[k + 1])
+		
+		#Ozone
+		if(atmosphere_parameters.l_o3):
+			am_o3[k] = atmosphere_parameters.ra * 1e-3 * exp(-Zm * (ak_o3_lw + 1) - h0_lw) * 0.5 * (o3lwr[k] + o3lwr[k + 1]) * dZ
+		else:
+			am_o3[k] = 0
+		
+		#Clouds
+		if(atmosphere_parameters.i_lw_Cloud == 1):
+			#Clouds later
+			am_cld[k] = 0
+		elif(atmosphere_parameters.i_lw_Cloud == 2):
+			#Clouds now :)
+			if ((k>=atm_grid.llwr_a[0]) and (k<atm_grid.llwr_a[1])):
+				#in the clouds :)
+				am_cld[k] = clot / atm_grid.nlwr_a[k]
+			else:
+				am_cld[k] = 0
+	
+	#ITFs
+	for k in range(atm_grid.llwr_a[0]-1):
+		var am_cld_kl : float = 0
+		var am_o3_kl : float = 0
+		var am_wv_kl : float = 0
+		var am_co2_kl : float = 0
+		for l in range(k+1, atm_grid.llwr):
+			am_cld_kl = am_cld_kl + am_cld[l-1]
+			am_o3_kl = am_o3_kl + am_o3[l-1]
+			am_wv_kl = am_wv_kl + am_wv[l-1]
+			am_co2_kl = am_co2_kl + am_co2[l-1]
+			
+			#From equation 6.7 in PIK report 81 
+			var d_o3 : float = 1 - a_o3_lw * (am_o3_kl ** beta_o3_lw)
+			
+			#Equation 6.5 of the PIK report 81
+			var d_vap : float = 1 / (1 + atmosphere_parameters.a_vap * ((beta0_lw * am_wv_kl) ** atmosphere_parameters.beta_vap) + atmosphere_parameters.a2_vap * ((beta0_lw * am_wv_kl) + atmosphere_parameters.a3_vap * ((beta0_lw * am_wv_kl) ** 3)))
+			
+			#Modification of Equation 6.6 (Valid for up to 20x CO2 of present day). Additional factor includes CO2 radiative forcing at increasing CO2 levels
+			var d_co2 : float = (1 - 0.1 * (am_co2_kl/1000) ** 2) * (1 + a0_co2_lw * a1_co2_lw * ((beta0_lw * am_co2_kl) ** atmosphere_parameters.beta_co2)) / (1 + a0_co2_lw * ((beta0_lw * am_co2_kl) ** atmosphere_parameters.beta_co2))
+			
+			#Clouds
+			var d_cld : float = exp(-atmosphere_parameters.c_lw_CloudOpticalThickness * am_cld_kl)
+			
+			OutCol["DCS"][l][k] = d_vap * d_co2 * d_o3
+			OutCol["DCL"][l][k] = d_vap * d_co2 * d_cld
+	
+	#Symmetry
+	for l in range(atm_grid.llwr - 1):
+		for k in range(atm_grid.llwr):
+			OutCol["DCS"][l][k] = OutCol["DCS"][k][l]
+			OutCol["DCL"][l][k] = OutCol["DCL"][k][l]
+	
+	#Diagonal
+	for k in range(atm_grid.llwr):
+		OutCol["DCS"][k][k] = 1
+		OutCol["DCL"][k][k] = 1
+	
+	return OutCol
 
 #computation of long-wave radiation fluxes for clear sky conditions
-func lwr_clear_sky():
-	pass
+func lwr_clear_sky(flwr_up_sur : float, BSB : Array[float], DCS : Array[Array]):
+	var OutCol : Dictionary = {}
+	OutCol["fcs_up"] = []
+	OutCol["fcs_dw"] = []
+	OutCol["fcs_up"].resize(atm_grid.llwr)
+	OutCol["fcs_dw"].resize(atm_grid.llwr)
+	
+	#Upward Flux
+	OutCol["fcs_up"][0] = flwr_up_sur
+	for k in range(1,atm_grid.llwr):
+		OutCol["fcs_up"][k] = BSB[k] + (OutCol["fcs_up"][0] - BSB[k] * DCS[k][1])
+		for l in range(k - 1):
+			OutCol["fcs_up"][k] = OutCol["fcs_up"][k] - (BSB[l + 1] - BSB[l]) * 0.5 * (DCS[k][l + 1] + DCS[k][l])
+	#Downward Flux
+	OutCol["fcs_dw"][0] = 0
+	for k in range(atm_grid.llwr - 1, 0, -1):
+		OutCol["fcs_dw"][k] = BSB[k] - BSB[atm_grid.llwr] * DCS[k][atm_grid.llwr]
+		for l in range(k - 1):
+			OutCol["fcs_dw"][k] = OutCol["fcs_dw"][k] + (BSB[l + 1] - BSB[l]) * 0.5 * (DCS[k][l] + DCS[k][l + 1])
+	return OutCol
 
 #computation of long-rave radiation fluxes for cloudy conditions
-func lwr_clouds():
+func lwr_clouds(flwr_up_sur : float, BSB : Array[float], DCL : Array[Array]):
+	var OutCol : Dictionary = {}
+	OutCol["fcl_up"] = []
+	OutCol["fcl_dw"] = []
+	OutCol["fcl_up"].resize(atm_grid.llwr)
+	OutCol["fcl_dw"].resize(atm_grid.llwr)
+	
+	if(atmosphere_parameters.i_lw_Cloud == 1):
+		##Blackbody Clouds
+		#Upward Flux
+		OutCol["fcl_up"][0] = flwr_up_sur
+		for k in range(1,atm_grid.llwr_a[0]):
+			OutCol["fcl_up"][k] = BSB[k] + (OutCol["fcl_up"][1]-BSB[1]) * DCL[k][1]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] - (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l + 1] + DCL[k][l])
+		for k in range(atm_grid.llwr_a[0] + 1,atm_grid.llwr_a[1]):
+			OutCol["fcl_up"][k] = BSB[k]
+		for k in range(atm_grid.llwr_a[1] + 1,atm_grid.llwr):
+			OutCol["fcl_up"][k] = BSB[k]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] - (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l + 1] + DCL[k][l])
+		
+		#Downward Flux
+		OutCol["fcl_up"][atm_grid.llwr] = 0
+		for k in range(atm_grid.llwr - 1, atm_grid.llwr_a[1] - 1, -1):
+			OutCol["fcl_up"][k] = BSB[k] - BSB[atm_grid.llwr] * DCL[k][atm_grid.llwr]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] + (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l] + DCL[k][l + 1])
+		for k in range(atm_grid.llwr_a[1] - 1, atm_grid.llwr_a[0] - 1, -1):
+			OutCol["fcl_up"][k] = BSB[k]
+		for k in range(atm_grid.llwr_a[0] - 1, 1, -1):
+			OutCol["fcl_up"][k] = BSB[k]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] + (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l] + DCL[k][l + 1])
+	
+	
+	elif (atmosphere_parameters.i_lw_Cloud == 2):
+		##Optical Thickness Clouds
+		#Upward Flux
+		OutCol["fcl_up"][0] = flwr_up_sur
+		for k in range(1,atm_grid.llwr):
+			OutCol["fcl_up"][k] = BSB[k] + (OutCol["fcl_up"][1]-BSB[1]) * DCL[k][1]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] - (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l + 1] + DCL[k][l])
+		
+		#Downward Flux
+		OutCol["fcl_up"][atm_grid.llwr] = 0
+		for k in range(atm_grid.llwr - 1, 0, -1):
+			OutCol["fcl_up"][k] = BSB[k] - BSB[atm_grid.llwr] * DCL[k][atm_grid.llwr]
+			for l in range(k - 1):
+				OutCol["fcl_up"][k] = OutCol["fcl_up"][k] + (BSB[l + 1] - BSB[l]) * 0.5 * (DCL[k][l] + DCL[k][l + 1])
+	
+	return OutCol
+
+## Feedbacks
+func feedback_init():
+	pass
+
+func feedback_save():
+	pass
+
+func feedback_analysis():
+	pass
+
+func feedback_write():
 	pass
