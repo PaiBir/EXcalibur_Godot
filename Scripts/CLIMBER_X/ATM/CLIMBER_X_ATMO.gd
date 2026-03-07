@@ -61,6 +61,45 @@ var i_temp : int = 11
 var i_all : int = 12
 var nfb : int = 12
 
+var FB_co2 : float = 0
+var FB_tam : Array[Array] = []
+var FB_cld : Array[Array] = []
+var FB_hcld : Array[Array] = []
+var FB_clot : Array[Array] = []
+var FB_gams : Array[Array] = []
+var FB_gamb : Array[Array] = []
+var FB_gamt : Array[Array] = []
+var FB_htrop : Array[Array] = []
+var FB_ttrop : Array[Array] = []
+var FB_ram : Array[Array] = []
+var FB_hrm : Array[Array] = []
+var FB_hqeff : Array[Array] = []
+var FB_aerosol_ot : Array[Array] = [] 
+var FB_aerosol_im : Array[Array] = []
+var FB_so4 : Array[Array] = []
+var FB_frst : Array[Array] = []
+var FB_tskin : Array[Array] = []
+var FB_t2 : Array[Array] = []
+var FB_q2 : Array[Array] = []
+var FB_alb_vu_s : Array[Array] = []
+var FB_alb_vu_c : Array[Array] = []
+var FB_alb_ir_s : Array[Array] = []
+var FB_alb_ir_c : Array[Array] = []
+var FB_flwr_up_sur : Array[Array] = []
+
+var FB_tg : Array[float] = [0,0]
+var FB_delta_t : float = 0
+var FB_rf_top_avg : float = 0
+var FB_rf_trop_avg : float = 0
+var FB_rf_top : Array[float] = []
+var FB_rf_trop : Array[float] = []
+var FB_dhtrop_rf : Array[float] = []
+var FB_flwr_top : Array[Array] = []
+var FB_fswr_top : Array[Array] = []
+var FB_d_flwr_top : Array[Array] = []
+var FB_d_fswr_top : Array[Array] = []
+var FB_d_f_top : Array[Array] = []
+
 ##Aspects from ATM_DEF
 var Hadley_Cell_Width : float #radians
 var InterTropicalConvergenceZone_Position : float #radians
@@ -72,17 +111,28 @@ var obliquity : float
 var t2m_glob_ann : float = 0
 var dt2m_glob_ann_cum : float = 0
 
-func sum(a : Array,b : Array, o : int) -> float: #o = 0: addition, o = 1: subtraction, o = 2: multiplication, o = 3: division
+func sum(a : Array,b : Array, o : int, mask : int = -1) -> float: #o = 0: addition, o = 1: subtraction, o = 2: multiplication, o = 3: division
 	var total : float = 0
-	for i in range(a.size()):
-		if o == 0:
-			total += (a[i] + b[i])
-		elif o == 1:
-			total += (a[i] - b[i])
-		elif o == 2:
-			total += (a[i] * b[i])
-		elif o == 3:
-			total += (a[i] / b[i])
+	if(mask == -1):
+		for i in range(a.size()):
+			if o == 0:
+				total += (a[i] + b[i])
+			elif o == 1:
+				total += (a[i] - b[i])
+			elif o == 2:
+				total += (a[i] * b[i])
+			elif o == 3:
+				total += (a[i] / b[i])
+	else:
+		for i in range(a.size()):
+			if o == 0:
+				total += (a[i][mask] + b[i][mask])
+			elif o == 1:
+				total += (a[i][mask] - b[i][mask])
+			elif o == 2:
+				total += (a[i][mask] * b[i][mask])
+			elif o == 3:
+				total += (a[i][mask] / b[i][mask])
 	return total
 
 ##Adifa
@@ -1428,11 +1478,194 @@ func lwr_clouds(flwr_up_sur : float, BSB : Array[float], DCL : Array[Array]):
 	return OutCol
 
 ## Feedbacks
+#Initializes feedback anaylsis
 func feedback_init():
-	pass
+	var emptyArray : Array[float] = []
+	emptyArray.resize(model_timer.DaysPerYear)
+	
+	FB_tam = []
+	FB_tam.resize(atm_grid.OutputArray.size())
+	FB_tam.fill(emptyArray)
+	
+	FB_cld = []
+	FB_cld.resize(atm_grid.OutputArray.size())
+	FB_cld.fill(emptyArray)
+	
+	FB_hcld = []
+	FB_hcld.resize(atm_grid.OutputArray.size())
+	FB_hcld.fill(emptyArray)
+	
+	FB_clot = []
+	FB_clot.resize(atm_grid.OutputArray.size())
+	FB_clot.fill(emptyArray)
+	
+	FB_gams = []
+	FB_gams.resize(atm_grid.OutputArray.size())
+	FB_gams.fill(emptyArray)
+	
+	FB_gamb = []
+	FB_gamb.resize(atm_grid.OutputArray.size())
+	FB_gamb.fill(emptyArray)
+	
+	FB_gamt = []
+	FB_gamt.resize(atm_grid.OutputArray.size())
+	FB_gamt.fill(emptyArray)
+	
+	FB_htrop = []
+	FB_htrop.resize(atm_grid.OutputArray.size())
+	FB_htrop.fill(emptyArray)
+	
+	FB_ttrop = []
+	FB_ttrop.resize(atm_grid.OutputArray.size())
+	FB_ttrop.fill(emptyArray)
+	
+	FB_ram = []
+	FB_ram.resize(atm_grid.OutputArray.size())
+	FB_ram.fill(emptyArray)
+	
+	FB_hrm = []
+	FB_hrm.resize(atm_grid.OutputArray.size())
+	FB_hrm.fill(emptyArray)
+	
+	FB_hqeff = []
+	FB_hqeff.resize(atm_grid.OutputArray.size())
+	FB_hqeff.fill(emptyArray)
+	
+	FB_aerosol_ot = [] 
+	FB_aerosol_ot.resize(atm_grid.OutputArray.size())
+	FB_aerosol_ot.fill(emptyArray)
+	
+	FB_aerosol_im = []
+	FB_aerosol_im.resize(atm_grid.OutputArray.size())
+	FB_aerosol_im.fill(emptyArray)
+	
+	FB_so4 = []
+	FB_so4.resize(atm_grid.OutputArray.size())
+	FB_so4.fill(emptyArray)
+	
+	FB_frst = []
+	FB_frst.resize(atm_grid.OutputArray.size())
+	FB_frst.fill(emptyArray)
+	
+	FB_tskin = []
+	FB_tskin.resize(atm_grid.OutputArray.size())
+	FB_tskin.fill(emptyArray)
+	
+	FB_t2 = []
+	FB_t2.resize(atm_grid.OutputArray.size())
+	FB_t2.fill(emptyArray)
+	
+	FB_q2 = []
+	FB_q2.resize(atm_grid.OutputArray.size())
+	FB_q2.fill(emptyArray)
+	
+	var heights : Array[Array] = []
+	heights.resize(atm_grid.numSurfaceTypes)
+	heights.fill(emptyArray)
+	
+	FB_alb_vu_s = []
+	FB_alb_vu_s.resize(atm_grid.OutputArray.size())
+	FB_alb_vu_s.fill(heights)
+	
+	FB_alb_vu_c = []
+	FB_alb_vu_c.resize(atm_grid.OutputArray.size())
+	FB_alb_vu_c.fill(heights)
+	
+	FB_alb_ir_s = []
+	FB_alb_ir_s.resize(atm_grid.OutputArray.size())
+	FB_alb_ir_s.fill(heights)
+	
+	FB_alb_ir_c = []
+	FB_alb_ir_c.resize(atm_grid.OutputArray.size())
+	FB_alb_ir_c.fill(heights)
+	
+	FB_flwr_up_sur = []
+	FB_flwr_up_sur.resize(atm_grid.OutputArray.size())
+	FB_flwr_up_sur.fill(heights)
+	
+	
+	FB_tg = [0,0]
+	FB_delta_t = 0
+	FB_rf_top_avg = 0
+	FB_rf_trop_avg = 0
+	
+	FB_rf_top = []
+	FB_rf_top.resize(atm_grid.OutputArray.size())
+	FB_rf_top.fill(0)
+	
+	FB_rf_trop = []
+	FB_rf_trop.resize(atm_grid.OutputArray.size())
+	FB_rf_trop.fill(0)
+	
+	FB_dhtrop_rf = []
+	FB_dhtrop_rf.resize(atm_grid.OutputArray.size())
+	FB_dhtrop_rf.fill(0)
+	
+	var NFB_Array : Array[float] = []
+	NFB_Array.resize(nfb + 1)
+	
+	FB_flwr_top = []
+	FB_flwr_top.resize(atm_grid.OutputArray.size())
+	FB_flwr_top.fill(NFB_Array)
+	
+	FB_fswr_top = []
+	FB_flwr_top.resize(atm_grid.OutputArray.size())
+	FB_flwr_top.fill(NFB_Array)
+	
+	NFB_Array.resize(nfb)
+	
+	FB_d_flwr_top = []
+	FB_d_flwr_top.resize(atm_grid.OutputArray.size())
+	FB_d_flwr_top.fill(NFB_Array)
+	
+	FB_d_fswr_top = []
+	FB_d_fswr_top.resize(atm_grid.OutputArray.size())
+	FB_d_fswr_top.fill(NFB_Array)
+	
+	FB_d_f_top = []
+	FB_d_f_top.resize(atm_grid.OutputArray.size())
+	FB_d_f_top.fill(NFB_Array)
 
+##### CHECK HERE FOR TERM DEFINITIONS! #####
+#Saves variables for feedback analysis
 func feedback_save():
-	pass
+	var t2 : Array[Array] = []
+	var frst : Array[Array] = []
+	for i in atm_grid.OutputArray.size():
+		FB_tam[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp
+		FB_cld[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction
+		FB_hcld[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height
+		FB_clot[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Optical_Thickness
+		FB_gams[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer
+		FB_gamb[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo
+		FB_gamt[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo
+		FB_htrop[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height
+		FB_ttrop[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature
+		FB_ram[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity
+		FB_hrm[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale
+		FB_hqeff[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Effective_Humidity_Scale
+		FB_aerosol_ot[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Aerosol_Optical_Thickness
+		FB_aerosol_im[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Aersol_Imaginary_Refractive_Index
+		FB_so4[i][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).SO4_Load
+		frst.append([])
+		t2.append([])
+		for n in range(atm_grid.numSurfaceTypes):
+			FB_frst[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).frst[n]
+			frst[i].append((atm_grid.OutputArray[i] as ATM_CELL).frst[n])
+			FB_tskin[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Skin_Temp[n]
+			FB_t2[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Air_Temp_2m[n]
+			frst[i].append((atm_grid.OutputArray[i] as ATM_CELL).Air_Temp_2m[n])
+			FB_q2[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Relative_Humidity_2m[n]
+			FB_alb_vu_s[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Clear_VisUV[n]
+			FB_alb_vu_c[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Cloudy_VisUV[n]
+			FB_alb_ir_s[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Clear_IR[n]
+			FB_alb_ir_c[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Cloudy_IR[n]
+			FB_flwr_up_sur[i][n][model_timer.DayOfYear] = (atm_grid.OutputArray[i] as ATM_CELL).flwr_up_sur[n]
+	
+	#Circle back to this calculation. Need replacement for sqr term to allow math to work
+	FB_tg[0] = FB_tg[0] + sum(t2,frst,2,(atm_grid.surfaceTypes.SIC as int)) / model_timer.DaysPerYear
+	
+	#This next part fills me with pain. Not gonna do it for now
 
 func feedback_analysis():
 	pass
