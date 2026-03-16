@@ -1,18 +1,23 @@
 [gd_scene format=3 uid="uid://d23pce1p6dfx8"]
 
 [ext_resource type="Script" uid="uid://1vdmvuwlnsgv" path="res://Scripts/CLIMBER_X/ATM/CLIMBER_X_ATM_PARAMETERS.gd" id="1_45lbp"]
+[ext_resource type="Script" uid="uid://bdj7qoh3ak1qo" path="res://Scripts/CLIMBER_X/ATM/CLIMBER_X_ATMO.gd" id="1_pgav6"]
 [ext_resource type="Script" uid="uid://b2sc7p0of21gw" path="res://Scripts/CLIMBER_X/GRID/CLIMBER_X_ATM_GRID.gd" id="2_pgav6"]
 [ext_resource type="Script" uid="uid://ckb6a1r80roxn" path="res://Scripts/CLIMBER_X/ATM/CLIMBER_X_SMOOTH_ATM.gd" id="3_xe6li"]
 
-[node name="ATMOSPHERE_MODEL" type="Node" unique_id=1544767289]
+[node name="ATMOSPHERE_MODEL" type="Node" unique_id=1544767289 node_paths=PackedStringArray("atmosphere_parameters", "atm_grid")]
+script = ExtResource("1_pgav6")
+atmosphere_parameters = NodePath("ATM_PARAM")
+atm_grid = NodePath("ATM_GRID")
 
 [node name="ATM_PARAM" type="Node" parent="." unique_id=195079896]
 script = ExtResource("1_45lbp")
 metadata/_custom_type_script = "uid://1vdmvuwlnsgv"
 
-[node name="ATM_GRID" type="Node" parent="." unique_id=155580635 node_paths=PackedStringArray("atmosphere_parameters")]
+[node name="ATM_GRID" type="Node" parent="." unique_id=155580635 node_paths=PackedStringArray("atmosphere_parameters", "smooth_atm_mod")]
 script = ExtResource("2_pgav6")
 atmosphere_parameters = NodePath("../ATM_PARAM")
+smooth_atm_mod = NodePath("../ATM_SMOOTHER")
 metadata/_custom_type_script = "uid://b2sc7p0of21gw"
 
 [node name="ATM_SMOOTHER" type="Node" parent="." unique_id=1198035041]

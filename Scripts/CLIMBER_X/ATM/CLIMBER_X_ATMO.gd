@@ -2,10 +2,10 @@ class_name CLIMBER_X_ATMO
 extends Node
 
 ##ADIFA
-var atmosphere_parameters : ATM_PARAM
-var atm_grid : ATM_GRID
-var model_timer : MODELTIMER
-var controller : CLIMBER_X_CONTROL
+@export var atmosphere_parameters : ATM_PARAM
+@export var atm_grid : ATM_GRID
+@export var model_timer : MODELTIMER
+@export var controller : CLIMBER_X_CONTROL
 
 var Atm_CO2 : float #ppmv
 var Equivalent_CO2 : float #ppmv
@@ -575,29 +575,30 @@ func rh_prof(zs : float, z : float, ram : float, h_rh : float, htrop : float) ->
 	return return_rh_prof
 
 #compute height of tropopause
-func tropo_height():
+func tropo_height(ITCZ : float, Hadley : float, RB_str : Array[float], hcld : Array[float], htrop : Array[float], fb_ptrop : Array[float]):
 	#Don't know why these values are what they are
 	var x1 = asin(pow(0.1,1.0/8.0))
 	var h_trop_min = 6e3
 	var h_trop_max = 25e3
 	for i in range(atm_grid.OutputArray.size()):
-		var fic : float = Hadley_Cell_Width/2
+		var fic : float = Hadley/2
 		var x : float = x1-fic
-		var fi : float = x * ((PI * (-(atm_grid.OutputArray[i] as ATM_CELL).LatLong.y) / 180.0) - InterTropicalConvergenceZone_Position)
+		var fi : float = x * ((PI * (-(atm_grid.OutputArray[i] as ATM_CELL).LatLong.y) / 180.0) - ITCZ)
 		if (fi > PI/2.0):
 			fi = PI/2.0
 		elif (fi < -PI/2.0):
 			fi = -PI/2.0
 		var sheat : float = atmosphere_parameters.c_trop[1] * (1 - atmosphere_parameters.c_trop[2] * (1 - pow(sin(fi), 8)))
-		(atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Pressure = 0
-		var rbstr : float = (atm_grid.OutputArray[i] as ATM_CELL).rb_str + sheat
+		fb_ptrop[i] = 0.0
+		var rbstr : float = RB_str[i] + sheat
 		var dhtrop = -atmosphere_parameters.c_trop[0] * rbstr 
-		var htropp = min(max(max((atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height + dhtrop),h_trop_min,(atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height), h_trop_max)
+		var htropp = min(max(max(htrop[i] + dhtrop),h_trop_min,hcld[i]), h_trop_max)
 		
-		(atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height = htropp
+		htrop[i] = htropp
 		
 		#I have left a variable out of this equation as I currently don't have a way to supply it. Will see how that affects output.
-		(atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Pressure = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Pressure + exp(-(atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height / atmosphere_parameters.atmosphere_scale)
+		fb_ptrop[i] = fb_ptrop[i] + exp(-(atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height / atmosphere_parameters.atmosphere_scale)
+	return htrop
 
 ##Wvel
 #vertical velocities for parameterisations
@@ -1045,8 +1046,8 @@ func sw_radiation_col(solar_top : float, coszen : float, cld : float, q2 : float
 
 ##LW_RADIATION
 
-#driver for long-wave radiation
-func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], gams_q : Array[float] = [], gamb_q : Array[float] = [], gamt_q : Array[float] = [], tam_q : Array[float] = [], ttrop_q : Array[float] = [], htrop_q : Array[float] = []):
+#driver for long-wave radiation, 0 = ADIFA CO2, 1 = FB_co2
+func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], CO2_source_i : float = 0, gams_q : Array[float] = [], gamb_q : Array[float] = [], gamt_q : Array[float] = [], tam_q : Array[float] = [], ttrop_q : Array[float] = [], htrop_q : Array[float] = []):
 	#W/m2/ppm
 	var a1 : float = -2.4e-7
 	var b1 : float = 7.2e-4
@@ -1057,6 +1058,9 @@ func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], gams_q : Array[
 	var a3 : float = -1e-6
 	var b3 : float = -8.2e-6
 	
+	var co2 = Atm_CO2
+	if (CO2_source_i == 1):
+		co2 = FB_co2
 	
 	if(gams_q.size() > 0):
 		feedbackanalysis = true
@@ -1067,18 +1071,18 @@ func lw_radiation(ecs_scale : float, flwr_up_sur : Array[Array], gams_q : Array[
 	
 	##Compute Effective CO2 concentration for longwave radiation
 	#Using table 1 in Etminan et al., 2016
-	var co2_bar : float = 0.5 * (Atm_CO2 + controller.co2_ref)
-	var ch4_bar : float = 0.5 * (Atm_CH4 + controller.ch4_ref)
-	var n2o_bar : float = 0.5 * (Atm_N2O + controller.n2o_ref)
+	var co2_bar : float = 0.5 * (co2 + controller.co2_ref)
+	var ch4_bar : float = 0.5 * (co2 + controller.ch4_ref)
+	var n2o_bar : float = 0.5 * (co2 + controller.n2o_ref)
 	
-	var rf_co2 = (a1 * (Atm_CO2 - controller.co2_ref) ** 2 + b1 * abs(Atm_CO2 + controller.co2_ref) + c1 * controller.n2o_bar + 5.36) * log(Atm_CO2 / controller.co2_ref)
+	var rf_co2 = (a1 * (co2 - controller.co2_ref) ** 2 + b1 * abs(co2 + controller.co2_ref) + c1 * controller.n2o_bar + 5.36) * log(co2 / controller.co2_ref)
 	var rf_n2o = (a2 * co2_bar + b2 * n2o_bar + c2 * ch4_bar + 0.117) * (sqrt(Atm_N2O) - sqrt(controller.n2o_ref))
 	var rf_ch4 = (a3 * ch4_bar + b3 * n2o_bar + 0.043) * (sqrt(Atm_CH4) - sqrt(controller.ch4_ref))
 	var rf_cfc11 = 0.25 * 1e-3 + Atm_CFC11 #Table 3 from Myhre et al., 1998
 	var rf_cfc12 = 0.33 * 1e-3 * Atm_CFC12 #Table 3 from Myhre et al., 1998
 	
 	#Convert Greenhouse Gases into CO2 concentration
-	var co2e = controller.co2_ref * exp((rf_co2 + rf_ch4 + rf_n2o + rf_cfc11 + rf_cfc12) / (a1 * (Atm_CO2 - controller.co2_ref) ** 2 + b1 * abs(Atm_CO2 - controller.co2_ref) + c1 * n2o_bar + 5.36)) #ppmv
+	var co2e = controller.co2_ref * exp((rf_co2 + rf_ch4 + rf_n2o + rf_cfc11 + rf_cfc12) / (a1 * (co2 - controller.co2_ref) ** 2 + b1 * abs(co2 - controller.co2_ref) + c1 * n2o_bar + 5.36)) #ppmv
 	co2e = exp(ecs_scale * log(co2e) + (1 - ecs_scale) * log(controller.co2_ref))
 	
 	#ppm to mass mixing
@@ -1628,7 +1632,7 @@ func feedback_init():
 
 ##### CHECK HERE FOR TERM DEFINITIONS! #####
 #Saves variables for feedback analysis
-func feedback_save():
+func feedback_save(co2 : float):
 	var t2 : Array[Array] = []
 	var frst : Array[Array] = []
 	for i in atm_grid.OutputArray.size():
@@ -1665,10 +1669,144 @@ func feedback_save():
 	#Circle back to this calculation. Need replacement for sqr term to allow math to work
 	FB_tg[0] = FB_tg[0] + sum(t2,frst,2,(atm_grid.surfaceTypes.SIC as int)) / model_timer.DaysPerYear
 	
-	#This next part fills me with pain. Not gonna do it for now
+	if (model_timer.Atmosphere_EOY):
+		FB_co2 = co2
+		
+		var fileOut : Dictionary = {}
+		fileOut["Day of Year"] = model_timer.DayOfYear
+		var Entries : Array[Dictionary] = []
+		var Entry : Dictionary = {
+									"ID" = 0,
+									"Position" = Vector2.ZERO,
+									"Extrapolated Surface Temp" = 0.0,
+									"Cloud Fraction" = 0.0,
+									"Cloud Height" = 0.0,
+									"Cloud Optical Thickness" = 0.0,
+									"LapseRate BoundaryLayer" = 0.0,
+									"LapseRate Lower Tropo" = 0.0,
+									"LapseRate Upper Tropo" = 0.0,
+									"Tropopause Height" = 0.0,
+									"Tropopause Temperature" = 0.0,
+									"Extrapolated Surface Relative Humidity" = 0.0,
+									"Vertical Humidity Scale" = 0.0,
+									"Vertical Effective Humidity Scale" = 0.0,
+									"Aerosol Optical Thickness" = 0.0,
+									"Aersol Imaginary_Refractive Index" = 0.0,
+									"SO4 Load" = 0.0,
+									"frst" = [],
+									"Skin Temp" = [],
+									"Air Temp 2m" = [],
+									"Relative Humidity 2m" = [],
+									"Albedo Clear VisUV" = [],
+									"Albedo Cloudy VisUV" = [],
+									"Albedo Clear IR" = [],
+									"Albedo Cloudy IR" = [],
+									"flwr up sur" = []
+									}
+		
+		for i in range(atm_grid.OutputArray.size()):
+			Entry["ID"] = i
+			Entry["Position"] = (atm_grid.OutputArray[i] as ATM_CELL).LatLong
+			Entry["Extrapolated Surface Temp"] = (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp
+			Entry["Cloud Fraction"] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Fraction
+			Entry["Cloud Height"] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height
+			Entry["Cloud Optical Thickness"] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Optical_Thickness
+			Entry["LapseRate BoundaryLayer"] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer
+			Entry["LapseRate Lower_Tropo"] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo
+			Entry["LapseRate Upper_Tropo"] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo
+			Entry["Tropopause Height"] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height
+			Entry["Tropopause Temperature"] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature
+			Entry["Extrapolated Surface Relative Humidity"] = (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Relative_Humidity
+			Entry["Vertical Humidity Scale"] = (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Humidity_Scale
+			Entry["Vertical Effective Humidity Scale"] = (atm_grid.OutputArray[i] as ATM_CELL).Vertical_Effective_Humidity_Scale
+			Entry["Aerosol Optical Thickness"] = (atm_grid.OutputArray[i] as ATM_CELL).Aerosol_Optical_Thickness
+			Entry["Aersol Imaginary Refractive Index"] = (atm_grid.OutputArray[i] as ATM_CELL).Aersol_Imaginary_Refractive_Index
+			Entry["SO4 Load"] = (atm_grid.OutputArray[i] as ATM_CELL).SO4_Load
+			Entry["frst"] = (atm_grid.OutputArray[i] as ATM_CELL).frst
+			Entry["Skin Temp"] = (atm_grid.OutputArray[i] as ATM_CELL).Skin_Temp
+			Entry["Air Temp 2m"] = (atm_grid.OutputArray[i] as ATM_CELL).Air_Temp_2m
+			Entry["Relative Humidity 2m"] = (atm_grid.OutputArray[i] as ATM_CELL).Relative_Humidity_2m
+			Entry["Albedo Clear VisUV"] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Clear_VisUV
+			Entry["Albedo Cloudy VisUV"] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Cloudy_VisUV
+			Entry["Albedo Clear IR"] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Clear_IR
+			Entry["Albedo Cloudy IR"] = (atm_grid.OutputArray[i] as ATM_CELL).Albedo_Cloudy_IR
+			Entry["flwr up sur"] = (atm_grid.OutputArray[i] as ATM_CELL).flwr_up_sur
+			Entries.append(Entry)
+		
+		fileOut["Save State"] = Entries
+		
+		var fileCrawler = DirAccess.open(atmosphere_parameters.Planet.Boss.UI_Base.ProjectDir)
+		if(!fileCrawler.dir_exists("Feedback")):
+			fileCrawler.make_dir("Feedback")
+		var FeedbackFile = FileAccess.open(fileCrawler.get_current_dir() + "/Feedback:" + str(model_timer.Current_Year) + "_" + str(model_timer.DayOfYear) + ".json",FileAccess.WRITE)
+		if not FeedbackFile:
+			print("FeedbackFile failed: ", FileAccess.get_open_error())
+			return
+		FeedbackFile.store_line(JSON.stringify(fileOut))
+		FeedbackFile.close()
 
-func feedback_analysis():
-	pass
+#DON'T USE IT IF YOU CAN HELP IT! REQUIRES MAJOR RESTRUCTURING!
+func feedback_analysis(flwr_up_sur : Array[Array]):
+	var flwr_top_control : Array[float] = []
+	flwr_top_control.resize(atm_grid.OutputArray.size())
+	var flwr_trop_control : Array[float] = []
+	flwr_trop_control.resize(atm_grid.OutputArray.size())
+	var rb_str : Array[float] = []
+	rb_str.resize(atm_grid.OutputArray.size())
+	var fb_htrop : Array[float] = []
+	fb_htrop.resize(atm_grid.OutputArray.size())
+	var fb_ttrop : Array[float] = []
+	fb_ttrop.resize(atm_grid.OutputArray.size())
+	## Longwave Radiation
+	
+	#Control
+	lw_radiation(1, flwr_up_sur)
+	for i in range(FB_flwr_top.size()):
+		FB_flwr_top[i][i_control] = FB_flwr_top[i][i_control] + (atm_grid.OutputArray[i] as ATM_CELL).lwr_top / model_timer.DaysPerYear
+		flwr_top_control[i] = (atm_grid.OutputArray[i] as ATM_CELL).lwr_top
+		flwr_trop_control[i] = (atm_grid.OutputArray[i] as ATM_CELL).lwr_tro
+	
+	#Radiative Forcing
+	#longwave radiation with double CO2 to look at the stratosphere
+	lw_radiation(1, flwr_up_sur, 1)
+	var fb_ptrop : Array[float] = []
+	fb_ptrop.resize(atm_grid.OutputArray.size())
+	var hcld : Array[float] = []
+	hcld.resize(atm_grid.OutputArray.size())
+	for i in range(FB_rf_top.size()):
+		FB_rf_top[i] = FB_rf_top[i] + ((atm_grid.OutputArray[i] as ATM_CELL).lwr_top - flwr_top_control[i]) / model_timer.DaysPerYear
+		rb_str[i] = (atm_grid.OutputArray[i] as ATM_CELL).lwr_top - (atm_grid.OutputArray[i] as ATM_CELL).lwr_tr
+		fb_htrop[i] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height
+		hcld[i] = (atm_grid.OutputArray[i] as ATM_CELL).Cloud_Height
+	for n in range(10):
+		fb_htrop = tropo_height(InterTropicalConvergenceZone_Position, Hadley_Cell_Width, rb_str, hcld, fb_htrop, fb_ptrop)
+	for i in range(FB_dhtrop_rf.size()):
+		FB_dhtrop_rf[i] = FB_dhtrop_rf[i] + (fb_htrop[i] - (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height) / model_timer.DaysPerYear
+
+	var gams : Array[float] = []
+	gams.resize(atm_grid.OutputArray.size())
+	var gamb : Array[float] = []
+	gamb.resize(atm_grid.OutputArray.size())
+	var gamt : Array[float] = []
+	gamt.resize(atm_grid.OutputArray.size())
+	var tam : Array[float] = []
+	tam.resize(atm_grid.OutputArray.size())
+	var ttrop : Array[float] = []
+	ttrop.resize(atm_grid.OutputArray.size())
+	var htrop : Array[float] = []
+	htrop.resize(atm_grid.OutputArray.size())
+	for i in range(fb_ttrop.size()):
+		fb_ttrop[i] = t_prof((atm_grid.OutputArray[i] as ATM_CELL).Surface, fb_htrop[i], (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo,(atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo,fb_htrop[i],1)
+		tam[i] = (atm_grid.OutputArray[i] as ATM_CELL).Extrapolated_Surface_Temp
+		gams[i] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_BoundaryLayer
+		gamb[i] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Lower_Tropo
+		gamt[i] = (atm_grid.OutputArray[i] as ATM_CELL).LapseRate_Upper_Tropo
+		htrop[i] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Height
+		ttrop[i] = (atm_grid.OutputArray[i] as ATM_CELL).Tropopause_Temperature
+	lw_radiation(1, flwr_up_sur, 1, gams, gamb, gamt, tam, ttrop, htrop)
+	for i in range(FB_rf_top.size()):
+		FB_rf_top[i] = FB_rf_top[i] + ((atm_grid.OutputArray[i] as ATM_CELL).lwr_tro - flwr_trop_control[i]) / model_timer.DaysPerYear
+		
 
 func feedback_write():
 	pass
